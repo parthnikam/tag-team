@@ -1,8 +1,9 @@
 'use client'
 
 import { login, signup, signInWithGoogle } from '@/lib/auth/actions'
-import { useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { useAuth } from '@/app/providers'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,10 +15,18 @@ import { Separator } from '@/components/ui/separator'
 import { AlertCircle } from 'lucide-react'
 
 export default function AuthPage() {
+  const { user } = useAuth()
+  const router = useRouter()
   const searchParams = useSearchParams()
   const message = searchParams.get('message')
   const signupParam = searchParams.get('signup')
   const defaultTab = signupParam === 'true' ? 'signup' : 'login'
+
+  useEffect(() => {
+    if (user) {
+      router.replace('/room')
+    }
+  }, [router, user])
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">

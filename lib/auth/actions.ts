@@ -1,7 +1,6 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
-import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 
@@ -37,7 +36,7 @@ export async function signup(formData: FormData) {
     redirect('/auth/login?message=' + encodeURIComponent('Passwords do not match'))
   }
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -49,7 +48,10 @@ export async function signup(formData: FormData) {
     redirect('/auth/login?message=' + encodeURIComponent(error.message))
   }
 
-  // Redirect to confirmation page
+  if (data.session) {
+    redirect('/')
+  }
+
   redirect('/auth/signup-confirmation')
 }
 
