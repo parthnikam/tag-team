@@ -6,10 +6,7 @@ type ReportPayload = {
   role: RoomRole;
   submittedBy: string;
   submittedAt: string;
-  entries: Array<{
-    label: string;
-    value: string;
-  }>;
+  data: unknown;
 };
 
 export async function GET(

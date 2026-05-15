@@ -1,4 +1,4 @@
-import RoleSubmitCard from "@/components/role-submit-card";
+import TimerReportForm from "@/components/timer-report-form";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Page(props: PageProps<"/room/[id]/timer">) {
@@ -11,8 +11,8 @@ export default async function Page(props: PageProps<"/room/[id]/timer">) {
     .maybeSingle();
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
-      <RoleSubmitCard code={id} role="timer" initialSubmitted={Boolean(data?.timer)} />
+    <main className="flex min-h-screen justify-center p-4">
+      <TimerReportForm code={id} initialSubmitted={Boolean(data?.timer)} />
     </main>
   );
 }

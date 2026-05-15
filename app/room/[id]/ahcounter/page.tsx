@@ -1,4 +1,4 @@
-import RoleSubmitCard from "@/components/role-submit-card";
+import AhCounterReportForm from "@/components/ahcounter-report-form";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Page(props: PageProps<"/room/[id]/ahcounter">) {
@@ -11,10 +11,9 @@ export default async function Page(props: PageProps<"/room/[id]/ahcounter">) {
     .maybeSingle();
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
-      <RoleSubmitCard
+    <main className="flex min-h-screen justify-center p-4">
+      <AhCounterReportForm
         code={id}
-        role="ahcounter"
         initialSubmitted={Boolean(data?.ahcounter)}
       />
     </main>

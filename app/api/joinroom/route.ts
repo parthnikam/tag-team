@@ -45,10 +45,13 @@ export async function POST(req: Request) {
       { status: 409 }
     );
   }
+  
+  const namecol = typedRole + "_name";
+  const name = user.user_metadata.full_name;
 
   const { data, error } = await supabase
     .from("room")
-    .update({ [typedRole]: user.id })
+    .update({ [typedRole]: user.id, [namecol]: name})
     .eq("code", code)
     .select()
     .single();

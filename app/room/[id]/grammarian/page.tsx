@@ -1,4 +1,4 @@
-import RoleSubmitCard from "@/components/role-submit-card";
+import GrammarianReportForm from "@/components/grammarian-report-form";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Page(props: PageProps<"/room/[id]/grammarian">) {
@@ -11,10 +11,9 @@ export default async function Page(props: PageProps<"/room/[id]/grammarian">) {
     .maybeSingle();
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
-      <RoleSubmitCard
+    <main className="flex min-h-screen justify-center p-4">
+      <GrammarianReportForm
         code={id}
-        role="grammarian"
         initialSubmitted={Boolean(data?.grammarian)}
       />
     </main>

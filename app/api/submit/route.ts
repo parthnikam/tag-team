@@ -1,19 +1,22 @@
 "use server";
 
 import { ROOM_ROLES, type RoomRole } from "@/lib/roles";
+import { type RoleReportData } from "@/lib/report-data";
 import { createClient } from "@/utils/supabase/server";
 
-const buildDummyData = (code: string, role: RoomRole, userId: string) => ({
+const buildSubmissionPayload = (
+  code: string,
+  role: RoomRole,
+  userId: string,
+  reportData: RoleReportData,
+  roletakerName: string,
+) => ({
   roomCode: code,
   role,
   submittedBy: userId,
+  name: roletakerName,
   submittedAt: new Date().toISOString(),
-  entries: [
-    {
-      label: "sample",
-      value: `${role}-demo`,
-    },
-  ],
+  data: reportData,
 });
 
 export async function POST(req: Request) {
@@ -24,13 +27,23 @@ export async function POST(req: Request) {
     error: authError,
   } = await supabase.auth.getUser();
 
-  const { code, role } = (await req.json()) as { code?: string; role?: string };
+  const { code, role, data: reportData } = (await req.json()) as {
+    code?: string;
+    role?: string;
+    data?: RoleReportData;
+  };
 
   if (authError || !user) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!code || !role || !ROOM_ROLES.includes(role as RoomRole)) {
+  if (
+    !code ||
+    !role ||
+    !ROOM_ROLES.includes(role as RoomRole) ||
+    !reportData ||
+    typeof reportData !== "object"
+  ) {
     return Response.json({ error: "Invalid submission" }, { status: 400 });
   }
 
@@ -53,19 +66,19 @@ export async function POST(req: Request) {
     );
   }
 
-  const payload = buildDummyData(code, typedRole, user.id);
+  const payload = buildSubmissionPayload(code, typedRole, user.id, reportData, user.user_metadata.full_name);
 
-  const { data, error } = await supabase
+  const { data: submission, error: upsertError } = await supabase
     .from("reports")
     .upsert({ room_id: code, [typedRole]: payload }, { onConflict: "room_id" })
     .select(`room_id, ${typedRole}`)
     .single();
 
-  if (error) {
-    return Response.json({ error: error.message }, { status: 500 });
+  if (upsertError) {
+    return Response.json({ error: upsertError.message }, { status: 500 });
   }
 
   return Response.json({
-    submission: data,
+    submission,
   });
 }
