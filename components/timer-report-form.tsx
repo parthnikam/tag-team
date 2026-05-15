@@ -211,11 +211,27 @@ export default function TimerReportForm({
     let didMatch = false;
 
     setForm((current) => {
-      const updatedSection = current[activeSection].map((person) => {
-        if (person.name.trim().toLowerCase() === trimmedSpeaker.toLowerCase()) {
+      const existingMatchIndex = current[activeSection].findIndex(
+        (person) => person.name.trim().toLowerCase() === trimmedSpeaker.toLowerCase(),
+      );
+      const firstEmptyIndex = current[activeSection].findIndex(
+        (person) => !person.name.trim(),
+      );
+
+      const updatedSection = current[activeSection].map((person, index) => {
+        if (index === existingMatchIndex) {
           didMatch = true;
           return {
             ...person,
+            time: elapsedSeconds,
+          };
+        }
+
+        if (existingMatchIndex === -1 && index === firstEmptyIndex) {
+          didMatch = true;
+          return {
+            ...person,
+            name: trimmedSpeaker,
             time: elapsedSeconds,
           };
         }
@@ -311,7 +327,7 @@ export default function TimerReportForm({
         </div>
 
         <div className="mt-8 text-center">
-          <div className="text-[5.6rem] font-semibold leading-none tracking-[-0.08em] text-[#0A0A0A] sm:text-[7rem]">
+          <div className="select-none text-[5.6rem] font-semibold leading-none tracking-[-0.08em] text-[#0A0A0A] sm:text-[7rem]">
             {formatSeconds(elapsedSeconds)}
           </div>
           <p className="mt-3 text-sm uppercase tracking-[0.26em] text-[#667085]">

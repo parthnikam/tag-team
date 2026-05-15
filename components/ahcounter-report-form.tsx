@@ -240,7 +240,7 @@ export default function AhCounterReportForm({
               <div className="text-sm font-medium uppercase tracking-[0.26em] text-[#475467]">
                 {field.label}
               </div>
-              <div className="mt-3 text-[2.9rem] font-semibold tracking-[-0.06em] text-[#0A0A0A]">
+              <div className="mt-3 select-none text-[2.9rem] font-semibold tracking-[-0.06em] text-[#0A0A0A]">
                 {selectedPerson?.[field.key] ?? 0}
               </div>
               <button

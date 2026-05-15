@@ -3,41 +3,85 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import BackLink from "@/components/back-link";
+import { Send, Trash2 } from "lucide-react";
 import { ROOM_ROLE_LABELS } from "@/lib/roles";
-import {
-  createEmptyGrammarianPerson,
-  type GrammarianPerson,
-  type GrammarianReportData,
-} from "@/lib/report-data";
+
+interface ImproperUseEntry {
+  id: string;
+  name: string;
+  whatWasSaid: string;
+  suggestion: string;
+}
+
+interface NotablePhraseEntry {
+  id: string;
+  name: string;
+  phrase: string;
+}
 
 export default function GrammarianReportForm({
   code,
   initialSubmitted,
+  meetingName,
+  hostName,
 }: {
   code: string;
   initialSubmitted: boolean;
+  meetingName: string;
+  hostName: string;
 }) {
   const [submitted, setSubmitted] = useState(initialSubmitted);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
-  const [form, setForm] = useState<GrammarianReportData>({
-    wod: "",
-    meaning: "",
-    general: "",
-    people: [createEmptyGrammarianPerson()],
-  });
+  const [wod, setWod] = useState("");
+  const [meaning, setMeaning] = useState("");
+  const [improperUseEntries, setImproperUseEntries] = useState<ImproperUseEntry[]>([]);
+  const [notablePhraseEntries, setNotablePhraseEntries] = useState<NotablePhraseEntry[]>([]);
 
-  const updatePerson = (
-    index: number,
-    field: keyof GrammarianPerson,
+  const addImproperUseEntry = () => {
+    setImproperUseEntries([
+      ...improperUseEntries,
+      { id: Date.now().toString(), name: "", whatWasSaid: "", suggestion: "" },
+    ]);
+  };
+
+  const updateImproperUseEntry = (
+    id: string,
+    field: keyof Omit<ImproperUseEntry, "id">,
     value: string,
   ) => {
-    setForm((current) => ({
-      ...current,
-      people: current.people.map((person, currentIndex) =>
-        currentIndex === index ? { ...person, [field]: value } : person,
+    setImproperUseEntries(
+      improperUseEntries.map((entry) =>
+        entry.id === id ? { ...entry, [field]: value } : entry,
       ),
-    }));
+    );
+  };
+
+  const removeImproperUseEntry = (id: string) => {
+    setImproperUseEntries(improperUseEntries.filter((entry) => entry.id !== id));
+  };
+
+  const addNotablePhraseEntry = () => {
+    setNotablePhraseEntries([
+      ...notablePhraseEntries,
+      { id: Date.now().toString(), name: "", phrase: "" },
+    ]);
+  };
+
+  const updateNotablePhraseEntry = (
+    id: string,
+    field: keyof Omit<NotablePhraseEntry, "id">,
+    value: string,
+  ) => {
+    setNotablePhraseEntries(
+      notablePhraseEntries.map((entry) =>
+        entry.id === id ? { ...entry, [field]: value } : entry,
+      ),
+    );
+  };
+
+  const removeNotablePhraseEntry = (id: string) => {
+    setNotablePhraseEntries(notablePhraseEntries.filter((entry) => entry.id !== id));
   };
 
   const handleSubmit = () => {
@@ -56,7 +100,12 @@ export default function GrammarianReportForm({
         body: JSON.stringify({
           code,
           role: "grammarian",
-          data: form,
+          data: {
+            wod,
+            meaning,
+            improperUseEntries,
+            notablePhraseEntries,
+          },
         }),
       });
 
@@ -72,147 +121,178 @@ export default function GrammarianReportForm({
   };
 
   return (
-    <div className="page-panel">
-      <BackLink href={`/room/${code}`} label="Back" />
-
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="page-kicker">Room {code}</p>
-          <h1 className="page-title mt-3">{ROOM_ROLE_LABELS.grammarian}</h1>
-          <p className="page-copy mt-3">
-            Capture the word of the day, general notes, and feedback per speaker.
-          </p>
-        </div>
-
-        <Link
-          href={`/room/${code}/reports`}
-          className="surface-button-secondary"
-        >
-          View reports
-        </Link>
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 pb-32">
+      <div className="flex items-center justify-between gap-4 border-b border-[#ECECEC] pb-4">
+        <BackLink href={`/room/${code}`} label="Lobby" />
+        <p className="hidden text-xs font-medium uppercase tracking-[0.28em] text-[#667085] sm:block">
+          {meetingName}
+        </p>
+        <p className="hidden text-sm text-[#667085] sm:block">{hostName}</p>
       </div>
 
-      <section className="surface-card">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="section-label">Word of the day</span>
-            <input
-              value={form.wod}
-              onChange={(event) =>
-                setForm((current) => ({ ...current, wod: event.target.value }))
-              }
-              className="surface-input"
-            />
-          </label>
+      <div className="px-1">
+        <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+          Grammarian
+        </p>
+        <h1 className="mt-2 text-[2.85rem] font-semibold tracking-[-0.06em] text-[#0A0A0A] sm:text-[3.4rem]">
+          Grammarian Dashboard
+        </h1>
+        <p className="mt-2 text-[1rem] text-[#667085]">
+          Log the word of the day, improper word usage, and notable phrasing.
+        </p>
+      </div>
 
-          <label className="flex flex-col gap-1 text-sm">
-            <span className="section-label">Meaning</span>
-            <input
-              value={form.meaning}
-              onChange={(event) =>
-                setForm((current) => ({ ...current, meaning: event.target.value }))
-              }
-              className="surface-input"
-            />
-          </label>
+      {/* Word of the Day Section */}
+      <section className="rounded-[2rem] border border-[#E7E7E7] bg-[#F7F7F7] px-5 py-6 sm:px-7">
+        <div className="mb-4 text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+          Word of the day
         </div>
-
-        <label className="mt-3 flex flex-col gap-1 text-sm">
-          <span className="section-label">General notes</span>
-          <textarea
-            value={form.general}
-            onChange={(event) =>
-              setForm((current) => ({ ...current, general: event.target.value }))
-            }
-            className="surface-input min-h-32"
-          />
-        </label>
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h2 className="text-[1.85rem] font-semibold text-[#0A0A0A]">
+              word of the day is
+            </h2>
+            <p className="mt-2 text-sm text-[#667085]">{wod || "nothing"}</p>
+            {meaning && <p className="mt-1 text-sm text-[#667085]">{meaning}</p>}
+          </div>
+        </div>
       </section>
 
-      <section className="surface-card">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-lg font-semibold text-[#0A0A0A]">People</h2>
-          <button
-            type="button"
-            onClick={() =>
-              setForm((current) => ({
-                ...current,
-                people: [...current.people, createEmptyGrammarianPerson()],
-              }))
-            }
-            className="surface-button-secondary"
-          >
-            Add person
-          </button>
-        </div>
+      {/* Notable Phrasing Section */}
+      <section className="rounded-[2rem] border border-[#E7E7E7] px-5 py-5 sm:px-7 sm:py-6">
+        <h2 className="text-[1.15rem] font-semibold text-[#0A0A0A]">Notable Phrasing</h2>
+        <p className="mt-1 text-sm text-[#667085]">Capture eloquent words, quotes, or phrases.</p>
 
-        <div className="mt-6 flex flex-col gap-4">
-          {form.people.map((person, index) => (
-            <div key={index} className="rounded-3xl border border-[#EAEAEA] bg-[#FCFCFC] p-5">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="flex flex-col gap-1 text-sm">
-                  <span className="section-label">Name</span>
-                  <input
-                    value={person.name}
-                    onChange={(event) => updatePerson(index, "name", event.target.value)}
-                    className="surface-input"
-                  />
-                </label>
-
-                <label className="flex flex-col gap-1 text-sm">
-                  <span className="section-label">Highlights</span>
-                  <input
-                    value={person.highlights}
-                    onChange={(event) =>
-                      updatePerson(index, "highlights", event.target.value)
-                    }
-                    className="surface-input"
-                  />
-                </label>
-              </div>
-
-              <label className="mt-3 flex flex-col gap-1 text-sm">
-                <span className="section-label">Improvement</span>
-                <textarea
-                  value={person.improvement}
-                  onChange={(event) =>
-                    updatePerson(index, "improvement", event.target.value)
-                  }
-                  className="surface-input min-h-28"
-                />
-              </label>
-
-              {form.people.length > 1 ? (
-                <button
-                  type="button"
-                  onClick={() =>
-                    setForm((current) => ({
-                      ...current,
-                      people: current.people.filter(
-                        (_, currentIndex) => currentIndex !== index,
-                      ),
-                    }))
-                  }
-                  className="surface-button-ghost mt-4"
-                >
-                  Remove
-                </button>
-              ) : null}
+        <div className="mt-6 space-y-3">
+          {notablePhraseEntries.length === 0 ? (
+            <div className="py-6 text-center text-sm text-[#667085]">
+              Add entries to start capturing notable phrasing.
             </div>
-          ))}
+          ) : (
+            notablePhraseEntries.map((entry) => (
+              <div key={entry.id} className="grid gap-2 sm:grid-cols-3 sm:items-center">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={entry.name}
+                  onChange={(event) =>
+                    updateNotablePhraseEntry(entry.id, "name", event.target.value)
+                  }
+                  className="sm:col-span-1 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                />
+                <div className="flex gap-3 items-center sm:col-span-2">
+                  <input
+                    type="text"
+                    placeholder="The quote or phrase"
+                    value={entry.phrase}
+                    onChange={(event) =>
+                      updateNotablePhraseEntry(entry.id, "phrase", event.target.value)
+                    }
+                    className="flex-1 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeNotablePhraseEntry(entry.id)}
+                    className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-[#667085] transition-colors hover:text-[#0A0A0A]"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
+
+        <button
+          type="button"
+          onClick={addNotablePhraseEntry}
+          className="mt-4 text-sm font-medium text-[#0A0A0A] transition-colors hover:text-[#475467]"
+        >
+          + Add entry
+        </button>
       </section>
 
-      <button
-        type="button"
-        onClick={handleSubmit}
-        disabled={submitted || isPending}
-        className="surface-button"
-      >
-        {submitted ? "Already submitted" : isPending ? "Submitting..." : "Submit report"}
-      </button>
+      {/* Improper Use Section */}
+      <section className="rounded-[2rem] border border-[#E7E7E7] px-5 py-5 sm:px-7 sm:py-6">
+        <h2 className="text-[1.15rem] font-semibold text-[#0A0A0A]">Improper Use</h2>
+        <p className="mt-1 text-sm text-[#667085]">Note misuse and suggest a correction.</p>
+
+        <div className="mt-6 space-y-3">
+          {improperUseEntries.length === 0 ? (
+            <div className="py-6 text-center text-sm text-[#667085]">
+              Add entries to start logging improper usage.
+            </div>
+          ) : (
+            improperUseEntries.map((entry) => (
+              <div key={entry.id} className="grid gap-2 sm:grid-cols-3 sm:items-center">
+                <input
+                  type="text"
+                  placeholder="Name"
+                  value={entry.name}
+                  onChange={(event) =>
+                    updateImproperUseEntry(entry.id, "name", event.target.value)
+                  }
+                className="sm:col-span-1 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                />
+                <input
+                  type="text"
+                  placeholder="What was said"
+                  value={entry.whatWasSaid}
+                  onChange={(event) =>
+                    updateImproperUseEntry(entry.id, "whatWasSaid", event.target.value)
+                  }
+                className="sm:col-span-1 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                />
+                <div className="flex gap-3 items-center sm:col-span-1">
+                  <input
+                    type="text"
+                    placeholder="Suggestion"
+                    value={entry.suggestion}
+                    onChange={(event) =>
+                      updateImproperUseEntry(entry.id, "suggestion", event.target.value)
+                    }
+                className="sm:col-span-1 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImproperUseEntry(entry.id)}
+                    className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-[#667085] transition-colors hover:text-[#0A0A0A]"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <button
+          type="button"
+          onClick={addImproperUseEntry}
+          className="mt-4 text-sm font-medium text-[#0A0A0A] transition-colors hover:text-[#475467]"
+        >
+          + Add entry
+        </button>
+      </section>
 
       {error ? <p className="text-sm text-[#B42318]">{error}</p> : null}
+
+      <div className="fixed inset-x-0 bottom-0 z-20 px-4 pb-4 sm:px-6 sm:pb-6">
+        <section className="mx-auto w-full max-w-5xl rounded-[1.75rem] border border-[#E7E7E7] bg-white/95 px-5 py-4 shadow-[0_-10px_30px_rgba(10,10,10,0.05)] backdrop-blur sm:px-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-[1rem] text-[#667085]">When ready, send to the host.</p>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={submitted || isPending}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-[1rem] font-semibold text-white transition-colors hover:bg-[#222222] disabled:opacity-50"
+            >
+              <Send className="h-4 w-4" />
+              {submitted ? "Report submitted" : isPending ? "Submitting..." : "Submit report"}
+            </button>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
