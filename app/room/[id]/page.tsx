@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import RoomRolePicker from "@/components/room-role-picker";
 import { ROOM_ROLES } from "@/lib/roles";
@@ -42,6 +43,13 @@ export default async function Page(props: PageProps<"/room/[id]">) {
             Pick an available role to join.
           </p>
         </div>
+
+        <Link
+          href={`/room/${id}/reports`}
+          className="rounded border border-white/20 px-3 py-2 text-center text-sm"
+        >
+          View reports
+        </Link>
 
         <RoomRolePicker
           code={id}

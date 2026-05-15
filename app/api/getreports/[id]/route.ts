@@ -1,0 +1,60 @@
+import { ROOM_ROLES, ROOM_ROLE_LABELS, type RoomRole } from "@/lib/roles";
+import { createClient } from "@/utils/supabase/server";
+
+type ReportPayload = {
+  roomCode: string;
+  role: RoomRole;
+  submittedBy: string;
+  submittedAt: string;
+  entries: Array<{
+    label: string;
+    value: string;
+  }>;
+};
+
+export async function GET(
+  _request: Request,
+  context: RouteContext<"/api/getreports/[id]">,
+) {
+  const { id } = await context.params;
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { data, error } = await supabase
+    .from("reports")
+    .select(`room_id, ${ROOM_ROLES.join(", ")}`)
+    .eq("room_id", id)
+    .maybeSingle();
+
+  if (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+
+  if (!data) {
+    return Response.json({ error: "Reports not found" }, { status: 404 });
+  }
+
+  const reports = ROOM_ROLES.map((role) => {
+    const submission = data[role] as ReportPayload | null;
+
+    return {
+      role,
+      label: ROOM_ROLE_LABELS[role],
+      submitted: Boolean(submission),
+      submission,
+    };
+  });
+
+  return Response.json({
+    roomId: data.room_id,
+    reports,
+  });
+}
