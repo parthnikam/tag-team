@@ -24,10 +24,14 @@ export interface GrammarianReportData {
 
 export interface AhCounterPerson {
   name: string;
-  uh: number;
+  ah: number;
   um: number;
+  er: number;
+  well: number;
   so: number;
-  uk: number;
+  like: number;
+  but: number;
+  repeats: number;
   other: number;
 }
 
@@ -53,9 +57,13 @@ export const createEmptyGrammarianPerson = (): GrammarianPerson => ({
 
 export const createEmptyAhCounterPerson = (): AhCounterPerson => ({
   name: "",
-  uh: 0,
+  ah: 0,
   um: 0,
+  er: 0,
+  well: 0,
   so: 0,
-  uk: 0,
+  like: 0,
+  but: 0,
+  repeats: 0,
   other: 0,
 });

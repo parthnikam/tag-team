@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import BackLink from "@/components/back-link";
 import { ROOM_ROLE_LABELS } from "@/lib/roles";
 import {
   createEmptyGrammarianPerson,
@@ -71,64 +72,66 @@ export default function GrammarianReportForm({
   };
 
   return (
-    <div className="flex w-full max-w-4xl flex-col gap-4 rounded border border-white/10 p-4">
-      <div className="flex items-start justify-between gap-4">
+    <div className="page-panel">
+      <BackLink href={`/room/${code}`} label="Back" />
+
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-xs text-white/60">Room {code}</p>
-          <h1 className="text-lg">{ROOM_ROLE_LABELS.grammarian}</h1>
-          <p className="mt-1 text-sm text-white/60">
+          <p className="page-kicker">Room {code}</p>
+          <h1 className="page-title mt-3">{ROOM_ROLE_LABELS.grammarian}</h1>
+          <p className="page-copy mt-3">
             Capture the word of the day, general notes, and feedback per speaker.
           </p>
         </div>
 
         <Link
           href={`/room/${code}/reports`}
-          className="rounded border border-white/20 px-3 py-2 text-sm"
+          className="surface-button-secondary"
         >
           View reports
         </Link>
       </div>
 
-      <section className="rounded border border-white/10 p-4">
-        <div className="grid gap-3 sm:grid-cols-2">
+      <section className="surface-card">
+        <div className="grid gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-1 text-sm">
-            <span className="text-white/60">Word of the day</span>
+            <span className="section-label">Word of the day</span>
             <input
               value={form.wod}
               onChange={(event) =>
                 setForm((current) => ({ ...current, wod: event.target.value }))
               }
-              className="rounded border border-white/20 bg-transparent px-3 py-2"
+              className="surface-input"
             />
           </label>
 
           <label className="flex flex-col gap-1 text-sm">
-            <span className="text-white/60">Meaning</span>
+            <span className="section-label">Meaning</span>
             <input
               value={form.meaning}
               onChange={(event) =>
                 setForm((current) => ({ ...current, meaning: event.target.value }))
               }
-              className="rounded border border-white/20 bg-transparent px-3 py-2"
+              className="surface-input"
             />
           </label>
         </div>
 
         <label className="mt-3 flex flex-col gap-1 text-sm">
-          <span className="text-white/60">General notes</span>
+          <span className="section-label">General notes</span>
           <textarea
             value={form.general}
             onChange={(event) =>
               setForm((current) => ({ ...current, general: event.target.value }))
             }
-            className="min-h-28 rounded border border-white/20 bg-transparent px-3 py-2"
+            className="surface-input min-h-32"
           />
         </label>
       </section>
 
-      <section className="rounded border border-white/10 p-4">
+      <section className="surface-card">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-base">People</h2>
+          <h2 className="text-lg font-semibold text-[#0A0A0A]">People</h2>
           <button
             type="button"
             onClick={() =>
@@ -137,45 +140,45 @@ export default function GrammarianReportForm({
                 people: [...current.people, createEmptyGrammarianPerson()],
               }))
             }
-            className="rounded border border-white/20 px-3 py-1 text-sm"
+            className="surface-button-secondary"
           >
             Add person
           </button>
         </div>
 
-        <div className="mt-4 flex flex-col gap-3">
+        <div className="mt-6 flex flex-col gap-4">
           {form.people.map((person, index) => (
-            <div key={index} className="rounded border border-white/10 p-3">
-              <div className="grid gap-3 sm:grid-cols-2">
+            <div key={index} className="rounded-3xl border border-[#EAEAEA] bg-[#FCFCFC] p-5">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <label className="flex flex-col gap-1 text-sm">
-                  <span className="text-white/60">Name</span>
+                  <span className="section-label">Name</span>
                   <input
                     value={person.name}
                     onChange={(event) => updatePerson(index, "name", event.target.value)}
-                    className="rounded border border-white/20 bg-transparent px-3 py-2"
+                    className="surface-input"
                   />
                 </label>
 
                 <label className="flex flex-col gap-1 text-sm">
-                  <span className="text-white/60">Highlights</span>
+                  <span className="section-label">Highlights</span>
                   <input
                     value={person.highlights}
                     onChange={(event) =>
                       updatePerson(index, "highlights", event.target.value)
                     }
-                    className="rounded border border-white/20 bg-transparent px-3 py-2"
+                    className="surface-input"
                   />
                 </label>
               </div>
 
               <label className="mt-3 flex flex-col gap-1 text-sm">
-                <span className="text-white/60">Improvement</span>
+                <span className="section-label">Improvement</span>
                 <textarea
                   value={person.improvement}
                   onChange={(event) =>
                     updatePerson(index, "improvement", event.target.value)
                   }
-                  className="min-h-24 rounded border border-white/20 bg-transparent px-3 py-2"
+                  className="surface-input min-h-28"
                 />
               </label>
 
@@ -190,7 +193,7 @@ export default function GrammarianReportForm({
                       ),
                     }))
                   }
-                  className="mt-3 text-sm text-red-300"
+                  className="surface-button-ghost mt-4"
                 >
                   Remove
                 </button>
@@ -204,12 +207,12 @@ export default function GrammarianReportForm({
         type="button"
         onClick={handleSubmit}
         disabled={submitted || isPending}
-        className="rounded border px-3 py-3 text-sm disabled:opacity-50"
+        className="surface-button"
       >
         {submitted ? "Already submitted" : isPending ? "Submitting..." : "Submit report"}
       </button>
 
-      {error ? <p className="text-sm text-red-300">{error}</p> : null}
+      {error ? <p className="text-sm text-[#B42318]">{error}</p> : null}
     </div>
   );
 }

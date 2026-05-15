@@ -1,20 +1,38 @@
+import { redirect } from "next/navigation";
 import AhCounterReportForm from "@/components/ahcounter-report-form";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Page(props: PageProps<"/room/[id]/ahcounter">) {
   const { id } = await props.params;
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("reports")
-    .select("ahcounter")
-    .eq("room_id", id)
-    .maybeSingle();
+
+  const [
+    {
+      data: { user },
+    },
+    reportsResult,
+    roomResult,
+  ] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.from("reports").select("ahcounter").eq("room_id", id).maybeSingle(),
+    supabase
+      .from("room")
+      .select("ahcounter, club_name, host_name")
+      .eq("code", id)
+      .maybeSingle(),
+  ]);
+
+  if (roomResult.error || !user || roomResult.data?.ahcounter !== user.id) {
+    redirect(`/room/${id}`);
+  }
 
   return (
-    <main className="flex min-h-screen justify-center p-4">
+    <main className="page-shell">
       <AhCounterReportForm
         code={id}
-        initialSubmitted={Boolean(data?.ahcounter)}
+        initialSubmitted={Boolean(reportsResult.data?.ahcounter)}
+        meetingName={roomResult.data.club_name ?? "Meeting"}
+        hostName={roomResult.data.host_name ?? ""}
       />
     </main>
   );

@@ -60,38 +60,38 @@ export default function RoomReportsView({ roomId }: { roomId: string }) {
   }, [roomId]);
 
   if (isLoading) {
-    return <p className="text-sm text-white/60">Loading reports...</p>;
+    return <p className="text-sm text-[#6B6B6B]">Loading reports...</p>;
   }
 
   if (error) {
-    return <p className="text-sm text-red-300">{error}</p>;
+    return <p className="text-sm text-[#B42318]">{error}</p>;
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {reports.map((report) => (
         <section
           key={report.role}
-          className="rounded border border-white/10 p-4"
+          className="surface-card"
         >
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-base">{report.label}</h2>
-            <span className="text-xs text-white/60">
+            <h2 className="text-lg font-semibold text-[#0A0A0A]">{report.label}</h2>
+            <span className="rounded-full border border-[#EAEAEA] px-3 py-1 text-xs font-medium text-[#6B6B6B]">
               {report.submitted ? "Submitted" : "Pending"}
             </span>
           </div>
 
           {report.submission ? (
             <div className="mt-3 flex flex-col gap-3">
-              <p className="text-xs text-white/60">
+              <p className="text-sm text-[#6B6B6B]">
                 Submitted at {new Date(report.submission.submittedAt).toLocaleString()}
               </p>
-              <pre className="overflow-x-auto rounded bg-white/5 p-3 text-xs text-white/80">
+              <pre className="overflow-x-auto rounded-3xl border border-[#EAEAEA] bg-[#FCFCFC] p-5 text-xs leading-6 text-[#333333]">
                 {JSON.stringify(report.submission, null, 2)}
               </pre>
             </div>
           ) : (
-            <p className="mt-3 text-sm text-white/60">No report submitted yet.</p>
+            <p className="mt-3 text-sm text-[#6B6B6B]">No report submitted yet.</p>
           )}
         </section>
       ))}

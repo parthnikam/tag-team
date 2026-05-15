@@ -1,20 +1,32 @@
+import { redirect } from "next/navigation";
 import GrammarianReportForm from "@/components/grammarian-report-form";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Page(props: PageProps<"/room/[id]/grammarian">) {
   const { id } = await props.params;
   const supabase = await createClient();
-  const { data } = await supabase
-    .from("reports")
-    .select("grammarian")
-    .eq("room_id", id)
-    .maybeSingle();
+
+  const [
+    {
+      data: { user },
+    },
+    reportsResult,
+    roomResult,
+  ] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.from("reports").select("grammarian").eq("room_id", id).maybeSingle(),
+    supabase.from("room").select("grammarian").eq("code", id).maybeSingle(),
+  ]);
+
+  if (roomResult.error || !user || roomResult.data?.grammarian !== user.id) {
+    redirect(`/room/${id}`);
+  }
 
   return (
-    <main className="flex min-h-screen justify-center p-4">
+    <main className="page-shell">
       <GrammarianReportForm
         code={id}
-        initialSubmitted={Boolean(data?.grammarian)}
+        initialSubmitted={Boolean(reportsResult.data?.grammarian)}
       />
     </main>
   );

@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
-import { Work_Sans } from "next/font/google";
+import { Geist, Inter } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/app/providers";
 import { createClient } from "@/utils/supabase/server";
 
-
-const workSans = Work_Sans({
-  variable: "--font-work-sans",
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
-  weight: ["300","400","500","600","700"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {title: "TAG Team",description: "Collaborative TAG Team Reports for Toastmasters Meetings.",};
@@ -21,9 +25,9 @@ export default async function RootLayout({children,}: Readonly<{children: React.
   return (
     <html
       lang="en"
-      className={`${workSans.variable} h-full antialiased`}
+      className={`${geist.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="dark min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col bg-white text-[#0A0A0A]">
         <AuthProvider initialUser={user}>
           {children}
         </AuthProvider>

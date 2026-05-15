@@ -1,92 +1,45 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "../providers";
 
 export default function Page() {
-  const router = useRouter();
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
-  const [isPending, startTransition] = useTransition();
   const { signOut } = useAuth();
 
-  const handleCreateRoom = async () => {
-    setError("");
-
-    try {
-      const response = await fetch("/api/createroom", {
-        method: "POST",
-      });
-      const data = await response.json();
-      const roomCode = data?.room?.code;
-
-      if (!response.ok || !roomCode) {
-        setError(data.error ?? "Could not create room.");
-        return;
-      }
-
-      router.push(`/room/${roomCode}`);
-    } catch (err) {
-      console.error(err);
-      setError("Could not create room.");
-    }
-  };
-
-  const handleJoinRoom = () => {
-    const trimmedCode = code.trim();
-
-    if (!trimmedCode) {
-      return;
-    }
-
-    startTransition(() => {
-      router.push(`/room/${trimmedCode}`);
-    });
-  };
-
   return (
-    <main className="flex min-h-screen items-center justify-center p-4">
-      <div className="flex w-full max-w-sm flex-col gap-4 rounded border border-white/10 p-4">
-        <div>
-          <h1 className="text-lg">Host or join a room</h1>
-          <p className="text-sm text-white/60">Create a room or enter a code.</p>
+    <main className="min-h-screen bg-white px-5 py-8 sm:px-8">
+      <div className="mx-auto flex min-h-[72vh] max-w-4xl flex-col items-center justify-center text-center">
+        <h1 className="max-w-4xl text-[3.4rem] font-semibold leading-[0.95] tracking-[-0.07em] text-[#0A0A0A] sm:text-[4.9rem]">
+          Run Toastmasters meetings smoothly.
+        </h1>
+
+        <p className="mt-5 max-w-xl text-[1rem] leading-7 text-[#667085] sm:text-[1.1rem]">
+          Minimal tools for Timer, Ah Counter, and Grammarian teams.
+        </p>
+
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/room/create"
+            className="inline-flex items-center justify-center rounded-full bg-[#0A0A0A] px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-[#222222]"
+          >
+            Create meeting
+          </Link>
+
+          <Link
+            href="/room/join"
+            className="inline-flex items-center justify-center rounded-full border border-[#E5E5E5] px-8 py-3 text-base font-medium text-[#0A0A0A] transition-colors hover:bg-[#F7F7F7]"
+          >
+            Join as TAG
+          </Link>
         </div>
 
         <button
           type="button"
-          onClick={handleCreateRoom}
-          className="rounded border p-2 text-left text-sm"
-        >
-          Create room
-        </button>
-
-        <input
-          value={code}
-          onChange={(event) => setCode(event.target.value)}
-          placeholder="Room code"
-          className="rounded border border-white/20 bg-transparent p-2 text-sm outline-none"
-        />
-
-        <button
-          type="button"
-          onClick={handleJoinRoom}
-          disabled={!code.trim() || isPending}
-          className="rounded border p-2 text-left text-sm disabled:opacity-50"
-        >
-          Join room
-        </button>
-
-        {error ? <p className="text-sm text-red-300">{error}</p> : null}
-
-        <button
-          type="button"
           onClick={signOut}
-          className="rounded border p-2 text-left text-sm"
+          className="mt-6 text-sm font-medium text-[#667085] transition-colors hover:text-[#0A0A0A]"
         >
-          signout
+          Sign out
         </button>
-
       </div>
     </main>
   );

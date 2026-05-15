@@ -11,7 +11,11 @@ export async function POST(req: Request) {
     error: authError,
   } = await supabase.auth.getUser();
 
-  const { code, role } = (await req.json()) as { code?: string; role?: string };
+  const { code, role, name } = (await req.json()) as {
+    code?: string;
+    role?: string;
+    name?: string;
+  };
 
   if (authError || !user) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
@@ -47,11 +51,11 @@ export async function POST(req: Request) {
   }
   
   const namecol = typedRole + "_name";
-  const name = user.user_metadata.full_name;
+  const participantName = name?.trim() || user.user_metadata.full_name || "Anonymous";
 
   const { data, error } = await supabase
     .from("room")
-    .update({ [typedRole]: user.id, [namecol]: name})
+    .update({ [typedRole]: user.id, [namecol]: participantName})
     .eq("code", code)
     .select()
     .single();

@@ -1,23 +1,24 @@
 "use server";
 
+import { ROOM_ROLES, type RoomRole } from "@/lib/roles";
 import { createClient } from "@/utils/supabase/server";
 
-const generateCode = async (supabase: any) => {
+type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
+
+const generateCode = async (supabase: SupabaseClient) => {
   while (true) {
-    // generates number between 100000 and 999999
     const code = Math.floor(100000 + Math.random() * 900000).toString();
 
     const { data, error } = await supabase
       .from("room")
       .select("code")
       .eq("code", code)
-      .maybeSingle(); 
+      .maybeSingle();
 
     if (error) {
       throw error;
     }
 
-    // if no room exists with this code
     if (!data) {
       return code;
     }
@@ -37,37 +38,72 @@ export async function POST(req: Request) {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const code = await generateCode(supabase);
-    console.log(`created room ${code} for user ${user.id}\n`);
+    const body = (await req.json()) as {
+      hostName?: string;
+      clubName?: string;
+      meetingNumber?: string;
+      joinAs?: "host" | RoomRole;
+    };
 
-    const { data, error } = await supabase
+    const hostName = body.hostName?.trim();
+    const clubName = body.clubName?.trim() || "Toastmasters meeting";
+    const meetingNumberInput = body.meetingNumber?.trim();
+    const joinAs = body.joinAs;
+
+    if (!hostName) {
+      return Response.json({ error: "Missing meeting details." }, { status: 400 });
+    }
+
+    if (joinAs && joinAs !== "host" && !ROOM_ROLES.includes(joinAs)) {
+      return Response.json({ error: "Invalid meeting role." }, { status: 400 });
+    }
+
+    const meetingNumber = meetingNumberInput ? Number(meetingNumberInput) : 1;
+
+    if (!Number.isInteger(meetingNumber) || meetingNumber <= 0) {
+      return Response.json(
+        { error: "Meeting number must be a positive whole number." },
+        { status: 400 },
+      );
+    }
+
+    const code = await generateCode(supabase);
+
+    const roomInsert: Record<string, string | number> = {
+      code,
+      creator: user.id,
+      host_name: hostName,
+      club_name: clubName,
+      meeting_number: meetingNumber,
+    };
+
+    if (joinAs && joinAs !== "host") {
+      roomInsert[joinAs] = user.id;
+      roomInsert[`${joinAs}_name`] = hostName;
+    }
+
+    const { data: room, error: roomError } = await supabase
       .from("room")
-      .insert([{ code: code, creator: user.id }])
+      .insert([roomInsert])
       .select()
       .single();
 
-    if (error) {
-      return Response.json({ error: error.message }, { status: 500 });
+    if (roomError) {
+      return Response.json({ error: roomError.message }, { status: 500 });
     }
-    
-    const { data: reportData, error: reportError } = await supabase
-    .from("reports")
-    .insert([{room_id: code,},])
-    .select()
-    .single();
-    
+
+    const { error: reportError } = await supabase
+      .from("reports")
+      .insert([{ room_id: code }]);
+
     if (reportError) {
-      return Response.json(
-        { error: reportError.message },
-        { status: 500 }
-      );
+      return Response.json({ error: reportError.message }, { status: 500 });
     }
-  
 
     return Response.json({
-      room: data,
+      room,
     });
-  } catch (err) {
+  } catch {
     return Response.json({ error: "Server error" }, { status: 500 });
   }
 }
