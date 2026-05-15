@@ -11,7 +11,7 @@ const generateCode = async (supabase: any) => {
       .from("room")
       .select("code")
       .eq("code", code)
-      .maybeSingle();
+      .maybeSingle(); 
 
     if (error) {
       throw error;
@@ -49,6 +49,20 @@ export async function POST(req: Request) {
     if (error) {
       return Response.json({ error: error.message }, { status: 500 });
     }
+    
+    const { data: reportData, error: reportError } = await supabase
+    .from("reports")
+    .insert([{room_id: code,},])
+    .select()
+    .single();
+    
+    if (reportError) {
+      return Response.json(
+        { error: reportError.message },
+        { status: 500 }
+      );
+    }
+  
 
     return Response.json({
       room: data,

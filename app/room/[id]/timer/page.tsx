@@ -1,12 +1,18 @@
+import RoleSubmitCard from "@/components/role-submit-card";
+import { createClient } from "@/utils/supabase/server";
+
 export default async function Page(props: PageProps<"/room/[id]/timer">) {
   const { id } = await props.params;
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("reports")
+    .select("timer")
+    .eq("room_id", id)
+    .maybeSingle();
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded border border-white/10 p-4">
-        <p className="text-xs text-white/60">Room {id}</p>
-        <h1 className="text-lg">Timer</h1>
-      </div>
+      <RoleSubmitCard code={id} role="timer" initialSubmitted={Boolean(data?.timer)} />
     </main>
   );
 }
