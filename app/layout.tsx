@@ -16,7 +16,35 @@ const inter = Inter({
   weight: ["400", "500", "600"],
 });
 
-export const metadata: Metadata = {title: "TAG Team",description: "Collaborative TAG Team Reports for Toastmasters Meetings.",};
+export const metadata: Metadata = {
+  title: "Toastmasters TAG Team App",
+  description: "Collaborative Timer, Ah-Counter, and Grammarian (TAG) Team Reports for Toastmasters Meetings.",
+  keywords: ["Toastmasters", "TAG Team", "Timer", "Ah-Counter", "Grammarian", "Meeting Reports"],
+  authors: [{ name: "Toastmasters TAG Team" }],
+  openGraph: {
+    title: "Toastmasters TAG Team App",
+    description: "Collaborative Timer, Ah-Counter, and Grammarian (TAG) Team Reports for Toastmasters Meetings.",
+    siteName: "TAG Team App",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Toastmasters TAG Team App",
+    description: "Collaborative Timer, Ah-Counter, and Grammarian (TAG) Team Reports for Toastmasters Meetings.",
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  manifest: "/site.webmanifest",
+};
 
 
 export default async function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
