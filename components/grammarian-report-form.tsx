@@ -272,7 +272,7 @@ export default function GrammarianReportForm({
                   onChange={(event) =>
                     updateNotablePhraseEntry(entry.id, "name", event.target.value)
                   }
-                  className="sm:col-span-1 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                  className="sm:col-span-1 w-full min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
                 />
                 <div className="flex gap-3 items-center sm:col-span-2">
                   <input
@@ -282,7 +282,7 @@ export default function GrammarianReportForm({
                     onChange={(event) =>
                       updateNotablePhraseEntry(entry.id, "phrase", event.target.value)
                     }
-                    className="flex-1 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                    className="flex-1 min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
                   />
                   <button
                     type="button"
@@ -326,7 +326,7 @@ export default function GrammarianReportForm({
                   onChange={(event) =>
                     updateImproperUseEntry(entry.id, "name", event.target.value)
                   }
-                className="sm:col-span-1 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                className="sm:col-span-1 w-full min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
                 />
                 <input
                   type="text"
@@ -335,7 +335,7 @@ export default function GrammarianReportForm({
                   onChange={(event) =>
                     updateImproperUseEntry(entry.id, "whatWasSaid", event.target.value)
                   }
-                className="sm:col-span-1 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                className="sm:col-span-1 w-full min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
                 />
                 <div className="flex gap-3 items-center sm:col-span-1">
                   <input
@@ -345,7 +345,7 @@ export default function GrammarianReportForm({
                     onChange={(event) =>
                       updateImproperUseEntry(entry.id, "suggestion", event.target.value)
                     }
-                className="sm:col-span-1 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                className="flex-1 min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
                   />
                   <button
                     type="button"
