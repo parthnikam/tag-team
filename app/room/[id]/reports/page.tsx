@@ -1,33 +1,30 @@
-import Link from "next/link";
 import BackLink from "@/components/back-link";
 import RoomReportsView from "@/components/room-reports-view";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function Page(props: PageProps<"/room/[id]/reports">) {
   const { id } = await props.params;
+  const supabase = await createClient();
+
+  const { data: room } = await supabase
+    .from("room")
+    .select("club_name, host_name")
+    .eq("code", id)
+    .maybeSingle();
+
+  const meetingName = room?.club_name || id;
+  const hostName = room?.host_name || "";
 
   return (
-    <main className="page-shell">
-      <div className="page-panel max-w-4xl">
+    <main className="min-h-screen bg-white px-5 py-7 sm:px-6 sm:py-9">
+      <div className="mx-auto max-w-4xl">
         <BackLink href={`/room/${id}`} label="Back" />
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <p className="page-kicker">Room</p>
-            <h1 className="page-title mt-3">{id} reports</h1>
-            <p className="page-copy mt-3">
-              Submitted data for each room role appears here.
-            </p>
-          </div>
-
-          <Link
-            href={`/room/${id}`}
-            className="surface-button-secondary"
-          >
-            Back to room
-          </Link>
-        </div>
-
-        <RoomReportsView roomId={id} />
+        <RoomReportsView 
+          roomCode={id} 
+          meetingName={meetingName}
+          hostName={hostName}
+        />
       </div>
     </main>
   );

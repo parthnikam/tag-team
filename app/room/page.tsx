@@ -1,11 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "../providers";
 
 export default function Page() {
-  const { signOut } = useAuth();
-
   return (
     <main className="min-h-screen bg-white px-5 py-8 sm:px-8">
       <div className="mx-auto flex min-h-[72vh] max-w-4xl flex-col items-center justify-center text-center">
@@ -32,14 +29,6 @@ export default function Page() {
             Join as TAG
           </Link>
         </div>
-
-        <button
-          type="button"
-          onClick={signOut}
-          className="mt-6 text-sm font-medium text-[#667085] transition-colors hover:text-[#0A0A0A]"
-        >
-          Sign out
-        </button>
       </div>
     </main>
   );

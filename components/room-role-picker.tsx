@@ -31,11 +31,13 @@ const ROLE_META: Record<
 export default function RoomRolePicker({
   code,
   occupiedRoles,
+  roleAssignments,
   currentUserId,
   currentUserName,
 }: {
   code: string;
   occupiedRoles: OccupiedRoles;
+  roleAssignments: OccupiedRoles;
   currentUserId: string | null;
   currentUserName: string;
 }) {
@@ -96,7 +98,8 @@ export default function RoomRolePicker({
       <div className="flex flex-col gap-2.5">
         {ROOM_ROLES.map((role) => {
         const occupant = occupiedRoles[role] ?? null;
-        const isTakenBySomeoneElse = Boolean(occupant && occupant !== currentUserId);
+        const assignedUserId = roleAssignments[role] ?? null;
+        const isTakenBySomeoneElse = Boolean(assignedUserId && assignedUserId !== currentUserId);
         const meta = ROLE_META[role];
         const Icon = meta.icon;
 
@@ -121,8 +124,8 @@ export default function RoomRolePicker({
               </div>
               <div className="mt-0.5 text-sm text-[#667085]">
                 {isTakenBySomeoneElse
-                  ? "This role is already occupied"
-                  : occupant === currentUserId
+                  ? `This role is already taken by ${occupant}`
+                  : assignedUserId === currentUserId
                     ? "Open your live role view"
                     : meta.description}
               </div>

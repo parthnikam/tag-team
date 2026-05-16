@@ -27,8 +27,8 @@ export async function GET(
 
   const { data, error } = await supabase
     .from("reports")
-    .select(`room_id, ${ROOM_ROLES.join(", ")}`)
-    .eq("room_id", id)
+    .select(`roomCode, ${ROOM_ROLES.join(", ")}`)
+    .eq("roomCode", id)
     .maybeSingle();
 
   if (error) {
@@ -39,8 +39,10 @@ export async function GET(
     return Response.json({ error: "Reports not found" }, { status: 404 });
   }
 
-  const reports = ROOM_ROLES.map((role) => {
-    const submission = data[role] as ReportPayload | null;
+  const typedData = data as unknown as { roomCode: string } & Record<RoomRole, ReportPayload | null>;
+
+  const reports = ROOM_ROLES.map((role: RoomRole) => {
+    const submission = typedData[role];
 
     return {
       role,
@@ -51,7 +53,7 @@ export async function GET(
   });
 
   return Response.json({
-    roomId: data.room_id,
+    roomCode: typedData.roomCode,
     reports,
   });
 }

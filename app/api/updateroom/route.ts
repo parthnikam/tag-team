@@ -1,6 +1,5 @@
 "use server";
 
-import RoomRolePicker from "@/components/room-role-picker";
 import { ROOM_ROLES, type RoomRole } from "@/lib/roles";
 import { createClient } from "@/utils/supabase/server";
 
@@ -12,25 +11,26 @@ export async function POST(req: Request) {
     error: authError,
   } = await supabase.auth.getUser();
 
-  const { code, role, name } = (await req.json()) as {
+  const { code, role, updates } = (await req.json()) as {
     code?: string;
     role?: string;
-    name?: string;
+    updates?: Record<string, string | null>;
   };
 
   if (authError || !user) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  if (!code || !role || !ROOM_ROLES.includes(role as RoomRole)) {
-    return Response.json({ error: "Invalid role" }, { status: 400 });
+  if (!code || !role || !ROOM_ROLES.includes(role as RoomRole) || !updates) {
+    return Response.json({ error: "Invalid request" }, { status: 400 });
   }
 
   const typedRole = role as RoomRole;
 
+  // Verify that the user is assigned to this role
   const { data: room, error: roomError } = await supabase
     .from("room")
-    .select(`code, ${ROOM_ROLES.join(", ")}`)
+    .select(typedRole)
     .eq("code", code)
     .maybeSingle();
 
@@ -42,21 +42,16 @@ export async function POST(req: Request) {
     return Response.json({ error: "Room not found" }, { status: 404 });
   }
 
-  const occupant = (room as unknown as Record<RoomRole, string | null>)[typedRole];
-
-  if (occupant && occupant !== user.id) {
+  if ((room as unknown as Record<RoomRole, string | null>)[typedRole] !== user.id) {
     return Response.json(
-      { error: "That role is already occupied" },
-      { status: 409 }
+      { error: "You are not assigned to this role" },
+      { status: 403 }
     );
   }
-  
-  const namecol = typedRole + "_name";
-  const participantName = name?.trim() || user.user_metadata.full_name || "Anonymous";
 
   const { data, error } = await supabase
     .from("room")
-    .update({ [typedRole]: user.id, [namecol]: participantName})
+    .update(updates)
     .eq("code", code)
     .select()
     .single();
@@ -65,7 +60,5 @@ export async function POST(req: Request) {
     return Response.json({ error: error.message }, { status: 500 });
   }
 
-  return Response.json({
-    room: data,
-  });
+  return Response.json({ room: data });
 }

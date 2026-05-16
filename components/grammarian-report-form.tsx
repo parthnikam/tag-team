@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Link from "next/link";
 import BackLink from "@/components/back-link";
 import { Send, Trash2 } from "lucide-react";
 import { ROOM_ROLE_LABELS } from "@/lib/roles";
@@ -32,6 +31,8 @@ export default function GrammarianReportForm({
 }) {
   const [submitted, setSubmitted] = useState(initialSubmitted);
   const [error, setError] = useState("");
+  const [modalError, setModalError] = useState("");
+  const [showWodModal, setShowWodModal] = useState(!initialSubmitted);
   const [isPending, startTransition] = useTransition();
   const [wod, setWod] = useState("");
   const [meaning, setMeaning] = useState("");
@@ -84,6 +85,41 @@ export default function GrammarianReportForm({
     setNotablePhraseEntries(notablePhraseEntries.filter((entry) => entry.id !== id));
   };
 
+  const handleSetWod = () => {
+    if (!wod.trim() || !meaning.trim()) {
+      setModalError("Please enter both a word of the day and its meaning.");
+      return;
+    }
+
+    setModalError("");
+
+    startTransition(async () => {
+      const response = await fetch("/api/updateroom", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          code,
+          role: "grammarian",
+          updates: {
+            wod: wod.trim(),
+            meaning: meaning.trim(),
+          },
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setModalError(data.error ?? "Could not save word of the day.");
+        return;
+      }
+
+      setShowWodModal(false);
+    });
+  };
+
   const handleSubmit = () => {
     if (submitted) {
       return;
@@ -122,6 +158,61 @@ export default function GrammarianReportForm({
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 pb-32">
+      {showWodModal ? (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 px-4 py-8">
+          <div className="w-full max-w-2xl rounded-[2rem] bg-white p-6 shadow-[0_20px_80px_rgba(10,10,10,0.16)]">
+            <div className="flex flex-col gap-4">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+                  Word of the day
+                </p>
+                <h2 className="mt-2 text-2xl font-semibold text-[#0A0A0A]">
+                  Set the word of the day
+                </h2>
+              </div>
+
+              <div className="grid gap-4">
+                <label className="text-sm font-medium text-[#0A0A0A]">
+                  Word of the day
+                  <input
+                    type="text"
+                    value={wod}
+                    onChange={(event) => setWod(event.target.value)}
+                    className="mt-2 w-full rounded-full border border-[#E7E7E7] bg-white px-5 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#94A3B8] focus:border-[#0A0A0A]"
+                    placeholder="Enter the word of the day"
+                  />
+                </label>
+
+                <label className="text-sm font-medium text-[#0A0A0A]">
+                  Meaning
+                  <textarea
+                    value={meaning}
+                    onChange={(event) => setMeaning(event.target.value)}
+                    rows={3}
+                    className="mt-2 w-full rounded-[1rem] border border-[#E7E7E7] bg-white px-5 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#94A3B8] focus:border-[#0A0A0A]"
+                    placeholder="Enter the meaning of the word"
+                  />
+                </label>
+
+                {modalError ? (
+                  <p className="text-sm text-[#B42318]">{modalError}</p>
+                ) : null}
+
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleSetWod}
+                    className="inline-flex items-center justify-center rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#222222]"
+                  >
+                    Set word of the day
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       <div className="flex items-center justify-between gap-4 border-b border-[#ECECEC] pb-4">
         <BackLink href={`/room/${code}`} label="Lobby" />
         <p className="hidden text-xs font-medium uppercase tracking-[0.28em] text-[#667085] sm:block">
@@ -150,10 +241,9 @@ export default function GrammarianReportForm({
         <div className="flex items-end justify-between gap-4">
           <div>
             <h2 className="text-[1.85rem] font-semibold text-[#0A0A0A]">
-              word of the day is
+            {wod || "nothing"}
             </h2>
-            <p className="mt-2 text-sm text-[#667085]">{wod || "nothing"}</p>
-            {meaning && <p className="mt-1 text-sm text-[#667085]">{meaning}</p>}
+            <p className="mt-2 text-sm text-[#667085]">{meaning || "it means to do be in a state of nothingness"}</p>
           </div>
         </div>
       </section>

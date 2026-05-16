@@ -14,7 +14,7 @@ export default async function Page(props: PageProps<"/room/[id]/timer">) {
     roomResult,
   ] = await Promise.all([
     supabase.auth.getUser(),
-    supabase.from("reports").select("timer").eq("room_id", id).maybeSingle(),
+    supabase.from("reports").select("timer").eq("roomCode", id).maybeSingle(),
     supabase
       .from("room")
       .select("timer, club_name, host_name")

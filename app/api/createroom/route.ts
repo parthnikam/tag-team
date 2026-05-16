@@ -94,7 +94,7 @@ export async function POST(req: Request) {
 
     const { error: reportError } = await supabase
       .from("reports")
-      .insert([{ room_id: code }]);
+      .insert([{ roomCode: code }]);
 
     if (reportError) {
       return Response.json({ error: reportError.message }, { status: 500 });

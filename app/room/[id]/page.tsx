@@ -15,7 +15,8 @@ export default async function Page(props: PageProps<"/room/[id]">) {
     supabase.auth.getUser(),
     supabase
       .from("room")
-      .select(`code, host_name, club_name, meeting_number, ${ROOM_ROLES.join(", ")}`)
+      .select("*")
+      // .select(`code, host_name, club_name, meeting_number, ${ROOM_ROLES.join(", ")}`)
       .eq("code", id)
       .maybeSingle(),
   ]);
@@ -27,8 +28,16 @@ export default async function Page(props: PageProps<"/room/[id]">) {
   if (!roomResult.data) {
     notFound();
   }
-
+  console.log(roomResult?.data);
   const occupiedRoles = ROOM_ROLES.reduce(
+    (result, role) => {
+      result[role] = roomResult.data?.[role+"_name"] ?? null;
+      return result;
+    },
+    {} as Record<(typeof ROOM_ROLES)[number], string | null>,
+  );
+
+  const roleAssignments = ROOM_ROLES.reduce(
     (result, role) => {
       result[role] = roomResult.data?.[role] ?? null;
       return result;
@@ -75,6 +84,7 @@ export default async function Page(props: PageProps<"/room/[id]">) {
           <RoomRolePicker
             code={id}
             occupiedRoles={occupiedRoles}
+            roleAssignments={roleAssignments}
             currentUserId={user?.id ?? null}
             currentUserName={user?.user_metadata?.full_name ?? ""}
           />

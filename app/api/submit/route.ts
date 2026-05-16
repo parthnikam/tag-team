@@ -51,8 +51,8 @@ export async function POST(req: Request) {
 
   const { data: existingRow, error: existingError } = await supabase
     .from("reports")
-    .select(`room_id, ${typedRole}`)
-    .eq("room_id", code)
+    .select(`roomCode, ${typedRole}`)
+    .eq("roomCode", code)
     .maybeSingle();
 
   if (existingError) {
@@ -70,8 +70,8 @@ export async function POST(req: Request) {
 
   const { data: submission, error: upsertError } = await supabase
     .from("reports")
-    .upsert({ room_id: code, [typedRole]: payload }, { onConflict: "room_id" })
-    .select(`room_id, ${typedRole}`)
+    .upsert({ roomCode: code, [typedRole]: payload }, { onConflict: "roomCode" })
+    .select(`roomCode, ${typedRole}`)
     .single();
 
   if (upsertError) {
