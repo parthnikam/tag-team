@@ -4,6 +4,8 @@ import "./globals.css";
 import AuthProvider from "@/app/providers";
 import { createClient } from "@/utils/supabase/server";
 import NavAvatar from "@/components/nav-avatar";
+import { Analytics } from "@vercel/analytics/next"
+
 
 const geist = Geist({
   variable: "--font-geist",
@@ -57,6 +59,7 @@ export default async function RootLayout({children,}: Readonly<{children: React.
       className={`${geist.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-[#0A0A0A]">
+        <Analytics />
         <AuthProvider initialUser={user}>
           <NavAvatar user={user} />
           {children}
