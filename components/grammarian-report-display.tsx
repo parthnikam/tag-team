@@ -62,7 +62,7 @@ export default function GrammarianReportDisplay({
                   <tr
                     key={entry.id || index}
                     className={`${
-                      index !== data.improperUseEntries.length - 1
+                      index !== data.improperUseEntries!.length - 1
                         ? "border-b border-[#EAEAEA]"
                         : ""
                     }`}
@@ -105,7 +105,7 @@ export default function GrammarianReportDisplay({
                   <tr
                     key={entry.id || index}
                     className={`${
-                      index !== data.notablePhraseEntries.length - 1
+                      index !== data.notablePhraseEntries!.length - 1
                         ? "border-b border-[#EAEAEA]"
                         : ""
                     }`}
