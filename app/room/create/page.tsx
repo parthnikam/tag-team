@@ -56,11 +56,11 @@ export default function Page() {
   };
 
   return (
-    <main className="min-h-screen bg-white px-5 py-7 sm:px-8 sm:py-9">
-      <div className="mx-auto max-w-[35rem]">
+    <main className="page-shell">
+      <div className="mx-auto max-w-2xl">
         <BackLink href="/room" label="Back" />
 
-        <section className="mt-5 rounded-[2rem] border border-[#E7E7E7] bg-white px-5 py-6 sm:px-8 sm:py-8">
+        <section className="mt-4 rounded-[2rem] border border-[#E7E7E7] bg-white p-4 sm:p-6">
           <h1 className="text-[2.45rem] font-semibold tracking-[-0.06em] text-[#0A0A0A]">
             Create Meeting
           </h1>
@@ -117,7 +117,7 @@ export default function Page() {
                   onClick={() => setJoinAs(option)}
                   className={`rounded-[1.7rem] border px-5 py-4 text-left transition-colors ${
                     isSelected
-                      ? "border-[#0A0A0A] bg-white text-[#0A0A0A]"
+                      ? "border-[#0A0A0A] text-[#0A0A0A] bg-[#F7F7F7]"
                       : "border-[#E7E7E7] bg-white text-[#0A0A0A] hover:bg-[#F7F7F7]"
                   }`}
                 >

@@ -90,9 +90,6 @@ export default function RoomRolePicker({
         <h2 className="text-[1.65rem] font-semibold tracking-[-0.04em] text-[#0A0A0A]">
           Choose your TAG role
         </h2>
-        <p className="mt-1 text-sm text-[#667085]">
-          One person per role. Updates live.
-        </p>
       </div>
 
       <div className="flex flex-col gap-2.5">

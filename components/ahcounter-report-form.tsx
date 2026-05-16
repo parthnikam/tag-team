@@ -143,7 +143,7 @@ export default function AhCounterReportForm({
     selectedIndex === null ? null : (form.people[selectedIndex] ?? null);
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 pb-32">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 pb-32">
       <div className="flex items-center justify-between gap-4 border-b border-[#ECECEC] pb-4">
         <BackLink href={`/room/${code}`} label="Lobby" />
         <p className="hidden text-xs font-medium uppercase tracking-[0.28em] text-[#667085] sm:block">
@@ -164,7 +164,7 @@ export default function AhCounterReportForm({
         </p>
       </div>
 
-      <section className="rounded-[2rem] border border-[#E7E7E7] px-5 py-5 sm:px-7 sm:py-6">
+      <section className="rounded-[2rem] border border-[#E7E7E7] p-4 sm:p-5">
         <h2 className="text-[1.15rem] font-semibold text-[#0A0A0A]">Participants</h2>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -208,7 +208,7 @@ export default function AhCounterReportForm({
         </div>
       </section>
 
-      <section className="rounded-[2rem] border border-[#E7E7E7] px-5 py-5 sm:px-7 sm:py-7">
+      <section className="rounded-[2rem] border border-[#E7E7E7] p-4 sm:p-5">
         <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
           Counting
         </p>
@@ -225,7 +225,7 @@ export default function AhCounterReportForm({
                   adjustCount(selectedIndex, field.key, 1);
                 }
               }}
-              className={`rounded-[1.8rem] border border-[#E7E7E7] px-5 py-7 text-center transition-colors ${
+              className={`rounded-[1.8rem] border border-[#E7E7E7] px-5 py-4 text-center transition-colors ${
                 selectedIndex === null ? "opacity-50" : "hover:bg-[#F8F8F8]"
               }`}
               role="button"
@@ -240,7 +240,7 @@ export default function AhCounterReportForm({
               <div className="text-sm font-medium uppercase tracking-[0.26em] text-[#475467]">
                 {field.label}
               </div>
-              <div className="mt-3 select-none text-[2.9rem] font-semibold tracking-[-0.06em] text-[#0A0A0A]">
+              <div className="elect-none text-[2.9rem] font-semibold tracking-[-0.06em] text-[#0A0A0A]">
                 {selectedPerson?.[field.key] ?? 0}
               </div>
               <button
@@ -251,7 +251,7 @@ export default function AhCounterReportForm({
                     adjustCount(selectedIndex, field.key, -1);
                   }
                 }}
-                className="mt-2 text-[1rem] text-[#667085] transition-colors hover:text-[#0A0A0A]"
+                className="text-[1rem] text-[#667085] transition-colors hover:text-[#0A0A0A]"
               >
                 -1
               </button>
@@ -260,7 +260,7 @@ export default function AhCounterReportForm({
         </div>
       </section>
 
-      <section className="rounded-[2rem] border border-[#E7E7E7] px-5 py-5 sm:px-7 sm:py-6">
+      <section className="rounded-[2rem] border border-[#E7E7E7] p-4 sm:p-5">
         <h2 className="text-[1.15rem] font-semibold text-[#0A0A0A]">Live report</h2>
 
         <div className="mt-4 overflow-x-auto rounded-[1.75rem] border border-[#E7E7E7]">
@@ -268,44 +268,44 @@ export default function AhCounterReportForm({
             <table className="min-w-full border-collapse">
             <thead className="bg-[#F7F7F7]">
               <tr>
-                <th className="px-5 py-4 text-left text-sm font-medium uppercase tracking-[0.22em] text-[#475467]">
+                <th className="px-5 py-2 text-left text-sm font-medium uppercase tracking-[0.22em] text-[#475467]">
                   Name
                 </th>
                 {COUNT_FIELDS.map((field) => (
                   <th
                     key={field.key}
-                    className="px-4 py-4 text-center text-sm font-medium uppercase tracking-[0.22em] text-[#475467]"
+                    className="px-4 py-2 text-center text-sm font-medium uppercase tracking-[0.22em] text-[#475467]"
                   >
                     {field.label}
                   </th>
                 ))}
-                <th className="px-4 py-4" />
+                <th className="px-4 py-2" />
               </tr>
             </thead>
 
             <tbody>
               {form.people.map((person, index) => (
                 <tr key={`${person.name}-${index}`} className="border-t border-[#ECECEC]">
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-1.5">
                     <input
                       value={person.name}
                       onChange={(event) => updatePerson(index, "name", event.target.value)}
                       onFocus={() => setSelectedIndex(index)}
-                      className="w-full min-w-44 rounded-full border border-[#E7E7E7] px-4 py-2.5 text-[1rem] text-[#0A0A0A] outline-none transition-colors hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                      className="w-full min-w-44 rounded-full border border-[#E7E7E7] px-4 py-1.5 text-[1rem] text-[#0A0A0A] outline-none transition-colors hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
                     />
                   </td>
 
                   {COUNT_FIELDS.map((field) => (
-                    <td key={field.key} className="px-4 py-3 text-center text-[1rem] text-[#0A0A0A]">
+                    <td key={field.key} className="px-4 py-1.5 text-center text-[1rem] text-[#0A0A0A]">
                       {person[field.key]}
                     </td>
                   ))}
 
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-1.5 text-center">
                     <button
                       type="button"
                       onClick={() => removeSpeaker(index)}
-                      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E7E7E7] text-[#667085] transition-colors hover:bg-[#F7F7F7] hover:text-[#0A0A0A]"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#E7E7E7] text-[#667085] transition-colors hover:bg-[#F7F7F7] hover:text-[#0A0A0A]"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -325,7 +325,7 @@ export default function AhCounterReportForm({
       {error ? <p className="text-sm text-[#B42318]">{error}</p> : null}
 
       <div className="fixed inset-x-0 bottom-0 z-20 px-4 pb-4 sm:px-6 sm:pb-6">
-        <section className="mx-auto w-full max-w-5xl rounded-[1.75rem] border border-[#E7E7E7] bg-white/95 px-5 py-4 shadow-[0_-10px_30px_rgba(10,10,10,0.05)] backdrop-blur sm:px-6">
+        <section className="mx-auto w-full max-w-3xl rounded-[1.75rem] border border-[#E7E7E7] bg-white/95 p-4 shadow-[0_-10px_30px_rgba(10,10,10,0.05)] backdrop-blur">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-[1rem] text-[#667085]">When ready, send to the host.</p>
             <button

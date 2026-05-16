@@ -46,8 +46,8 @@ export default async function Page(props: PageProps<"/room/[id]">) {
   );
 
   return (
-    <main className="min-h-screen bg-white px-5 py-7 sm:px-6 sm:py-9">
-      <div className="mx-auto max-w-2xl">
+    <main className="page-shell">
+      <div className="mx-auto max-w-3xl">
         <BackLink href="/room" label="Back" />
 
         <div className="mt-3">
@@ -62,7 +62,7 @@ export default async function Page(props: PageProps<"/room/[id]">) {
           </p>
         </div>
 
-        <section className="mt-6 rounded-[1.85rem] border border-[#E7E7E7] px-5 py-5 sm:px-6 sm:py-5">
+        <section className="mt-6 rounded-[1.85rem] border border-[#E7E7E7] p-4 sm:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
@@ -90,11 +90,11 @@ export default async function Page(props: PageProps<"/room/[id]">) {
           />
         </div>
 
-        <section className="mt-6 rounded-[1.85rem] border border-[#E7E7E7] px-5 py-5 sm:px-6">
+        <section className="mt-6 rounded-[1.85rem] border border-[#E7E7E7] p-4 sm:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-[1.45rem] font-semibold tracking-[-0.04em] text-[#0A0A0A]">
-                Host overview
+                Meeting Overview
               </h2>
               <p className="mt-1 text-sm text-[#667085]">
                 Watch reports come in live.

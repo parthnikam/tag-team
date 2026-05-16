@@ -80,7 +80,7 @@ function TimerSectionCard({
   onFocus: (index: number) => void;
 }) {
   return (
-    <section className="rounded-[2rem] border border-[#E7E7E7] px-5 py-5 sm:px-7 sm:py-6">
+    <section className="rounded-[2rem] border border-[#E7E7E7] p-4 sm:p-5">
       <h2 className="text-[1.15rem] font-semibold text-[#0A0A0A] sm:text-[1.35rem]">
         {title}
       </h2>
@@ -287,7 +287,7 @@ export default function TimerReportForm({
     .filter(Boolean);
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 pb-32">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 pb-32">
       <div className="flex items-center justify-between gap-4 border-b border-[#ECECEC] pb-4">
         <BackLink href={`/room/${code}`} label="Lobby" />
         <p className="hidden text-xs font-medium uppercase tracking-[0.28em] text-[#667085] sm:block">
@@ -308,7 +308,7 @@ export default function TimerReportForm({
         </p>
       </div>
 
-      <section className="rounded-[2rem] border border-[#E7E7E7] px-5 py-5 sm:px-7 sm:py-7">
+      <section className="rounded-[2rem] border border-[#E7E7E7] p-4 sm:p-5">
         <div className="flex flex-wrap gap-2">
           {TIMER_SECTIONS.map((section) => (
             <button
@@ -417,7 +417,7 @@ export default function TimerReportForm({
       {error ? <p className="text-sm text-[#B42318]">{error}</p> : null}
 
       <div className="fixed inset-x-0 bottom-0 z-20 px-4 pb-4 sm:px-6 sm:pb-6">
-        <section className="mx-auto w-full max-w-5xl rounded-[1.75rem] border border-[#E7E7E7] bg-white/95 px-5 py-4 shadow-[0_-10px_30px_rgba(10,10,10,0.05)] backdrop-blur sm:px-6">
+        <section className="mx-auto w-full max-w-3xl rounded-[1.75rem] border border-[#E7E7E7] bg-white/95 p-4 shadow-[0_-10px_30px_rgba(10,10,10,0.05)] backdrop-blur">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-[1rem] text-[#667085]">When ready, send to the host.</p>
             <button

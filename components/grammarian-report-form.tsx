@@ -157,7 +157,7 @@ export default function GrammarianReportForm({
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 pb-32">
+    <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 pb-32">
       {showWodModal ? (
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 px-4 py-8">
           <div className="w-full max-w-2xl rounded-[2rem] bg-white p-6 shadow-[0_20px_80px_rgba(10,10,10,0.16)]">
@@ -234,7 +234,7 @@ export default function GrammarianReportForm({
       </div>
 
       {/* Word of the Day Section */}
-      <section className="rounded-[2rem] border border-[#E7E7E7] bg-[#F7F7F7] px-5 py-6 sm:px-7">
+      <section className="rounded-[2rem] border border-[#E7E7E7] bg-[#F7F7F7] p-4 sm:p-5">
         <div className="mb-4 text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
           Word of the day
         </div>
@@ -249,7 +249,7 @@ export default function GrammarianReportForm({
       </section>
 
       {/* Notable Phrasing Section */}
-      <section className="rounded-[2rem] border border-[#E7E7E7] px-5 py-5 sm:px-7 sm:py-6">
+      <section className="rounded-[2rem] border border-[#E7E7E7] p-4 sm:p-5">
         <h2 className="text-[1.15rem] font-semibold text-[#0A0A0A]">Notable Phrasing</h2>
         <p className="mt-1 text-sm text-[#667085]">Capture eloquent words, quotes, or phrases.</p>
 
@@ -303,7 +303,7 @@ export default function GrammarianReportForm({
       </section>
 
       {/* Improper Use Section */}
-      <section className="rounded-[2rem] border border-[#E7E7E7] px-5 py-5 sm:px-7 sm:py-6">
+      <section className="rounded-[2rem] border border-[#E7E7E7] p-4 sm:p-5">
         <h2 className="text-[1.15rem] font-semibold text-[#0A0A0A]">Improper Use</h2>
         <p className="mt-1 text-sm text-[#667085]">Note misuse and suggest a correction.</p>
 
@@ -368,7 +368,7 @@ export default function GrammarianReportForm({
       {error ? <p className="text-sm text-[#B42318]">{error}</p> : null}
 
       <div className="fixed inset-x-0 bottom-0 z-20 px-4 pb-4 sm:px-6 sm:pb-6">
-        <section className="mx-auto w-full max-w-5xl rounded-[1.75rem] border border-[#E7E7E7] bg-white/95 px-5 py-4 shadow-[0_-10px_30px_rgba(10,10,10,0.05)] backdrop-blur sm:px-6">
+        <section className="mx-auto w-full max-w-3xl rounded-[1.75rem] border border-[#E7E7E7] bg-white/95 p-4 shadow-[0_-10px_30px_rgba(10,10,10,0.05)] backdrop-blur">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-[1rem] text-[#667085]">When ready, send to the host.</p>
             <button

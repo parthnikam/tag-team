@@ -16,8 +16,8 @@ export default async function Page(props: PageProps<"/room/[id]/reports">) {
   const hostName = room?.host_name || "";
 
   return (
-    <main className="min-h-screen bg-white px-5 py-7 sm:px-6 sm:py-9">
-      <div className="mx-auto max-w-4xl">
+    <main className="page-shell">
+      <div className="mx-auto max-w-3xl">
         <BackLink href={`/room/${id}`} label="Back" />
 
         <RoomReportsView 

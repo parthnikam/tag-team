@@ -4,9 +4,9 @@ import Link from "next/link";
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-white px-5 py-8 sm:px-8">
+    <main className="page-shell">
       <div className="mx-auto flex min-h-[72vh] max-w-4xl flex-col items-center justify-center text-center">
-        <h1 className="max-w-4xl text-[3.4rem] font-semibold leading-[0.95] tracking-[-0.07em] text-[#0A0A0A] sm:text-[4.9rem]">
+        <h1 className="max-w-3xl text-[3.4rem] font-semibold leading-[0.95] tracking-[-0.07em] text-[#0A0A0A] sm:text-[4.9rem]">
           Run Toastmasters meetings smoothly.
         </h1>
 

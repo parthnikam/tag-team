@@ -155,13 +155,13 @@ export default function RoomReportsView({
   }
 
   return (
-    <div className="mt-6 flex flex-col gap-8">
+    <div className="mt-6 flex flex-col gap-6">
       {/* Header Section */}
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
-              HOST OVERVIEW
+              meeting overview
             </p>
             <h1 className="mt-2 text-[2.5rem] font-semibold leading-tight tracking-[-0.05em] text-[#0A0A0A]">
               {meetingName}
@@ -232,7 +232,7 @@ export default function RoomReportsView({
 
       {/* Report Detail Section */}
       {selectedReport && (
-        <section className="rounded-[1.7rem] border border-[#EAEAEA] bg-white p-8">
+        <section className="rounded-[1.7rem] border border-[#EAEAEA] bg-white p-4 sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-2xl font-semibold text-[#0A0A0A]">
               {selectedReport.label} Report
