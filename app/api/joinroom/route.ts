@@ -65,6 +65,19 @@ export async function POST(req: Request) {
     return Response.json({ error: error.message }, { status: 500 });
   }
 
+  // const { error: roletakersError } = await supabase
+  //   .from("roletakers")
+  //   .insert([{
+  //     roomCode: code,
+  //     user_id: user.id,
+  //     role: typedRole,
+  //     userName: participantName,
+  //   }]);
+
+  // if (roletakersError) {
+  //   console.error("Failed to insert into roletakers:", roletakersError);
+  // }
+
   return Response.json({
     room: data,
   });

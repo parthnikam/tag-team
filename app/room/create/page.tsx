@@ -31,7 +31,6 @@ export default function Page() {
           body: JSON.stringify({
             hostName,
             clubName,
-            meetingNumber: "1",
             joinAs,
           }),
         });

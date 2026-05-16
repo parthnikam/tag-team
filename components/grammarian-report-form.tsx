@@ -21,21 +21,25 @@ interface NotablePhraseEntry {
 export default function GrammarianReportForm({
   code,
   initialSubmitted,
+  initialWod,
+  initialMeaning,
   meetingName,
   hostName,
 }: {
   code: string;
   initialSubmitted: boolean;
-  meetingName: string;
-  hostName: string;
+  initialWod?: string;
+  initialMeaning?: string;
+  meetingName?: string;
+  hostName?: string;
 }) {
   const [submitted, setSubmitted] = useState(initialSubmitted);
   const [error, setError] = useState("");
   const [modalError, setModalError] = useState("");
-  const [showWodModal, setShowWodModal] = useState(!initialSubmitted);
+  const [showWodModal, setShowWodModal] = useState(!initialSubmitted && !initialWod);
   const [isPending, startTransition] = useTransition();
-  const [wod, setWod] = useState("");
-  const [meaning, setMeaning] = useState("");
+  const [wod, setWod] = useState(initialWod || "");
+  const [meaning, setMeaning] = useState(initialMeaning || "");
   const [improperUseEntries, setImproperUseEntries] = useState<ImproperUseEntry[]>([]);
   const [notablePhraseEntries, setNotablePhraseEntries] = useState<NotablePhraseEntry[]>([]);
 

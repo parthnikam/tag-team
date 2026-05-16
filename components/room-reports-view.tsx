@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Download, X, Clock3, Mic, BookOpenText, Link2 } from "lucide-react";
-import { type RoomRole, ROOM_ROLE_LABELS } from "@/lib/roles";
+import { useEffect, useState, useRef } from "react";
+import { Download, X, Clock3, Mic, BookOpenText } from "lucide-react";
+import { type RoomRole } from "@/lib/roles";
 import TimerReportDisplay from "@/components/timer-report-display";
 import AhCounterReportDisplay from "@/components/ahcounter-report-display";
 import GrammarianReportDisplay from "@/components/grammarian-report-display";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 type ReportPayload = {
   roomCode: string;
@@ -42,7 +44,8 @@ export default function RoomReportsView({
   const [selectedRole, setSelectedRole] = useState<RoomRole | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [shareMessage, setShareMessage] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
+  const pdfRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -61,7 +64,6 @@ export default function RoomReportsView({
 
         if (isMounted) {
           setReports(data.reports ?? []);
-          // Set first role as default
           if (data.reports && data.reports.length > 0) {
             setSelectedRole(data.reports[0].role);
           }
@@ -88,61 +90,45 @@ export default function RoomReportsView({
   const submittedCount = reports.filter((r) => r.submitted).length;
   const totalCount = reports.length;
 
-  const handleShare = async () => {
-    try {
-      const shareUrl = `${window.location.origin}/room/${roomCode}/reports`;
-      await navigator.clipboard.writeText(shareUrl);
-      setShareMessage("Link copied to clipboard!");
-      setTimeout(() => setShareMessage(""), 2000);
-    } catch (err) {
-      setShareMessage("Failed to copy link");
-      setTimeout(() => setShareMessage(""), 2000);
-    }
-  };
-
   const handleExportPdf = async () => {
-    try {
-      const response = await fetch(`/api/getreports/${roomCode}`);
-      const data = (await response.json()) as { reports?: ReportItem[] };
+    if (!pdfRef.current) return;
+    setIsExporting(true);
 
-      if (!response.ok) {
-        throw new Error("Could not export reports.");
+    try {
+      const element = pdfRef.current;
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#FFFFFF",
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, pdfWidth, imgHeight);
+        heightLeft -= pageHeight;
       }
 
-      // Create a simple PDF-like text representation
-      const reportText = (data.reports ?? [])
-        .map((report) => {
-          const lines = [
-            `\n${"=".repeat(60)}`,
-            `${report.label.toUpperCase()}`,
-            `${"=".repeat(60)}`,
-            `Status: ${report.submitted ? "Submitted" : "Pending"}`,
-          ];
-
-          if (report.submission) {
-            lines.push(
-              `Submitted by: ${report.submission.name}`,
-              `Submitted at: ${new Date(report.submission.submittedAt).toLocaleString()}`,
-              `\nData:`,
-              JSON.stringify(report.submission.data, null, 2),
-            );
-          } else {
-            lines.push("No report submitted yet.");
-          }
-
-          return lines.join("\n");
-        })
-        .join("\n");
-
-      const element = document.createElement("a");
-      const file = new Blob([reportText], { type: "text/plain" });
-      element.href = URL.createObjectURL(file);
-      element.download = `reports-${roomCode}-${new Date().toISOString().split("T")[0]}.txt`;
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
+      pdf.save(`toastmasters-report-${roomCode}.pdf`);
     } catch (err) {
       console.error("Export failed:", err);
+      setError("Failed to export PDF.");
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -174,10 +160,11 @@ export default function RoomReportsView({
           <button
             type="button"
             onClick={handleExportPdf}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E5E5E5] px-5 py-3 text-sm font-medium text-[#0A0A0A] transition-colors hover:bg-[#F7F7F7]"
+            disabled={isExporting}
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E5E5E5] px-5 py-3 text-sm font-medium text-[#0A0A0A] transition-colors hover:bg-[#F7F7F7] disabled:opacity-50"
           >
             <Download className="h-4 w-4" />
-            Export PDF
+            {isExporting ? "Exporting..." : "Export PDF"}
           </button>
         </div>
       </div>
@@ -271,6 +258,59 @@ export default function RoomReportsView({
           )}
         </section>
       )}
+
+      {/* Hidden Export Container */}
+      <div className="absolute left-[-9999px] top-[-9999px]">
+        <div ref={pdfRef} className="w-[800px] bg-white p-8 flex flex-col gap-8">
+          <div className="mb-4">
+            <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+              TAG Team Report
+            </p>
+            <h1 className="mt-2 text-[2.5rem] font-semibold leading-tight tracking-[-0.05em] text-[#0A0A0A]">
+              {meetingName}
+            </h1>
+            <p className="mt-1 text-lg font-medium text-[#475467]">
+              Hosted by: {hostName}
+            </p>
+            <p className="mt-2 text-sm text-[#667085]">
+              Generated on {new Date().toLocaleDateString()}
+            </p>
+          </div>
+
+          {reports.map((report) => (
+            <section key={report.role} className="rounded-[1.7rem] border border-[#EAEAEA] bg-white p-6">
+              <div className="flex items-center justify-between gap-4 mb-6">
+                <h2 className="text-2xl font-semibold text-[#0A0A0A]">
+                  {report.label} Report
+                </h2>
+                {report.submission && (
+                  <p className="text-sm text-[#667085]">
+                    By {report.submission.name}
+                  </p>
+                )}
+              </div>
+              
+              {report.submission ? (
+                <div className="mt-4">
+                  {report.role === "timer" && (
+                    <TimerReportDisplay data={report.submission.data as any} />
+                  )}
+                  {report.role === "ahcounter" && (
+                    <AhCounterReportDisplay data={report.submission.data as any} />
+                  )}
+                  {report.role === "grammarian" && (
+                    <GrammarianReportDisplay data={report.submission.data as any} />
+                  )}
+                </div>
+              ) : (
+                <p className="mt-4 text-sm text-[#6B6B6B]">
+                  No report submitted for this role.
+                </p>
+              )}
+            </section>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

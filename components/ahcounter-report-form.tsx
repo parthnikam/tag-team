@@ -225,7 +225,7 @@ export default function AhCounterReportForm({
                   adjustCount(selectedIndex, field.key, 1);
                 }
               }}
-              className={`rounded-[1.8rem] border border-[#E7E7E7] px-5 py-4 text-center transition-colors ${
+              className={`select-none rounded-[1.8rem] border border-[#E7E7E7] px-5 py-4 text-center transition-colors ${
                 selectedIndex === null ? "opacity-50" : "hover:bg-[#F8F8F8]"
               }`}
               role="button"
@@ -240,7 +240,7 @@ export default function AhCounterReportForm({
               <div className="text-sm font-medium uppercase tracking-[0.26em] text-[#475467]">
                 {field.label}
               </div>
-              <div className="elect-none text-[2.9rem] font-semibold tracking-[-0.06em] text-[#0A0A0A]">
+              <div className="select-none text-[2.9rem] font-semibold tracking-[-0.06em] text-[#0A0A0A]">
                 {selectedPerson?.[field.key] ?? 0}
               </div>
               <button
@@ -251,7 +251,7 @@ export default function AhCounterReportForm({
                     adjustCount(selectedIndex, field.key, -1);
                   }
                 }}
-                className="text-[1rem] text-[#667085] transition-colors hover:text-[#0A0A0A]"
+                className="text-[1rem] px-10 text-[#667085] transition-colors hover:text-[#0A0A0A]"
               >
                 -1
               </button>

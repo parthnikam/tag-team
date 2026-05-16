@@ -41,13 +41,11 @@ export async function POST(req: Request) {
     const body = (await req.json()) as {
       hostName?: string;
       clubName?: string;
-      meetingNumber?: string;
       joinAs?: "host" | RoomRole;
     };
 
     const hostName = body.hostName?.trim();
     const clubName = body.clubName?.trim() || "Toastmasters meeting";
-    const meetingNumberInput = body.meetingNumber?.trim();
     const joinAs = body.joinAs;
 
     if (!hostName) {
@@ -58,15 +56,6 @@ export async function POST(req: Request) {
       return Response.json({ error: "Invalid meeting role." }, { status: 400 });
     }
 
-    const meetingNumber = meetingNumberInput ? Number(meetingNumberInput) : 1;
-
-    if (!Number.isInteger(meetingNumber) || meetingNumber <= 0) {
-      return Response.json(
-        { error: "Meeting number must be a positive whole number." },
-        { status: 400 },
-      );
-    }
-
     const code = await generateCode(supabase);
 
     const roomInsert: Record<string, string | number> = {
@@ -74,7 +63,6 @@ export async function POST(req: Request) {
       creator: user.id,
       host_name: hostName,
       club_name: clubName,
-      meeting_number: meetingNumber,
     };
 
     if (joinAs && joinAs !== "host") {
@@ -99,6 +87,32 @@ export async function POST(req: Request) {
     if (reportError) {
       return Response.json({ error: reportError.message }, { status: 500 });
     }
+
+    // const roletakersInserts = [
+    //   {
+    //     roomCode: code,
+    //     user_id: user.id,
+    //     role: "host",
+    //     userName: hostName,
+    //   }
+    // ];
+
+    // if (joinAs && joinAs !== "host") {
+    //   roletakersInserts.push({
+    //     roomCode: code,
+    //     user_id: user.id,
+    //     role: joinAs,
+    //     userName: hostName,
+    //   });
+    // }
+
+    // const { error: roletakersError } = await supabase
+    //   .from("roletakers")
+    //   .insert(roletakersInserts);
+
+    // if (roletakersError) {
+    //   console.error("Failed to insert into roletakers:", roletakersError);
+    // }
 
     return Response.json({
       room,

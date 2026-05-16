@@ -17,7 +17,7 @@ export default async function Page(props: PageProps<"/room/[id]/reports">) {
 
   return (
     <main className="page-shell">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-4xl">
         <BackLink href={`/room/${id}`} label="Back" />
 
         <RoomReportsView 

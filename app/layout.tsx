@@ -3,6 +3,7 @@ import { Geist, Inter } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/app/providers";
 import { createClient } from "@/utils/supabase/server";
+import NavAvatar from "@/components/nav-avatar";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -29,6 +30,7 @@ export default async function RootLayout({children,}: Readonly<{children: React.
     >
       <body className="min-h-full flex flex-col bg-white text-[#0A0A0A]">
         <AuthProvider initialUser={user}>
+          {/* <NavAvatar user={user} /> */}
           {children}
         </AuthProvider>
       </body>

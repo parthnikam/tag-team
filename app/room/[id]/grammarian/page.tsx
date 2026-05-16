@@ -15,7 +15,7 @@ export default async function Page(props: PageProps<"/room/[id]/grammarian">) {
   ] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from("reports").select("grammarian").eq("roomCode", id).maybeSingle(),
-    supabase.from("room").select("grammarian").eq("code", id).maybeSingle(),
+    supabase.from("room").select("grammarian, wod, meaning, club_name, host_name").eq("code", id).maybeSingle(),
   ]);
 
   if (roomResult.error || !user || roomResult.data?.grammarian !== user.id) {
@@ -27,6 +27,10 @@ export default async function Page(props: PageProps<"/room/[id]/grammarian">) {
       <GrammarianReportForm
         code={id}
         initialSubmitted={Boolean(reportsResult.data?.grammarian)}
+        initialWod={roomResult.data?.wod || ""}
+        initialMeaning={roomResult.data?.meaning || ""}
+        meetingName={roomResult.data?.club_name || "Meeting"}
+        hostName={roomResult.data?.host_name || ""}
       />
     </main>
   );
