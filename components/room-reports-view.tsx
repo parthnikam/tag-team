@@ -170,7 +170,7 @@ export default function RoomReportsView({
       </div>
 
       {/* Report Cards Grid */}
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
         {reports.map((report) => {
           const isSelected = selectedRole === report.role;
           const Icon = ROLE_ICONS[report.role];
@@ -179,16 +179,16 @@ export default function RoomReportsView({
               key={report.role}
               type="button"
               onClick={() => setSelectedRole(report.role)}
-              className={`flex flex-col gap-3 rounded-[1.7rem] border-2 px-5 py-6 text-left transition-all ${
+              className={`flex flex-col gap-2 rounded-[1rem] border-2 p-3 text-left transition-all sm:gap-3 sm:rounded-[1.7rem] sm:px-5 sm:py-6 ${
                 isSelected
                   ? "border-[#0A0A0A] bg-white"
                   : "border-[#EAEAEA] bg-white hover:border-[#CCCCCC]"
               }`}
             >
-              <div className="flex items-center justify-between">
-                <Icon className="h-6 w-6 text-[#0A0A0A]" />
+              <div className="flex w-full flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-0">
+                <Icon className="h-5 w-5 text-[#0A0A0A] sm:h-6 sm:w-6" />
                 <span
-                  className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                  className={`rounded-full px-1.5 py-0.5 text-[0.55rem] font-semibold sm:px-2.5 sm:py-1 sm:text-xs ${
                     report.submitted
                       ? "bg-[#0A0A0A] text-white"
                       : "bg-[#FFE5D9] text-[#B42318]"
@@ -198,17 +198,17 @@ export default function RoomReportsView({
                 </span>
               </div>
 
-              <div>
-                <h3 className="text-lg font-semibold text-[#0A0A0A]">
+              <div className="mt-1 sm:mt-0">
+                <h3 className="text-[0.8rem] font-semibold leading-tight text-[#0A0A0A] sm:text-lg">
                   {report.label}
                 </h3>
               </div>
 
               {report.submission && (
-                <div className="text-xs text-[#667085]">
-                  <p className="font-medium">From {report.submission.name}</p>
-                  <p className="mt-1">
-                    {new Date(report.submission.submittedAt).toLocaleString()}
+                <div className="w-full text-[0.6rem] text-[#667085] sm:text-xs">
+                  <p className="truncate font-medium">From {report.submission.name}</p>
+                  <p className="mt-0.5 truncate sm:mt-1">
+                    {new Date(report.submission.submittedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
               )}

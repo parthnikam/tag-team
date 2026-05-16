@@ -38,27 +38,56 @@ const formatSeconds = (totalSeconds: number) => {
 };
 
 const parseTimeInput = (value: string) => {
-  const trimmed = value.trim();
+  const numericString = value.replace(/\D/g, "");
 
-  if (!trimmed) {
+  if (!numericString) {
     return 0;
   }
 
-  if (trimmed.includes(":")) {
-    const [minutes, seconds] = trimmed.split(":");
-    const parsedMinutes = Number(minutes);
-    const parsedSeconds = Number(seconds);
-
-    if (Number.isNaN(parsedMinutes) || Number.isNaN(parsedSeconds)) {
-      return 0;
-    }
-
-    return parsedMinutes * 60 + parsedSeconds;
+  if (numericString.length <= 2) {
+    return Number(numericString);
   }
 
-  const numericValue = Number(trimmed);
-  return Number.isNaN(numericValue) ? 0 : numericValue;
+  const secondsStr = numericString.slice(-2);
+  const minutesStr = numericString.slice(0, -2);
+
+  return Number(minutesStr) * 60 + Number(secondsStr);
 };
+
+function TimeInput({
+  time,
+  onChange,
+  onFocus,
+}: {
+  time: number;
+  onChange: (value: string) => void;
+  onFocus: () => void;
+}) {
+  const [localValue, setLocalValue] = useState<string | null>(null);
+  const [lastReportedTime, setLastReportedTime] = useState(time);
+
+  if (time !== lastReportedTime) {
+    setLocalValue(null);
+    setLastReportedTime(time);
+  }
+
+  const displayValue = localValue !== null ? localValue : formatSeconds(time);
+
+  return (
+    <input
+      value={displayValue}
+      onChange={(event) => {
+        const newVal = event.target.value;
+        setLocalValue(newVal);
+        setLastReportedTime(parseTimeInput(newVal));
+        onChange(newVal);
+      }}
+      onBlur={() => setLocalValue(null)}
+      onFocus={onFocus}
+      className="w-40 rounded-full border border-[#E7E7E7] px-5 py-3 text-center text-[1rem] text-[#475467] outline-none transition-colors hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+    />
+  );
+}
 
 function TimerSectionCard({
   title,
@@ -100,11 +129,10 @@ function TimerSectionCard({
             />
 
             <div className="flex items-center gap-3 sm:w-auto">
-              <input
-                value={formatSeconds(person.time)}
-                onChange={(event) => onTimeChange(index, event.target.value)}
+              <TimeInput
+                time={person.time}
+                onChange={(value) => onTimeChange(index, value)}
                 onFocus={() => onFocus(index)}
-                className="w-40 rounded-full border border-[#E7E7E7] px-5 py-3 text-center text-[1rem] text-[#475467] outline-none transition-colors hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
               />
 
               <button

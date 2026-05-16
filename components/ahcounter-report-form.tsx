@@ -216,7 +216,7 @@ export default function AhCounterReportForm({
           {selectedPerson?.name.trim() || "Select a participant"}
         </h2>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4">
           {COUNT_FIELDS.map((field) => (
             <div
               key={field.key}
@@ -225,7 +225,7 @@ export default function AhCounterReportForm({
                   adjustCount(selectedIndex, field.key, 1);
                 }
               }}
-              className={`select-none rounded-[1.8rem] border border-[#E7E7E7] px-5 py-4 text-center transition-colors ${
+              className={`select-none flex flex-col items-center justify-center rounded-[1rem] border border-[#E7E7E7] px-1 py-3 text-center transition-colors sm:rounded-[1.8rem] sm:px-5 sm:py-4 ${
                 selectedIndex === null ? "opacity-50" : "hover:bg-[#F8F8F8]"
               }`}
               role="button"
@@ -237,10 +237,10 @@ export default function AhCounterReportForm({
                 }
               }}
             >
-              <div className="text-sm font-medium uppercase tracking-[0.26em] text-[#475467]">
+              <div className="mb-1 text-[0.6rem] font-medium uppercase leading-none tracking-[0.05em] text-[#475467] sm:mb-0 sm:text-sm sm:tracking-[0.26em]">
                 {field.label}
               </div>
-              <div className="select-none text-[2.9rem] font-semibold tracking-[-0.06em] text-[#0A0A0A]">
+              <div className="my-1 select-none text-[1.8rem] font-semibold leading-tight tracking-[-0.06em] text-[#0A0A0A] sm:my-0 sm:text-[2.9rem] sm:leading-none">
                 {selectedPerson?.[field.key] ?? 0}
               </div>
               <button
@@ -251,7 +251,7 @@ export default function AhCounterReportForm({
                     adjustCount(selectedIndex, field.key, -1);
                   }
                 }}
-                className="text-[1rem] px-10 text-[#667085] transition-colors hover:text-[#0A0A0A]"
+                className="px-4 py-1 text-[0.8rem] text-[#667085] transition-colors hover:text-[#0A0A0A] sm:px-10 sm:text-[1rem]"
               >
                 -1
               </button>
