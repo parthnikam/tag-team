@@ -24,14 +24,14 @@ export default async function Page(props: PageProps<"/room/[id]/grammarian">) {
 
   return (
     <main className="page-shell">
-      {/* <GrammarianReportForm
+      <GrammarianReportForm
         code={id}
         initialSubmitted={Boolean(reportsResult.data?.grammarian)}
         initialWod={roomResult.data?.wod || ""}
         initialMeaning={roomResult.data?.meaning || ""}
         meetingName={roomResult.data?.club_name || "Meeting"}
         hostName={roomResult.data?.host_name || ""}
-      /> */}
+      />
     </main>
   );
 }
