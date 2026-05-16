@@ -30,7 +30,7 @@ export default async function RootLayout({children,}: Readonly<{children: React.
     >
       <body className="min-h-full flex flex-col bg-white text-[#0A0A0A]">
         <AuthProvider initialUser={user}>
-          {/* <NavAvatar user={user} /> */}
+          <NavAvatar user={user} />
           {children}
         </AuthProvider>
       </body>

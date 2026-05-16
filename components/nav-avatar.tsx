@@ -1,10 +1,12 @@
 "use client";
 
 import { User } from "@supabase/supabase-js";
+import { useAuth } from "@/app/providers";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 
 export default function NavAvatar({ user }: { user: User | null }) {
+  const { signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -45,12 +47,20 @@ export default function NavAvatar({ user }: { user: User | null }) {
               </p>
             </div>
             <div className="my-1 border-t border-[#EAEAEA]" />
-            <Link
+            {/* <Link
               href="/meetings"
               onClick={() => setIsOpen(false)}
               className="block rounded-xl px-3 py-2 text-sm font-medium text-[#0A0A0A] transition-colors hover:bg-[#F7F7F7]"
             >
               My Meetings
+            </Link> */}
+
+            <Link
+              href="/"
+              onClick={signOut}
+              className="block rounded-xl px-3 py-2 text-sm font-medium text-[#0A0A0A] transition-colors hover:bg-[#F7F7F7]"
+            >
+              Logout
             </Link>
           </div>
         )}
