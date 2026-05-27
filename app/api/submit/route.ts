@@ -1,5 +1,3 @@
-"use server";
-
 import { ROOM_ROLES, type RoomRole } from "@/lib/roles";
 import { type RoleReportData } from "@/lib/report-data";
 import { createClient } from "@/utils/supabase/server";
@@ -68,17 +66,13 @@ export async function POST(req: Request) {
 
   const payload = buildSubmissionPayload(code, typedRole, user.id, reportData, user.user_metadata.full_name);
 
-  const { data: submission, error: upsertError } = await supabase
+  const { error: upsertError } = await supabase
     .from("reports")
-    .upsert({ roomCode: code, [typedRole]: payload }, { onConflict: "roomCode" })
-    .select(`roomCode, ${typedRole}`)
-    .single();
+    .upsert({ roomCode: code, [typedRole]: payload }, { onConflict: "roomCode" });
 
   if (upsertError) {
     return Response.json({ error: upsertError.message }, { status: 500 });
   }
 
-  return Response.json({
-    submission,
-  });
+  return Response.json({ ok: true });
 }

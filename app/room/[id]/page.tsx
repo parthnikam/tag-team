@@ -15,8 +15,9 @@ export default async function Page(props: PageProps<"/room/[id]">) {
     supabase.auth.getUser(),
     supabase
       .from("room")
-      .select("*")
-      // .select(`code, host_name, club_name, meeting_number, ${ROOM_ROLES.join(", ")}`)
+      .select(
+        "code, host_name, club_name, timer, ahcounter, grammarian, timer_name, ahcounter_name, grammarian_name",
+      )
       .eq("code", id)
       .maybeSingle(),
   ]);
@@ -28,10 +29,12 @@ export default async function Page(props: PageProps<"/room/[id]">) {
   if (!roomResult.data) {
     notFound();
   }
-  console.log(roomResult?.data);
+
+  const room = roomResult.data as Record<string, string | number | null>;
+
   const occupiedRoles = ROOM_ROLES.reduce(
     (result, role) => {
-      result[role] = roomResult.data?.[role+"_name"] ?? null;
+      result[role] = (room[`${role}_name`] as string | null) ?? null;
       return result;
     },
     {} as Record<(typeof ROOM_ROLES)[number], string | null>,
@@ -39,7 +42,7 @@ export default async function Page(props: PageProps<"/room/[id]">) {
 
   const roleAssignments = ROOM_ROLES.reduce(
     (result, role) => {
-      result[role] = roomResult.data?.[role] ?? null;
+      result[role] = (room[role] as string | null) ?? null;
       return result;
     },
     {} as Record<(typeof ROOM_ROLES)[number], string | null>,
@@ -52,7 +55,7 @@ export default async function Page(props: PageProps<"/room/[id]">) {
 
         <div className="mt-3">
           <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
-            Meeting {roomResult.data.meeting_number}
+            Meeting lobby
           </p>
           <h1 className="mt-2 text-[3rem] font-semibold leading-[0.98] tracking-[-0.07em] text-[#0A0A0A] sm:text-[3.5rem]">
             {roomResult.data.club_name}

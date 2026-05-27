@@ -31,8 +31,8 @@ export interface AhCounterPerson {
   so: number;
   like: number;
   but: number;
-  repeats: number;
-  other: number;
+  youknow: number;
+  and: number;
 }
 
 export interface AhCounterReportData {
@@ -64,6 +64,6 @@ export const createEmptyAhCounterPerson = (): AhCounterPerson => ({
   so: 0,
   like: 0,
   but: 0,
-  repeats: 0,
-  other: 0,
+  youknow: 0,
+  and: 0,
 });

@@ -14,8 +14,8 @@ const COUNT_FIELDS: Array<{
   { key: "so", label: "SO" },
   { key: "like", label: "LIKE" },
   { key: "but", label: "BUT" },
-  { key: "repeats", label: "REPEATS" },
-  { key: "other", label: "OTHER" },
+  { key: "youknow", label: "YOU KNOW" },
+  { key: "and", label: "AND" },
 ];
 
 interface AhCounterReportDisplayProps {

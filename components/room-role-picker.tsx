@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, BookOpenText, Clock3, Mic } from "lucide-react";
 import { ROOM_ROLES, ROOM_ROLE_LABELS, type RoomRole } from "@/lib/roles";
@@ -52,6 +52,13 @@ export default function RoomRolePicker({
   });
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    router.prefetch(`/room/${code}/reports`);
+    ROOM_ROLES.forEach((role) => {
+      router.prefetch(`/room/${code}/${role}`);
+    });
+  }, [code, router]);
 
   const handleJoin = (selectedRole: RoomRole) => {
     setError("");

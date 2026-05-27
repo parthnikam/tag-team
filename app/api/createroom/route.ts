@@ -1,5 +1,3 @@
-"use server";
-
 import { ROOM_ROLES, type RoomRole } from "@/lib/roles";
 import { createClient } from "@/utils/supabase/server";
 
@@ -73,7 +71,7 @@ export async function POST(req: Request) {
     const { data: room, error: roomError } = await supabase
       .from("room")
       .insert([roomInsert])
-      .select()
+      .select("code")
       .single();
 
     if (roomError) {

@@ -1,6 +1,3 @@
-"use server";
-
-import RoomRolePicker from "@/components/room-role-picker";
 import { ROOM_ROLES, type RoomRole } from "@/lib/roles";
 import { createClient } from "@/utils/supabase/server";
 
@@ -54,12 +51,10 @@ export async function POST(req: Request) {
   const namecol = typedRole + "_name";
   const participantName = name?.trim() || user.user_metadata.full_name || "Anonymous";
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("room")
     .update({ [typedRole]: user.id, [namecol]: participantName})
-    .eq("code", code)
-    .select()
-    .single();
+    .eq("code", code);
 
   if (error) {
     return Response.json({ error: error.message }, { status: 500 });
@@ -78,7 +73,5 @@ export async function POST(req: Request) {
   //   console.error("Failed to insert into roletakers:", roletakersError);
   // }
 
-  return Response.json({
-    room: data,
-  });
+  return Response.json({ ok: true });
 }
