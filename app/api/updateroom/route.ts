@@ -56,5 +56,20 @@ export async function POST(req: Request) {
     return Response.json({ error: error.message }, { status: 500 });
   }
 
+  const updatedRoleName = updates[`${typedRole}_name`];
+
+  if (updatedRoleName) {
+    const { error: roletakersError } = await supabase
+      .from("roletakers")
+      .update({ userName: updatedRoleName })
+      .eq("roomCode", code)
+      .eq("user_id", user.id)
+      .eq("role", typedRole);
+
+    if (roletakersError) {
+      return Response.json({ error: roletakersError.message }, { status: 500 });
+    }
+  }
+
   return Response.json({ ok: true });
 }

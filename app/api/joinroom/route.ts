@@ -60,18 +60,34 @@ export async function POST(req: Request) {
     return Response.json({ error: error.message }, { status: 500 });
   }
 
-  // const { error: roletakersError } = await supabase
-  //   .from("roletakers")
-  //   .insert([{
-  //     roomCode: code,
-  //     user_id: user.id,
-  //     role: typedRole,
-  //     userName: participantName,
-  //   }]);
+  const { data: existingRoletaker, error: existingRoletakerError } = await supabase
+    .from("roletakers")
+    .select("id")
+    .eq("roomCode", code)
+    .eq("user_id", user.id)
+    .eq("role", typedRole)
+    .maybeSingle();
 
-  // if (roletakersError) {
-  //   console.error("Failed to insert into roletakers:", roletakersError);
-  // }
+  if (existingRoletakerError) {
+    return Response.json({ error: existingRoletakerError.message }, { status: 500 });
+  }
+
+  if (!existingRoletaker) {
+    const { error: roletakersError } = await supabase
+      .from("roletakers")
+      .insert([
+        {
+          roomCode: code,
+          user_id: user.id,
+          role: typedRole,
+          userName: participantName,
+        },
+      ]);
+
+    if (roletakersError) {
+      return Response.json({ error: roletakersError.message }, { status: 500 });
+    }
+  }
 
   return Response.json({ ok: true });
 }

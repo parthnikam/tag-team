@@ -86,31 +86,31 @@ export async function POST(req: Request) {
       return Response.json({ error: reportError.message }, { status: 500 });
     }
 
-    // const roletakersInserts = [
-    //   {
-    //     roomCode: code,
-    //     user_id: user.id,
-    //     role: "host",
-    //     userName: hostName,
-    //   }
-    // ];
+    const roletakersInserts = [
+      {
+        roomCode: code,
+        user_id: user.id,
+        role: "host",
+        userName: hostName,
+      }
+    ];
 
-    // if (joinAs && joinAs !== "host") {
-    //   roletakersInserts.push({
-    //     roomCode: code,
-    //     user_id: user.id,
-    //     role: joinAs,
-    //     userName: hostName,
-    //   });
-    // }
+    if (joinAs && joinAs !== "host") {
+      roletakersInserts.push({
+        roomCode: code,
+        user_id: user.id,
+        role: joinAs,
+        userName: hostName,
+      });
+    }
 
-    // const { error: roletakersError } = await supabase
-    //   .from("roletakers")
-    //   .insert(roletakersInserts);
+    const { error: roletakersError } = await supabase
+      .from("roletakers")
+      .insert(roletakersInserts);
 
-    // if (roletakersError) {
-    //   console.error("Failed to insert into roletakers:", roletakersError);
-    // }
+    if (roletakersError) {
+      console.error("Failed to insert into roletakers:", roletakersError);
+    }
 
     return Response.json({
       room,

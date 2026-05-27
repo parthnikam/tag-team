@@ -6,6 +6,15 @@ import { type RoomRole } from "@/lib/roles";
 import TimerReportDisplay from "@/components/timer-report-display";
 import AhCounterReportDisplay from "@/components/ahcounter-report-display";
 import GrammarianReportDisplay from "@/components/grammarian-report-display";
+import {
+  type AhCounterReportData,
+  type GrammarianReportData,
+  type TimerReportData,
+} from "@/lib/report-data";
+import {
+  setCachedRoomSession,
+  useCachedRoomSession,
+} from "@/components/room-session-cache";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
@@ -33,19 +42,65 @@ const ROLE_ICONS: Record<RoomRole, typeof Clock3> = {
 
 export default function RoomReportsView({
   roomCode,
-  meetingName,
-  hostName,
 }: {
   roomCode: string;
-  meetingName: string;
-  hostName: string;
 }) {
+  const cachedRoom = useCachedRoomSession(roomCode);
   const [reports, setReports] = useState<ReportItem[]>([]);
   const [selectedRole, setSelectedRole] = useState<RoomRole | null>(null);
+  const [fetchedRoomInfo, setFetchedRoomInfo] = useState<{
+    clubName?: string | null;
+    hostName?: string | null;
+  } | null>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
+  const meetingName = cachedRoom?.clubName || fetchedRoomInfo?.clubName || roomCode;
+  const hostName = cachedRoom?.hostName || fetchedRoomInfo?.hostName || "";
+
+  useEffect(() => {
+    if (cachedRoom?.clubName || cachedRoom?.hostName) {
+      return;
+    }
+
+    let isMounted = true;
+
+    const loadRoomInfo = async () => {
+      try {
+        const response = await fetch(`/api/roominfo/${roomCode}`);
+        const data = (await response.json()) as {
+          error?: string;
+          room?: {
+            code: string;
+            clubName?: string | null;
+            hostName?: string | null;
+          };
+        };
+
+        if (!response.ok || !data.room) {
+          return;
+        }
+
+        setCachedRoomSession(data.room);
+
+        if (isMounted) {
+          setFetchedRoomInfo({
+            clubName: data.room.clubName,
+            hostName: data.room.hostName,
+          });
+        }
+      } catch {
+        // Cached data is an optimization; reports can still render without it.
+      }
+    };
+
+    loadRoomInfo();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [cachedRoom?.clubName, cachedRoom?.hostName, roomCode]);
 
   useEffect(() => {
     let isMounted = true;
@@ -143,7 +198,7 @@ export default function RoomReportsView({
   return (
     <div className="mt-6 flex flex-col gap-6">
       {/* Header Section */}
-      <div className="flex flex-col gap-4">
+      <div className="page-heading-inset flex flex-col gap-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
@@ -161,7 +216,7 @@ export default function RoomReportsView({
             type="button"
             onClick={handleExportPdf}
             disabled={isExporting}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E5E5E5] px-5 py-3 text-sm font-medium text-[#0A0A0A] transition-colors hover:bg-[#F7F7F7] disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E5E5E5] px-5 py-3 text-sm font-medium text-[#0A0A0A] transition-colors disabled:opacity-50"
           >
             <Download className="h-4 w-4" />
             {isExporting ? "Exporting..." : "Export PDF"}
@@ -182,7 +237,7 @@ export default function RoomReportsView({
               className={`flex flex-col gap-2 rounded-[1rem] border-2 p-3 text-left transition-all sm:gap-3 sm:rounded-[1.7rem] sm:px-5 sm:py-6 ${
                 isSelected
                   ? "border-[#0A0A0A] bg-white"
-                  : "border-[#EAEAEA] bg-white hover:border-[#CCCCCC]"
+                  : "border-[#EAEAEA] bg-white"
               }`}
             >
               <div className="flex w-full flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-0">
@@ -227,7 +282,7 @@ export default function RoomReportsView({
             <button
               type="button"
               onClick={() => setSelectedRole(null)}
-              className="text-[#667085] hover:text-[#0A0A0A]"
+              className="text-[#667085]"
             >
               <X className="h-6 w-6" />
             </button>
@@ -237,17 +292,17 @@ export default function RoomReportsView({
             <div className="mt-8">
               {selectedReport.role === "timer" && (
                 <TimerReportDisplay
-                  data={selectedReport.submission.data as any}
+                  data={selectedReport.submission.data as TimerReportData}
                 />
               )}
               {selectedReport.role === "ahcounter" && (
                 <AhCounterReportDisplay
-                  data={selectedReport.submission.data as any}
+                  data={selectedReport.submission.data as AhCounterReportData}
                 />
               )}
               {selectedReport.role === "grammarian" && (
                 <GrammarianReportDisplay
-                  data={selectedReport.submission.data as any}
+                  data={selectedReport.submission.data as GrammarianReportData}
                 />
               )}
             </div>
@@ -293,13 +348,13 @@ export default function RoomReportsView({
               {report.submission ? (
                 <div className="mt-4">
                   {report.role === "timer" && (
-                    <TimerReportDisplay data={report.submission.data as any} />
+                    <TimerReportDisplay data={report.submission.data as TimerReportData} />
                   )}
                   {report.role === "ahcounter" && (
-                    <AhCounterReportDisplay data={report.submission.data as any} />
+                    <AhCounterReportDisplay data={report.submission.data as AhCounterReportData} />
                   )}
                   {report.role === "grammarian" && (
-                    <GrammarianReportDisplay data={report.submission.data as any} />
+                    <GrammarianReportDisplay data={report.submission.data as GrammarianReportData} />
                   )}
                 </div>
               ) : (

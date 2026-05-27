@@ -15,11 +15,25 @@ export interface GrammarianPerson {
   improvement: string;
 }
 
+export interface GrammarianImproperUseEntry {
+  id?: string;
+  name: string;
+  whatWasSaid: string;
+  suggestion: string;
+}
+
+export interface GrammarianNotablePhraseEntry {
+  id?: string;
+  name: string;
+  phrase: string;
+  meaning?: string;
+}
+
 export interface GrammarianReportData {
   wod: string;
   meaning: string;
-  general: string;
-  people: GrammarianPerson[];
+  improperUseEntries: GrammarianImproperUseEntry[];
+  notablePhraseEntries: GrammarianNotablePhraseEntry[];
 }
 
 export interface AhCounterPerson {

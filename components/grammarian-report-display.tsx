@@ -12,6 +12,7 @@ interface GrammarianReportDisplayProps {
       id?: string;
       name: string;
       phrase: string;
+      meaning?: string;
     }>;
   };
 }
@@ -111,8 +112,13 @@ export default function GrammarianReportDisplay({
                     }`}
                   >
                     <td className="px-5 py-4 text-[#0A0A0A]">{entry.name}</td>
-                    <td className="px-5 py-4 text-[#0A0A0A] italic">
-                      "{entry.phrase}"
+                    <td className="px-5 py-4 text-[#0A0A0A]">
+                      <div className="italic">&ldquo;{entry.phrase}&rdquo;</div>
+                      {entry.meaning ? (
+                        <div className="mt-1 text-sm not-italic text-[#667085]">
+                          {entry.meaning}
+                        </div>
+                      ) : null}
                     </td>
                   </tr>
                 ))}

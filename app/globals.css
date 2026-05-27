@@ -90,40 +90,44 @@
   }
   html {
     font-family: var(--font-geist), -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    min-height: 100%;
   }
   body {
     @apply bg-background text-foreground;
+    min-height: 100%;
+    background: #ffffff;
     line-height: 1.6;
   }
 }
 
 @layer components {
   .page-shell {
-    @apply min-h-screen bg-white px-3 py-4 sm:px-5 sm:py-6;
+    @apply min-h-screen px-3 py-4 sm:px-5 sm:py-6;
+    background: transparent;
   }
 
   .page-panel {
-    @apply mx-auto flex w-full max-w-3xl flex-col gap-4 rounded-3xl border border-[#EAEAEA] bg-white p-4 sm:p-5;
+    @apply mx-auto flex w-full max-w-3xl flex-col gap-4 border border-[#D0D0D0] bg-white p-4 sm:p-5;
   }
 
   .surface-card {
-    @apply rounded-[1.5rem] border border-[#EAEAEA] bg-white p-4 sm:p-5;
+    @apply border border-[#D0D0D0] bg-white p-4 sm:p-5;
   }
 
   .surface-input {
-    @apply w-full rounded-2xl border border-[#EAEAEA] bg-white px-4 py-2.5 text-[15px] text-[#0A0A0A] transition-colors outline-none placeholder:text-[#8A8A8A] hover:bg-[#F7F7F7] focus:border-[#0A0A0A];
+    @apply w-full rounded-2xl border border-[#EAEAEA] bg-white px-4 py-2.5 text-[15px] text-[#0A0A0A] transition-colors outline-none placeholder:text-[#8A8A8A] focus:border-[#0A0A0A];
   }
 
   .surface-button {
-    @apply inline-flex items-center justify-center rounded-2xl border border-[#0A0A0A] bg-[#0A0A0A] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#222222] disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex items-center justify-center rounded-2xl border border-[#0A0A0A] bg-[#0A0A0A] px-5 py-2.5 text-sm font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-40;
   }
 
   .surface-button-secondary {
-    @apply inline-flex items-center justify-center rounded-2xl border border-[#EAEAEA] bg-white px-5 py-2.5 text-sm font-semibold text-[#0A0A0A] transition-colors hover:bg-[#F7F7F7] disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex items-center justify-center rounded-2xl border border-[#EAEAEA] bg-white px-5 py-2.5 text-sm font-semibold text-[#0A0A0A] transition-colors disabled:cursor-not-allowed disabled:opacity-40;
   }
 
   .surface-button-ghost {
-    @apply inline-flex items-center justify-center rounded-2xl border border-transparent bg-transparent px-0 py-1 text-sm font-medium text-[#6B6B6B] transition-colors hover:text-[#0A0A0A];
+    @apply inline-flex items-center justify-center rounded-2xl border border-transparent bg-transparent px-0 py-1 text-sm font-medium text-[#6B6B6B] transition-colors
   }
 
   .section-label {
@@ -142,4 +146,133 @@
   .page-copy {
     @apply max-w-2xl text-sm leading-6 text-[#6B6B6B];
   }
+
+  .page-heading-inset {
+    @apply bg-white px-4 py-5 sm:px-6 sm:py-6;
+  }
+
+  .page-shell :where(section, div)[class*="rounded-"][class*="border"]:not([class*="fixed"]):not([class*="absolute"]) {
+    background: #ffffff;
+    border-color: #d0d0d0;
+  }
+}
+
+body,
+body * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body {
+  color: #111111 !important;
+  background: #ffffff !important;
+}
+
+h1 {
+  font-size: 2.25rem !important;
+  line-height: 1.15 !important;
+  letter-spacing: 0 !important;
+}
+
+h2 {
+  font-size: 1.5rem !important;
+  line-height: 1.25 !important;
+  letter-spacing: 0 !important;
+}
+
+h3 {
+  font-size: 1.125rem !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
+}
+
+p,
+span,
+label,
+input,
+textarea,
+select,
+button,
+a,
+li,
+td,
+th {
+  letter-spacing: 0 !important;
+}
+
+[class*="bg-"] {
+  background: transparent !important;
+}
+
+[class*="text-"] {
+  color: #111111 !important;
+}
+
+[class*="shadow"],
+[class*="backdrop"],
+[class*="ring-"] {
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+[class*="rounded"] {
+  border-radius: 0 !important;
+}
+
+section,
+article,
+form,
+table,
+[class*="surface"],
+[class*="page-heading"],
+[class*="page-panel"],
+[class*="card"],
+[class*="border"] {
+  border-color: #d0d0d0 !important;
+}
+
+button,
+a[class*="rounded"],
+a[data-slot="button"],
+.surface-button,
+.surface-button-secondary,
+.surface-button-ghost {
+  color: #111111 !important;
+  background: #ffffff !important;
+  border: 1px solid #111111 !important;
+  border-radius: 0 !important;
+  font-weight: 500 !important;
+}
+
+button:disabled,
+a[aria-disabled="true"] {
+  opacity: 0.45 !important;
+}
+
+button.timer-section-button-active,
+button[aria-pressed="true"] {
+  color: #ffffff !important;
+  background: #111111 !important;
+  border-color: #111111 !important;
+}
+
+input,
+textarea,
+select {
+  color: #111111 !important;
+  background: #ffffff !important;
+  border: 1px solid #888888 !important;
+  border-radius: 0 !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #111111 !important;
+  outline-offset: 2px !important;
 }

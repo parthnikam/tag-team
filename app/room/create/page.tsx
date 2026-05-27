@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import BackLink from "@/components/back-link";
 import { ROOM_ROLES, ROOM_ROLE_LABELS, type RoomRole } from "@/lib/roles";
+import { setCachedRoomSession } from "@/components/room-session-cache";
 
 type JoinAs = "host" | RoomRole;
 
@@ -47,6 +48,12 @@ export default function Page() {
           window.sessionStorage.setItem("toastmasters-display-name", hostName.trim());
         }
 
+        setCachedRoomSession({
+          code: roomCode,
+          clubName: clubName.trim() || "Toastmasters meeting",
+          hostName: hostName.trim(),
+        });
+
         router.push(`/room/${roomCode}`);
       } catch {
         setError("Could not create meeting.");
@@ -60,12 +67,14 @@ export default function Page() {
         <BackLink href="/room" label="Back" />
 
         <section className="mt-4 rounded-[2rem] border border-[#E7E7E7] bg-white p-4 sm:p-6">
+          <div className="page-heading-inset">
           <h1 className="text-[2.45rem] font-semibold tracking-[-0.06em] text-[#0A0A0A]">
             Create Meeting
           </h1>
           <p className="mt-2 text-[1rem] leading-7 text-[#667085]">
             You&apos;ll receive a 6-character code to share with your TAG team.
           </p>
+          </div>
 
           <div className="mt-7 flex flex-col gap-5">
             <label className="flex flex-col gap-2">
@@ -73,7 +82,7 @@ export default function Page() {
               <input
                 value={hostName}
                 onChange={(event) => setHostName(event.target.value)}
-                className="w-full rounded-full border border-[#E7E7E7] px-5 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                className="w-full rounded-full border border-[#E7E7E7] px-5 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
                 placeholder="Eleanor Vance"
               />
             </label>
@@ -85,7 +94,7 @@ export default function Page() {
               <input
                 value={clubName}
                 onChange={(event) => setClubName(event.target.value)}
-                className="w-full rounded-full border border-[#E7E7E7] px-5 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                className="w-full rounded-full border border-[#E7E7E7] px-5 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
                 placeholder="Tuesday Evening Club"
               />
             </label>
@@ -117,7 +126,7 @@ export default function Page() {
                   className={`rounded-[1.7rem] border px-5 py-4 text-left transition-colors ${
                     isSelected
                       ? "border-[#0A0A0A] text-[#0A0A0A] bg-[#F7F7F7]"
-                      : "border-[#E7E7E7] bg-white text-[#0A0A0A] hover:bg-[#F7F7F7]"
+                      : "border-[#E7E7E7] bg-white text-[#0A0A0A]"
                   }`}
                 >
                   <div className="text-[1rem] font-medium">{label}</div>
@@ -133,7 +142,7 @@ export default function Page() {
             type="button"
             onClick={handleCreateMeeting}
             disabled={isPending || !hostName.trim()}
-            className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#0A0A0A] px-7 py-3.5 text-[1rem] font-semibold text-white transition-colors hover:bg-[#222222] disabled:opacity-50"
+            className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded-full bg-[#0A0A0A] px-7 py-3.5 text-[1rem] font-semibold text-white transition-colors disabled:opacity-50"
           >
             {isPending ? "Creating meeting..." : "Create Meeting"}
             <ArrowRight className="h-5 w-5" />

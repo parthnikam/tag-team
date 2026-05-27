@@ -12,7 +12,7 @@ export default function SignupConfirmationPage() {
           If you don't see the email, please check your spam folder.
         </p>
         <p className="text-white mt-8">
-          <a href="/auth/login" className="text-blue-400 hover:text-blue-300">
+          <a href="/auth/login" className="text-blue-400">
             Back to login
           </a>
         </p>

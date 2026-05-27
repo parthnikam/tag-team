@@ -13,7 +13,7 @@ export default function BackLink({
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-1.5 text-sm font-medium text-[#475467] transition-colors hover:text-[#0A0A0A]"
+      className="inline-flex items-center gap-1.5 text-sm font-medium text-[#475467] transition-colors"
     >
       <ArrowLeft className="h-4 w-4" />
       {label}

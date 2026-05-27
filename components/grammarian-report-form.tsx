@@ -1,9 +1,14 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import BackLink from "@/components/back-link";
+import { setCachedRoomSession, useCachedRoomSession } from "@/components/room-session-cache";
+import {
+  clearRoleReportDraft,
+  getRoleReportDraft,
+  setRoleReportDraft,
+} from "@/components/role-report-draft-cache";
 import { Send, Trash2 } from "lucide-react";
-import { ROOM_ROLE_LABELS } from "@/lib/roles";
 
 interface ImproperUseEntry {
   id: string;
@@ -16,7 +21,15 @@ interface NotablePhraseEntry {
   id: string;
   name: string;
   phrase: string;
+  meaning: string;
 }
+
+type GrammarianDraft = {
+  wod: string;
+  meaning: string;
+  improperUseEntries: ImproperUseEntry[];
+  notablePhraseEntries: NotablePhraseEntry[];
+};
 
 export default function GrammarianReportForm({
   code,
@@ -36,12 +49,47 @@ export default function GrammarianReportForm({
   const [submitted, setSubmitted] = useState(initialSubmitted);
   const [error, setError] = useState("");
   const [modalError, setModalError] = useState("");
-  const [showWodModal, setShowWodModal] = useState(!initialSubmitted && !initialWod);
+  const [showWodModal, setShowWodModal] = useState(
+    () =>
+      !initialSubmitted &&
+      !(getRoleReportDraft<GrammarianDraft>(code, "grammarian")?.wod || initialWod),
+  );
   const [isPending, startTransition] = useTransition();
-  const [wod, setWod] = useState(initialWod || "");
-  const [meaning, setMeaning] = useState(initialMeaning || "");
-  const [improperUseEntries, setImproperUseEntries] = useState<ImproperUseEntry[]>([]);
-  const [notablePhraseEntries, setNotablePhraseEntries] = useState<NotablePhraseEntry[]>([]);
+  const [wod, setWod] = useState(
+    () => getRoleReportDraft<GrammarianDraft>(code, "grammarian")?.wod ?? initialWod ?? "",
+  );
+  const [meaning, setMeaning] = useState(
+    () =>
+      getRoleReportDraft<GrammarianDraft>(code, "grammarian")?.meaning ??
+      initialMeaning ??
+      "",
+  );
+  const cachedRoom = useCachedRoomSession(code);
+  const displayMeetingName = cachedRoom?.clubName || meetingName;
+  const displayHostName = cachedRoom?.hostName || hostName;
+  const [improperUseEntries, setImproperUseEntries] = useState<ImproperUseEntry[]>(
+    () =>
+      getRoleReportDraft<GrammarianDraft>(code, "grammarian")?.improperUseEntries ??
+      [],
+  );
+  const [notablePhraseEntries, setNotablePhraseEntries] = useState<NotablePhraseEntry[]>(
+    () =>
+      getRoleReportDraft<GrammarianDraft>(code, "grammarian")?.notablePhraseEntries ??
+      [],
+  );
+
+  useEffect(() => {
+    if (submitted) {
+      return;
+    }
+
+    setRoleReportDraft<GrammarianDraft>(code, "grammarian", {
+      wod,
+      meaning,
+      improperUseEntries,
+      notablePhraseEntries,
+    });
+  }, [code, improperUseEntries, meaning, notablePhraseEntries, submitted, wod]);
 
   const addImproperUseEntry = () => {
     setImproperUseEntries([
@@ -69,7 +117,7 @@ export default function GrammarianReportForm({
   const addNotablePhraseEntry = () => {
     setNotablePhraseEntries([
       ...notablePhraseEntries,
-      { id: Date.now().toString(), name: "", phrase: "" },
+      { id: Date.now().toString(), name: "", phrase: "", meaning: "" },
     ]);
   };
 
@@ -121,6 +169,7 @@ export default function GrammarianReportForm({
       }
 
       setShowWodModal(false);
+      setCachedRoomSession({ code, wod: wod.trim(), meaning: meaning.trim() });
     });
   };
 
@@ -157,6 +206,7 @@ export default function GrammarianReportForm({
       }
 
       setSubmitted(true);
+      clearRoleReportDraft(code, "grammarian");
     });
   };
 
@@ -206,7 +256,7 @@ export default function GrammarianReportForm({
                   <button
                     type="button"
                     onClick={handleSetWod}
-                    className="inline-flex items-center justify-center rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#222222]"
+                    className="inline-flex items-center justify-center rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-semibold text-white transition-colors"
                   >
                     Set word of the day
                   </button>
@@ -220,12 +270,12 @@ export default function GrammarianReportForm({
       <div className="flex items-center justify-between gap-4 border-b border-[#ECECEC] pb-4">
         <BackLink href={`/room/${code}`} label="Lobby" />
         <p className="hidden text-xs font-medium uppercase tracking-[0.28em] text-[#667085] sm:block">
-          {meetingName}
+          {displayMeetingName}
         </p>
-        <p className="hidden text-sm text-[#667085] sm:block">{hostName}</p>
+        <p className="hidden text-sm text-[#667085] sm:block">{displayHostName}</p>
       </div>
 
-      <div className="px-1">
+      <div className="page-heading-inset">
         <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
           Grammarian
         </p>
@@ -264,7 +314,7 @@ export default function GrammarianReportForm({
             </div>
           ) : (
             notablePhraseEntries.map((entry) => (
-              <div key={entry.id} className="grid gap-2 sm:grid-cols-3 sm:items-center">
+              <div key={entry.id} className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_2.5rem] sm:items-center">
                 <input
                   type="text"
                   placeholder="Name"
@@ -272,9 +322,9 @@ export default function GrammarianReportForm({
                   onChange={(event) =>
                     updateNotablePhraseEntry(entry.id, "name", event.target.value)
                   }
-                  className="sm:col-span-1 w-full min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                  className="sm:col-span-1 w-full min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
                 />
-                <div className="flex gap-3 items-center sm:col-span-2">
+                <div className="grid min-w-0 gap-2 sm:col-span-1">
                   <input
                     type="text"
                     placeholder="The quote or phrase"
@@ -282,16 +332,26 @@ export default function GrammarianReportForm({
                     onChange={(event) =>
                       updateNotablePhraseEntry(entry.id, "phrase", event.target.value)
                     }
-                    className="flex-1 min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                    className="w-full min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
                   />
-                  <button
-                    type="button"
-                    onClick={() => removeNotablePhraseEntry(entry.id)}
-                    className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-[#667085] transition-colors hover:text-[#0A0A0A]"
-                  >
-                    <Trash2 className="h-5 w-5" />
-                  </button>
+                  <input
+                    type="text"
+                    placeholder="Meaning or impact"
+                    value={entry.meaning}
+                    onChange={(event) =>
+                      updateNotablePhraseEntry(entry.id, "meaning", event.target.value)
+                    }
+                    className="w-full min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-sm text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
+                  />
                 </div>
+                <button
+                  type="button"
+                  onClick={() => removeNotablePhraseEntry(entry.id)}
+                  className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-[#667085] transition-colors"
+                  aria-label="Remove notable phrase entry"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
               </div>
             ))
           )}
@@ -300,7 +360,7 @@ export default function GrammarianReportForm({
         <button
           type="button"
           onClick={addNotablePhraseEntry}
-          className="mt-4 text-sm font-medium text-[#0A0A0A] transition-colors hover:text-[#475467]"
+          className="mt-4 p-2 rounded-xl text-sm font-medium text-[#0A0A0A] transition-colors"
         >
           + Add entry
         </button>
@@ -326,7 +386,7 @@ export default function GrammarianReportForm({
                   onChange={(event) =>
                     updateImproperUseEntry(entry.id, "name", event.target.value)
                   }
-                className="sm:col-span-1 w-full min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                className="sm:col-span-1 w-full min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
                 />
                 <input
                   type="text"
@@ -335,7 +395,7 @@ export default function GrammarianReportForm({
                   onChange={(event) =>
                     updateImproperUseEntry(entry.id, "whatWasSaid", event.target.value)
                   }
-                className="sm:col-span-1 w-full min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                className="sm:col-span-1 w-full min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
                 />
                 <div className="flex gap-3 items-center sm:col-span-1">
                   <input
@@ -345,12 +405,12 @@ export default function GrammarianReportForm({
                     onChange={(event) =>
                       updateImproperUseEntry(entry.id, "suggestion", event.target.value)
                     }
-                className="flex-1 min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                className="flex-1 min-w-0 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
                   />
                   <button
                     type="button"
                     onClick={() => removeImproperUseEntry(entry.id)}
-                    className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-[#667085] transition-colors hover:text-[#0A0A0A]"
+                    className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-[#667085] transition-colors"
                   >
                     <Trash2 className="h-5 w-5" />
                   </button>
@@ -363,7 +423,7 @@ export default function GrammarianReportForm({
         <button
           type="button"
           onClick={addImproperUseEntry}
-          className="mt-4 text-sm font-medium text-[#0A0A0A] transition-colors hover:text-[#475467]"
+          className="mt-4 text-sm rounded-xl p-2 font-medium text-[#0A0A0A] transition-colors"
         >
           + Add entry
         </button>
@@ -379,7 +439,7 @@ export default function GrammarianReportForm({
               type="button"
               onClick={handleSubmit}
               disabled={submitted || isPending}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-[1rem] font-semibold text-white transition-colors hover:bg-[#222222] disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-[1rem] font-semibold text-white transition-colors disabled:opacity-50"
             >
               <Send className="h-4 w-4" />
               {submitted ? "Report submitted" : isPending ? "Submitting..." : "Submit report"}

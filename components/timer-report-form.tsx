@@ -2,6 +2,12 @@
 
 import { useEffect, useState, useTransition } from "react";
 import BackLink from "@/components/back-link";
+import { useCachedRoomSession } from "@/components/room-session-cache";
+import {
+  clearRoleReportDraft,
+  getRoleReportDraft,
+  setRoleReportDraft,
+} from "@/components/role-report-draft-cache";
 import {
   Play,
   RotateCcw,
@@ -30,6 +36,19 @@ const TIMER_SECTIONS: Array<{
   { key: "evaluators", title: "Evaluations", shortTitle: "Evaluations", targets: [120, 150, 180] },
 ];
 
+type TimerDraft = {
+  activeSection: TimerSectionKey;
+  currentSpeaker: string;
+  elapsedSeconds: number;
+  form: TimerReportData;
+};
+
+const createEmptyTimerReport = (): TimerReportData => ({
+  tabletopics: [createEmptyTimerPerson()],
+  speeches: [createEmptyTimerPerson()],
+  evaluators: [createEmptyTimerPerson()],
+});
+
 const formatSeconds = (totalSeconds: number) => {
   const safeSeconds = Math.max(0, Math.floor(totalSeconds));
   const minutes = Math.floor(safeSeconds / 60);
@@ -52,6 +71,42 @@ const parseTimeInput = (value: string) => {
   const minutesStr = numericString.slice(0, -2);
 
   return Number(minutesStr) * 60 + Number(secondsStr);
+};
+
+const getTimerTone = (elapsedSeconds: number, targets: [number, number, number]) => {
+  if (elapsedSeconds >= targets[2]) {
+    return {
+      section: "border-[#F97066] bg-[#FEF3F2]",
+      time: "text-[#B42318]",
+      meta: "text-[#B42318]",
+      button: "bg-[#B42318] text-white",
+    };
+  }
+
+  if (elapsedSeconds >= targets[1]) {
+    return {
+      section: "border-[#FEC84B] bg-[#FFFAEB]",
+      time: "text-[#B54708]",
+      meta: "text-[#B54708]",
+      button: "bg-[#B54708] text-white",
+    };
+  }
+
+  if (elapsedSeconds >= targets[0]) {
+    return {
+      section: "border-[#6CE9A6] bg-[#ECFDF3]",
+      time: "text-[#027A48]",
+      meta: "text-[#027A48]",
+      button: "bg-[#027A48] text-white",
+    };
+  }
+
+  return {
+    section: "border-[#E7E7E7] bg-white",
+    time: "text-[#0A0A0A]",
+    meta: "text-[#667085]",
+    button: "bg-[#0A0A0A] text-white",
+  };
 };
 
 function TimeInput({
@@ -84,7 +139,7 @@ function TimeInput({
       }}
       onBlur={() => setLocalValue(null)}
       onFocus={onFocus}
-      className="w-40 rounded-full border border-[#E7E7E7] px-5 py-3 text-center text-[1rem] text-[#475467] outline-none transition-colors hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+      className="w-40 rounded-full border border-[#E7E7E7] px-5 py-3 text-center text-[1rem] text-[#475467] outline-none transition-colors focus:border-[#0A0A0A]"
     />
   );
 }
@@ -125,7 +180,7 @@ function TimerSectionCard({
               onChange={(event) => onNameChange(index, event.target.value)}
               onFocus={() => onFocus(index)}
               placeholder="Name"
-              className="min-w-0 flex-1 rounded-full border border-[#E7E7E7] px-5 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+              className="min-w-0 flex-1 rounded-full border border-[#E7E7E7] px-5 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
             />
 
             <div className="flex items-center gap-3 sm:w-auto">
@@ -138,7 +193,7 @@ function TimerSectionCard({
               <button
                 type="button"
                 onClick={() => onRemove(index)}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-[#E7E7E7] text-[#667085] transition-colors hover:bg-[#F7F7F7] hover:text-[#0A0A0A]"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-[#E7E7E7] text-[#667085] transition-colors"
                 aria-label={`Remove ${title} speaker ${index + 1}`}
               >
                 <Trash2 className="h-4 w-4" />
@@ -151,7 +206,7 @@ function TimerSectionCard({
       <button
         type="button"
         onClick={onAdd}
-        className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#E7E7E7] px-4 py-2 text-[1rem] font-medium text-[#0A0A0A] transition-colors hover:bg-[#F7F7F7]"
+        className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#E7E7E7] px-4 py-2 text-[1rem] font-medium text-[#0A0A0A] transition-colors"
       >
         <Plus className="h-4 w-4" />
         Add speaker
@@ -174,15 +229,35 @@ export default function TimerReportForm({
   const [submitted, setSubmitted] = useState(initialSubmitted);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
-  const [activeSection, setActiveSection] = useState<TimerSectionKey>("speeches");
-  const [currentSpeaker, setCurrentSpeaker] = useState("");
-  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [activeSection, setActiveSection] = useState<TimerSectionKey>(
+    () => getRoleReportDraft<TimerDraft>(code, "timer")?.activeSection ?? "speeches",
+  );
+  const [currentSpeaker, setCurrentSpeaker] = useState(
+    () => getRoleReportDraft<TimerDraft>(code, "timer")?.currentSpeaker ?? "",
+  );
+  const [elapsedSeconds, setElapsedSeconds] = useState(
+    () => getRoleReportDraft<TimerDraft>(code, "timer")?.elapsedSeconds ?? 0,
+  );
   const [isRunning, setIsRunning] = useState(false);
-  const [form, setForm] = useState<TimerReportData>({
-    tabletopics: [createEmptyTimerPerson()],
-    speeches: [createEmptyTimerPerson()],
-    evaluators: [createEmptyTimerPerson()],
-  });
+  const cachedRoom = useCachedRoomSession(code);
+  const displayMeetingName = cachedRoom?.clubName || meetingName;
+  const displayHostName = cachedRoom?.hostName || hostName;
+  const [form, setForm] = useState<TimerReportData>(
+    () => getRoleReportDraft<TimerDraft>(code, "timer")?.form ?? createEmptyTimerReport(),
+  );
+
+  useEffect(() => {
+    if (submitted) {
+      return;
+    }
+
+    setRoleReportDraft<TimerDraft>(code, "timer", {
+      activeSection,
+      currentSpeaker,
+      elapsedSeconds,
+      form,
+    });
+  }, [activeSection, code, currentSpeaker, elapsedSeconds, form, submitted]);
 
   useEffect(() => {
     if (!isRunning) {
@@ -306,10 +381,12 @@ export default function TimerReportForm({
       }
 
       setSubmitted(true);
+      clearRoleReportDraft(code, "timer");
     });
   };
 
   const activeConfig = TIMER_SECTIONS.find((section) => section.key === activeSection)!;
+  const timerTone = getTimerTone(elapsedSeconds, activeConfig.targets);
   const activeSpeakerNames = form[activeSection]
     .map((person) => person.name.trim())
     .filter(Boolean);
@@ -319,12 +396,12 @@ export default function TimerReportForm({
       <div className="flex items-center justify-between gap-4 border-b border-[#ECECEC] pb-4">
         <BackLink href={`/room/${code}`} label="Lobby" />
         <p className="hidden text-xs font-medium uppercase tracking-[0.28em] text-[#667085] sm:block">
-          {meetingName}
+          {displayMeetingName}
         </p>
-        <p className="hidden text-sm text-[#667085] sm:block">{hostName}</p>
+        <p className="hidden text-sm text-[#667085] sm:block">{displayHostName}</p>
       </div>
 
-      <div className="px-1">
+      <div className="page-heading-inset">
         <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
           Timer
         </p>
@@ -336,17 +413,18 @@ export default function TimerReportForm({
         </p>
       </div>
 
-      <section className="rounded-[2rem] border border-[#E7E7E7] p-4 sm:p-5">
+      <section className={`rounded-[2rem] border p-4 transition-colors sm:p-5 ${timerTone.section}`}>
         <div className="flex flex-wrap gap-2">
           {TIMER_SECTIONS.map((section) => (
             <button
               key={section.key}
               type="button"
+              aria-pressed={activeSection === section.key}
               onClick={() => setActiveSection(section.key)}
-              className={`rounded-full px-5 py-2.5 text-[1rem] font-medium transition-colors ${
+              className={`rounded-full border px-5 py-2.5 text-[1rem] font-medium transition-colors ${
                 activeSection === section.key
-                  ? "bg-[#0A0A0A] text-white"
-                  : "bg-[#F3F3F3] text-[#0A0A0A] hover:bg-[#ECECEC]"
+                  ? "timer-section-button-active"
+                  : "bg-[#F3F3F3] text-[#0A0A0A]"
               }`}
             >
               {section.shortTitle}
@@ -355,10 +433,10 @@ export default function TimerReportForm({
         </div>
 
         <div className="mt-8 text-center">
-          <div className="select-none text-[5.6rem] font-semibold leading-none tracking-[-0.08em] text-[#0A0A0A] sm:text-[7rem]">
+          <div className={`select-none text-[5.6rem] font-semibold leading-none tracking-[-0.08em] transition-colors sm:text-[7rem] ${timerTone.time}`}>
             {formatSeconds(elapsedSeconds)}
           </div>
-          <p className="mt-3 text-sm uppercase tracking-[0.26em] text-[#667085]">
+          <p className={`mt-3 text-sm uppercase tracking-[0.26em] transition-colors ${timerTone.meta}`}>
             GREEN {formatSeconds(activeConfig.targets[0])}
             <span className="mx-3">·</span>
             YELLOW {formatSeconds(activeConfig.targets[1])}
@@ -373,7 +451,7 @@ export default function TimerReportForm({
             onChange={(event) => setCurrentSpeaker(event.target.value)}
             list="timer-speakers"
             placeholder="Current speaker"
-            className="w-full rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+            className="w-full rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
           />
           <datalist id="timer-speakers">
             {activeSpeakerNames.map((speakerName) => (
@@ -385,7 +463,7 @@ export default function TimerReportForm({
             <button
               type="button"
               onClick={() => setIsRunning((current) => !current)}
-              className="inline-flex items-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-[1rem] font-semibold text-white transition-colors hover:bg-[#222222]"
+              className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-[1rem] font-semibold transition-colors ${timerTone.button}`}
             >
               {isRunning ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
               {isRunning ? "Pause" : "Start"}
@@ -397,7 +475,7 @@ export default function TimerReportForm({
                 setIsRunning(false);
                 setElapsedSeconds(0);
               }}
-              className="inline-flex items-center gap-2 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] font-medium text-[#0A0A0A] transition-colors hover:bg-[#F7F7F7]"
+              className="inline-flex items-center gap-2 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] font-medium text-[#0A0A0A] transition-colors"
             >
               <RotateCcw className="h-4 w-4" />
               Reset
@@ -406,7 +484,7 @@ export default function TimerReportForm({
             <button
               type="button"
               onClick={recordCurrentTime}
-              className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F3] px-6 py-3 text-[1rem] font-medium text-[#0A0A0A] transition-colors hover:bg-[#ECECEC]"
+              className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F3] px-6 py-3 text-[1rem] font-medium text-[#0A0A0A] transition-colors"
             >
               <Save className="h-4 w-4" />
               Record
@@ -452,7 +530,7 @@ export default function TimerReportForm({
               type="button"
               onClick={handleSubmit}
               disabled={submitted || isPending}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-[1rem] font-semibold text-white transition-colors hover:bg-[#222222] disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-[1rem] font-semibold text-white transition-colors disabled:opacity-50"
             >
               <Send className="h-4 w-4" />
               {submitted ? "Report submitted" : isPending ? "Submitting..." : "Submit report"}

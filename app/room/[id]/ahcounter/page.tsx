@@ -1,5 +1,8 @@
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import AhCounterReportForm from "@/components/ahcounter-report-form";
+import { claimRoomRole } from "@/lib/claim-room-role";
+import { participantNameCookie } from "@/lib/room-session-keys";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Page(props: PageProps<"/room/[id]/ahcounter">) {
@@ -11,18 +14,25 @@ export default async function Page(props: PageProps<"/room/[id]/ahcounter">) {
       data: { user },
     },
     reportsResult,
-    roomResult,
   ] = await Promise.all([
     supabase.auth.getUser(),
     supabase.from("reports").select("ahcounter").eq("roomCode", id).maybeSingle(),
-    supabase
-      .from("room")
-      .select("ahcounter, club_name, host_name")
-      .eq("code", id)
-      .maybeSingle(),
   ]);
 
-  if (roomResult.error || !user || roomResult.data?.ahcounter !== user.id) {
+  const cookieStore = await cookies();
+  const encodedParticipantName = cookieStore.get(participantNameCookie(id))?.value;
+  const participantName = encodedParticipantName
+    ? decodeURIComponent(encodedParticipantName)
+    : undefined;
+  const claim = await claimRoomRole({
+    supabase,
+    code: id,
+    role: "ahcounter",
+    user,
+    participantName,
+  });
+
+  if (claim.error || !claim.allowed) {
     redirect(`/room/${id}`);
   }
 
@@ -31,8 +41,8 @@ export default async function Page(props: PageProps<"/room/[id]/ahcounter">) {
       <AhCounterReportForm
         code={id}
         initialSubmitted={Boolean(reportsResult.data?.ahcounter)}
-        meetingName={roomResult.data.club_name ?? "Meeting"}
-        hostName={roomResult.data.host_name ?? ""}
+        meetingName="Meeting"
+        hostName=""
       />
     </main>
   );

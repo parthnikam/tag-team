@@ -1,7 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import BackLink from "@/components/back-link";
+import { useCachedRoomSession } from "@/components/room-session-cache";
+import {
+  clearRoleReportDraft,
+  getRoleReportDraft,
+  setRoleReportDraft,
+} from "@/components/role-report-draft-cache";
 import { Send, Trash2, UserPlus } from "lucide-react";
 import {
   createEmptyAhCounterPerson,
@@ -24,6 +30,12 @@ const COUNT_FIELDS: Array<{
   { key: "and", label: "AND" },
 ];
 
+type AhCounterDraft = {
+  form: AhCounterReportData;
+  newSpeakerName: string;
+  selectedIndex: number | null;
+};
+
 export default function AhCounterReportForm({
   code,
   initialSubmitted,
@@ -38,11 +50,30 @@ export default function AhCounterReportForm({
   const [submitted, setSubmitted] = useState(initialSubmitted);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
-  const [newSpeakerName, setNewSpeakerName] = useState("");
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [form, setForm] = useState<AhCounterReportData>({
-    people: [],
-  });
+  const [newSpeakerName, setNewSpeakerName] = useState(
+    () => getRoleReportDraft<AhCounterDraft>(code, "ahcounter")?.newSpeakerName ?? "",
+  );
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(
+    () => getRoleReportDraft<AhCounterDraft>(code, "ahcounter")?.selectedIndex ?? null,
+  );
+  const cachedRoom = useCachedRoomSession(code);
+  const displayMeetingName = cachedRoom?.clubName || meetingName;
+  const displayHostName = cachedRoom?.hostName || hostName;
+  const [form, setForm] = useState<AhCounterReportData>(
+    () => getRoleReportDraft<AhCounterDraft>(code, "ahcounter")?.form ?? { people: [] },
+  );
+
+  useEffect(() => {
+    if (submitted) {
+      return;
+    }
+
+    setRoleReportDraft<AhCounterDraft>(code, "ahcounter", {
+      form,
+      newSpeakerName,
+      selectedIndex,
+    });
+  }, [code, form, newSpeakerName, selectedIndex, submitted]);
 
   const updatePerson = (
     index: number,
@@ -136,6 +167,7 @@ export default function AhCounterReportForm({
       }
 
       setSubmitted(true);
+      clearRoleReportDraft(code, "ahcounter");
     });
   };
 
@@ -147,12 +179,12 @@ export default function AhCounterReportForm({
       <div className="flex items-center justify-between gap-4 border-b border-[#ECECEC] pb-4">
         <BackLink href={`/room/${code}`} label="Lobby" />
         <p className="hidden text-xs font-medium uppercase tracking-[0.28em] text-[#667085] sm:block">
-          {meetingName}
+          {displayMeetingName}
         </p>
-        <p className="hidden text-sm text-[#667085] sm:block">{hostName}</p>
+        <p className="hidden text-sm text-[#667085] sm:block">{displayHostName}</p>
       </div>
 
-      <div className="px-1">
+      <div className="page-heading-inset">
         <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
           Ah Counter
         </p>
@@ -180,7 +212,7 @@ export default function AhCounterReportForm({
                 className={`rounded-full px-5 py-2.5 text-[1rem] font-medium transition-colors ${
                   isSelected
                     ? "bg-[#0A0A0A] text-white"
-                    : "border border-[#E5E5E5] bg-white text-[#0A0A0A] hover:bg-[#F7F7F7]"
+                    : "border border-[#E5E5E5] bg-white text-[#0A0A0A]"
                 }`}
               >
                 {label}
@@ -194,13 +226,13 @@ export default function AhCounterReportForm({
             value={newSpeakerName}
             onChange={(event) => setNewSpeakerName(event.target.value)}
             placeholder="Add speaker name"
-            className="min-w-0 flex-1 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+            className="min-w-0 flex-1 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
           />
 
           <button
             type="button"
             onClick={addSpeaker}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E5E5E5] px-6 py-3 text-[1rem] font-medium text-[#0A0A0A] transition-colors hover:bg-[#F7F7F7]"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E5E5E5] px-6 py-3 text-[1rem] font-medium text-[#0A0A0A] transition-colors"
           >
             <UserPlus className="h-4 w-4" />
             Add
@@ -226,7 +258,7 @@ export default function AhCounterReportForm({
                 }
               }}
               className={`select-none flex flex-col items-center justify-center rounded-[1rem] border border-[#E7E7E7] px-1 py-3 text-center transition-colors sm:rounded-[1.8rem] sm:px-5 sm:py-4 ${
-                selectedIndex === null ? "opacity-50" : "hover:bg-[#F8F8F8]"
+                selectedIndex === null ? "opacity-50" : ""
               }`}
               role="button"
               tabIndex={0}
@@ -251,7 +283,7 @@ export default function AhCounterReportForm({
                     adjustCount(selectedIndex, field.key, -1);
                   }
                 }}
-                className="px-4 py-1 text-[0.8rem] text-[#667085] transition-colors hover:text-[#0A0A0A] sm:px-10 sm:text-[1rem]"
+                className="px-4 py-1 text-[0.8rem] text-[#667085] transition-colors sm:px-10 sm:text-[1rem]"
               >
                 -1
               </button>
@@ -268,7 +300,7 @@ export default function AhCounterReportForm({
             <table className="min-w-full border-collapse">
             <thead className="bg-[#F7F7F7]">
               <tr>
-                <th className="px-5 py-2 text-left text-sm font-medium uppercase tracking-[0.22em] text-[#475467]">
+                <th className="px-6 py-2 text-left text-sm font-medium uppercase tracking-[0.22em] text-[#475467]">
                   Name
                 </th>
                 {COUNT_FIELDS.map((field) => (
@@ -286,12 +318,12 @@ export default function AhCounterReportForm({
             <tbody>
               {form.people.map((person, index) => (
                 <tr key={`${person.name}-${index}`} className="border-t border-[#ECECEC]">
-                  <td className="px-4 py-1.5">
+                  <td className="px-2 py-1.5">
                     <input
                       value={person.name}
                       onChange={(event) => updatePerson(index, "name", event.target.value)}
                       onFocus={() => setSelectedIndex(index)}
-                      className="w-full min-w-44 rounded-full border border-[#E7E7E7] px-4 py-1.5 text-[1rem] text-[#0A0A0A] outline-none transition-colors hover:bg-[#F9F9F9] focus:border-[#0A0A0A]"
+                      className="w-full min-w-30 rounded-full border border-[#E7E7E7] px-4 py-1.5 text-[1rem] text-[#0A0A0A] outline-none transition-colors focus:border-[#0A0A0A]"
                     />
                   </td>
 
@@ -305,7 +337,7 @@ export default function AhCounterReportForm({
                     <button
                       type="button"
                       onClick={() => removeSpeaker(index)}
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#E7E7E7] text-[#667085] transition-colors hover:bg-[#F7F7F7] hover:text-[#0A0A0A]"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#E7E7E7] text-[#667085] transition-colors"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -332,7 +364,7 @@ export default function AhCounterReportForm({
               type="button"
               onClick={handleSubmit}
               disabled={submitted || isPending}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-[1rem] font-semibold text-white transition-colors hover:bg-[#222222] disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-[1rem] font-semibold text-white transition-colors disabled:opacity-50"
             >
               <Send className="h-4 w-4" />
               {submitted ? "Report submitted" : isPending ? "Submitting..." : "Submit report"}

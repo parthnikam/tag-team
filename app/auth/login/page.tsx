@@ -35,7 +35,7 @@ export default function AuthPage() {
             className={`flex-1 rounded-full py-2.5 text-sm font-semibold transition-all ${
               activeTab === 'login' 
                 ? 'bg-white text-[#0A0A0A] shadow-[0_2px_8px_rgba(0,0,0,0.08)]' 
-                : 'text-[#667085] hover:text-[#0A0A0A]'
+                : 'text-[#667085]'
             }`}
           >
             Login
@@ -46,7 +46,7 @@ export default function AuthPage() {
             className={`flex-1 rounded-full py-2.5 text-sm font-semibold transition-all ${
               activeTab === 'signup' 
                 ? 'bg-white text-[#0A0A0A] shadow-[0_2px_8px_rgba(0,0,0,0.08)]' 
-                : 'text-[#667085] hover:text-[#0A0A0A]'
+                : 'text-[#667085]'
             }`}
           >
             Sign Up
@@ -60,7 +60,7 @@ export default function AuthPage() {
           </div>
         )}
 
-        <div className="mb-8">
+        <div className="page-heading-inset mb-8">
           <h1 className="text-[2rem] font-semibold tracking-[-0.05em] text-[#0A0A0A]">
             {activeTab === 'login' ? 'Welcome back' : 'Create an account'}
           </h1>
@@ -79,7 +79,7 @@ export default function AuthPage() {
               type="email"
               placeholder="name@example.com"
               required
-              className="w-full rounded-[1.2rem] border border-[#E7E7E7] bg-[#F9F9F9] px-5 py-3.5 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#94A3B8] hover:bg-[#F2F2F2] focus:border-[#0A0A0A] focus:bg-white"
+              className="w-full rounded-[1.2rem] border border-[#E7E7E7] bg-[#F9F9F9] px-5 py-3.5 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#94A3B8] focus:border-[#0A0A0A] focus:bg-white"
             />
           </label>
 
@@ -90,7 +90,7 @@ export default function AuthPage() {
               type="password"
               placeholder="••••••••"
               required
-              className="w-full rounded-[1.2rem] border border-[#E7E7E7] bg-[#F9F9F9] px-5 py-3.5 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#94A3B8] hover:bg-[#F2F2F2] focus:border-[#0A0A0A] focus:bg-white"
+              className="w-full rounded-[1.2rem] border border-[#E7E7E7] bg-[#F9F9F9] px-5 py-3.5 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#94A3B8] focus:border-[#0A0A0A] focus:bg-white"
             />
           </label>
 
@@ -102,14 +102,14 @@ export default function AuthPage() {
                 type="password"
                 placeholder="••••••••"
                 required
-                className="w-full rounded-[1.2rem] border border-[#E7E7E7] bg-[#F9F9F9] px-5 py-3.5 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#94A3B8] hover:bg-[#F2F2F2] focus:border-[#0A0A0A] focus:bg-white"
+                className="w-full rounded-[1.2rem] border border-[#E7E7E7] bg-[#F9F9F9] px-5 py-3.5 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#94A3B8] focus:border-[#0A0A0A] focus:bg-white"
               />
             </label>
           )}
 
           <button 
             formAction={activeTab === 'login' ? login : signup}
-            className="mt-2 flex w-full items-center justify-center rounded-full bg-[#0A0A0A] px-6 py-3.5 text-[1rem] font-semibold text-white transition-colors hover:bg-[#222222]"
+            className="mt-2 flex w-full items-center justify-center rounded-full bg-[#0A0A0A] px-6 py-3.5 text-[1rem] font-semibold text-white transition-colors"
           >
             {activeTab === 'login' ? 'Login' : 'Create Account'}
           </button>
@@ -126,7 +126,7 @@ export default function AuthPage() {
         <form>
           <button
             formAction={signInWithGoogle}
-            className="flex w-full items-center justify-center gap-3 rounded-full border border-[#E7E7E7] bg-white px-6 py-3.5 text-[1rem] font-semibold text-[#0A0A0A] transition-colors hover:bg-[#F9F9F9]"
+            className="flex w-full items-center justify-center gap-3 rounded-full border border-[#E7E7E7] bg-white px-6 py-3.5 text-[1rem] font-semibold text-[#0A0A0A] transition-colors"
           >
             <GoogleIcon />
             Continue with Google

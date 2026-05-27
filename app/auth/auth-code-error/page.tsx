@@ -11,12 +11,12 @@ export default function AuthCodeErrorPage() {
         <div className="space-y-4">
           <a
             href="/auth/signup"
-            className="inline-block bg-white text-black font-semibold py-2 px-6 rounded-full hover:bg-gray-200"
+            className="inline-block bg-white text-black font-semibold py-2 px-6 rounded-full"
           >
             Sign Up Again
           </a>
           <p>
-            <a href="/auth/login" className="text-blue-400 hover:text-blue-300">
+            <a href="/auth/login" className="text-blue-400">
               Back to login
             </a>
           </p>

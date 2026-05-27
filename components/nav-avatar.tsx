@@ -31,7 +31,7 @@ export default function NavAvatar({ user }: { user: User | null }) {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0A0A0A] text-sm font-semibold text-white shadow-sm ring-2 ring-white hover:bg-[#222222] transition-colors"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0A0A0A] text-sm font-semibold text-white shadow-sm ring-2 ring-white transition-colors"
         >
           {initials}
         </button>
@@ -46,22 +46,22 @@ export default function NavAvatar({ user }: { user: User | null }) {
                 {user.email}
               </p>
             </div>
-            <div className="my-1 border-t border-[#EAEAEA]" />
-            {/* <Link
-              href="/meetings"
-              onClick={() => setIsOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-medium text-[#0A0A0A] transition-colors hover:bg-[#F7F7F7]"
-            >
-              My Meetings
-            </Link> */}
+            <div className="my-1 "/>
+              <Link
+                href="/meetings"
+                onClick={() => setIsOpen(false)}
+                className="block px-3 py-2 text-sm font-medium text-[#0A0A0A] transition-colors"
+              >
+                Past meetings
+              </Link>
 
-            <Link
-              href="/"
-              onClick={signOut}
-              className="block rounded-xl px-3 py-2 text-sm font-medium text-[#0A0A0A] transition-colors hover:bg-[#F7F7F7]"
-            >
-              Logout
-            </Link>
+              <Link
+                href="/"
+                onClick={signOut}
+                className="block px-3 py-2 text-sm font-medium text-[#0A0A0A] transition-colors"
+              >
+                Logout
+              </Link>
           </div>
         )}
       </div>

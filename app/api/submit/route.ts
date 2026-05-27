@@ -47,17 +47,35 @@ export async function POST(req: Request) {
 
   const typedRole = role as RoomRole;
 
-  const { data: existingRow, error: existingError } = await supabase
-    .from("reports")
-    .select(`roomCode, ${typedRole}`)
-    .eq("roomCode", code)
-    .maybeSingle();
+  const [roomResult, existingResult] = await Promise.all([
+    supabase.from("room").select(typedRole).eq("code", code).maybeSingle(),
+    supabase
+      .from("reports")
+      .select(`roomCode, ${typedRole}`)
+      .eq("roomCode", code)
+      .maybeSingle(),
+  ]);
 
-  if (existingError) {
-    return Response.json({ error: existingError.message }, { status: 500 });
+  if (roomResult.error) {
+    return Response.json({ error: roomResult.error.message }, { status: 500 });
   }
 
-  if (existingRow && existingRow[typedRole as keyof typeof existingRow]) {
+  if (!roomResult.data) {
+    return Response.json({ error: "Room not found" }, { status: 404 });
+  }
+
+  if ((roomResult.data as Record<RoomRole, string | null>)[typedRole] !== user.id) {
+    return Response.json(
+      { error: "You are not assigned to this role" },
+      { status: 403 },
+    );
+  }
+
+  if (existingResult.error) {
+    return Response.json({ error: existingResult.error.message }, { status: 500 });
+  }
+
+  if (existingResult.data && existingResult.data[typedRole as keyof typeof existingResult.data]) {
     return Response.json(
       { error: "This role has already submitted data" },
       { status: 409 },
