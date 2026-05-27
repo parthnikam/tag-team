@@ -1,13 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useEffect } from "react";
+import { type ReactNode } from "react";
+import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { ArrowRight, BookOpenText, Clock3, Mic } from "lucide-react";
+import { claimAndEnterRole } from "@/app/room/[id]/actions";
 import { ROOM_ROLES, ROOM_ROLE_LABELS, type RoomRole } from "@/lib/roles";
 import {
-  getCachedParticipantName,
   setCachedParticipantName,
   setCachedRoomSession,
+  useCachedParticipantName,
 } from "@/components/room-session-cache";
 
 type OccupiedRoles = Partial<Record<RoomRole, string | null>>;
@@ -47,8 +51,7 @@ export default function RoomRolePicker({
   currentUserName: string;
 }) {
   const router = useRouter();
-  const [error, setError] = useState("");
-  const [pendingRole, setPendingRole] = useState<RoomRole | null>(null);
+  const participantName = useCachedParticipantName(code, currentUserName);
 
   useEffect(() => {
     router.prefetch(`/room/${code}/reports`);
@@ -58,40 +61,6 @@ export default function RoomRolePicker({
       }
     });
   }, [code, currentUserId, roleAssignments, router]);
-
-  const handleJoin = (selectedRole: RoomRole) => {
-    setError("");
-    setPendingRole(selectedRole);
-    const participantName = getCachedParticipantName(code, currentUserName);
-
-    setCachedParticipantName(code, participantName);
-    setCachedRoomSession({
-      code,
-      occupiedRoles: { [selectedRole]: participantName },
-      roleAssignments: { [selectedRole]: currentUserId },
-    });
-
-    router.push(`/room/${code}/${selectedRole}`);
-
-    void (async () => {
-      try {
-        await fetch("/api/joinroom", {
-          method: "POST",
-          keepalive: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            code,
-            role: selectedRole,
-            name: participantName,
-          }),
-        });
-      } catch {
-        // The destination page also claims the role; this request preserves history.
-      }
-    })();
-  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -106,32 +75,17 @@ export default function RoomRolePicker({
         const occupant = occupiedRoles[role] ?? null;
         const assignedUserId = roleAssignments[role] ?? null;
         const isTakenBySomeoneElse = Boolean(assignedUserId && assignedUserId !== currentUserId);
-        const isOpening = pendingRole === role;
+        const isTakenByCurrentUser = assignedUserId === currentUserId;
         const meta = ROLE_META[role];
         const Icon = meta.icon;
-
-        return (
-          <button
-            key={role}
-            type="button"
-            disabled={isTakenBySomeoneElse || isOpening}
-            onPointerEnter={() => {
-              if (assignedUserId === currentUserId) {
-                router.prefetch(`/room/${code}/${role}`);
-              }
-            }}
-            onFocus={() => {
-              if (assignedUserId === currentUserId) {
-                router.prefetch(`/room/${code}/${role}`);
-              }
-            }}
-            onClick={() => handleJoin(role)}
-            className={`flex items-center gap-4 border rounded-[1.7rem] px-5 py-4 text-left  ${
-              isTakenBySomeoneElse
-                ? "cursor-not-allowed  bg-white opacity-40"
-                : "bg-white"
-            }`}
-          >
+        const rolePath = `/room/${code}/${role}`;
+        const className = `flex w-full items-center gap-4 border rounded-[1.7rem] px-5 py-4 text-left ${
+          isTakenBySomeoneElse
+            ? "cursor-not-allowed bg-white opacity-40"
+            : "bg-white"
+        }`;
+        const content = (
+          <>
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F5F5F5]">
               <Icon className="h-4.5 w-4.5 text-[#0A0A0A]" />
             </div>
@@ -142,20 +96,77 @@ export default function RoomRolePicker({
               <div className="mt-0.5 text-sm text-[#667085]">
                 {isTakenBySomeoneElse
                   ? `This role is already taken by ${occupant}`
-                  : isOpening
-                    ? "Opening your live role view"
-                  : assignedUserId === currentUserId
+                  : isTakenByCurrentUser
                     ? "Open your live role view"
                     : meta.description}
               </div>
             </div>
             <ArrowRight className="h-5 w-5 shrink-0 text-[#0A0A0A]" />
-          </button>
+          </>
+        );
+
+        if (isTakenByCurrentUser) {
+          return (
+            <Link
+              key={role}
+              href={rolePath}
+              onPointerEnter={() => router.prefetch(rolePath)}
+              onFocus={() => router.prefetch(rolePath)}
+              className={className}
+            >
+              {content}
+            </Link>
+          );
+        }
+
+        return (
+          <form
+            key={role}
+            action={claimAndEnterRole}
+            onSubmit={() => {
+              setCachedParticipantName(code, participantName);
+              setCachedRoomSession({
+                code,
+                occupiedRoles: { [role]: participantName },
+                roleAssignments: { [role]: currentUserId },
+              });
+            }}
+          >
+            <input type="hidden" name="code" value={code} />
+            <input type="hidden" name="role" value={role} />
+            <input type="hidden" name="participantName" value={participantName} />
+            <RoleButton
+              className={className}
+              disabled={isTakenBySomeoneElse}
+            >
+              {content}
+            </RoleButton>
+          </form>
         );
         })}
       </div>
-
-      {error ? <p className="text-sm text-[#B42318]">{error}</p> : null}
     </div>
+  );
+}
+
+function RoleButton({
+  children,
+  className,
+  disabled,
+}: {
+  children: ReactNode;
+  className: string;
+  disabled: boolean;
+}) {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={disabled || pending}
+      className={className}
+    >
+      {children}
+    </button>
   );
 }

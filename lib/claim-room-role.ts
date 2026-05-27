@@ -4,7 +4,7 @@ import { type createClient } from "@/utils/supabase/server";
 
 type SupabaseClient = Awaited<ReturnType<typeof createClient>>;
 
-export async function claimRoomRole({
+export async function claimRoomRoleForUser({
   supabase,
   code,
   role,
@@ -57,6 +57,35 @@ export async function claimRoomRole({
 
     if (updateError) {
       return { allowed: false, room, error: updateError };
+    }
+  }
+
+  const { data: existingRoletaker, error: existingRoletakerError } = await supabase
+    .from("roletakers")
+    .select("id")
+    .eq("roomCode", code)
+    .eq("user_id", user.id)
+    .eq("role", role)
+    .maybeSingle();
+
+  if (existingRoletakerError) {
+    return { allowed: false, room, error: existingRoletakerError };
+  }
+
+  if (!existingRoletaker) {
+    const { error: roletakersError } = await supabase
+      .from("roletakers")
+      .insert([
+        {
+          roomCode: code,
+          user_id: user.id,
+          role,
+          userName: displayName,
+        },
+      ]);
+
+    if (roletakersError) {
+      return { allowed: false, room, error: roletakersError };
     }
   }
 

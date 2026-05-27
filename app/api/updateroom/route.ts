@@ -1,6 +1,25 @@
 import { ROOM_ROLES, type RoomRole } from "@/lib/roles";
 import { createClient } from "@/utils/supabase/server";
 
+const getAllowedUpdateKeys = (role: RoomRole) =>
+  role === "grammarian"
+    ? [`${role}_name`, "wod", "meaning"]
+    : [`${role}_name`];
+
+const getSafeUpdates = (
+  role: RoomRole,
+  updates: Record<string, string | null>,
+) => {
+  const allowedKeys = new Set(getAllowedUpdateKeys(role));
+  const entries = Object.entries(updates);
+
+  if (!entries.length || entries.some(([key]) => !allowedKeys.has(key))) {
+    return null;
+  }
+
+  return Object.fromEntries(entries) as Record<string, string | null>;
+};
+
 export async function POST(req: Request) {
   const supabase = await createClient();
 
@@ -24,6 +43,11 @@ export async function POST(req: Request) {
   }
 
   const typedRole = role as RoomRole;
+  const safeUpdates = getSafeUpdates(typedRole, updates);
+
+  if (!safeUpdates) {
+    return Response.json({ error: "Invalid update fields" }, { status: 400 });
+  }
 
   // Verify that the user is assigned to this role
   const { data: room, error: roomError } = await supabase
@@ -49,14 +73,14 @@ export async function POST(req: Request) {
 
   const { error } = await supabase
     .from("room")
-    .update(updates)
+    .update(safeUpdates)
     .eq("code", code);
 
   if (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
 
-  const updatedRoleName = updates[`${typedRole}_name`];
+  const updatedRoleName = safeUpdates[`${typedRole}_name`];
 
   if (updatedRoleName) {
     const { error: roletakersError } = await supabase
