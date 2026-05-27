@@ -65,7 +65,7 @@ export default function RoomRolePicker({
   return (
     <div className="flex flex-col gap-2">
       <div>
-        <h2 className="text-[1.65rem] font-semibold tracking-[-0.04em] text-[#0A0A0A]">
+        <h2 className="text-[1.65rem] font-semibold tracking-[-0.04em] text-foreground">
           Choose your TAG role
         </h2>
       </div>
@@ -81,19 +81,19 @@ export default function RoomRolePicker({
         const rolePath = `/room/${code}/${role}`;
         const className = `flex w-full items-center gap-4 border rounded-[1.7rem] px-5 py-4 text-left ${
           isTakenBySomeoneElse
-            ? "cursor-not-allowed bg-white opacity-40"
-            : "bg-white"
+            ? "cursor-not-allowed bg-card opacity-40"
+            : "bg-card"
         }`;
         const content = (
           <>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F5F5F5]">
-              <Icon className="h-4.5 w-4.5 text-[#0A0A0A]" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
+              <Icon className="h-4.5 w-4.5 text-foreground" />
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-[1.4rem] font-semibold tracking-[-0.04em] text-[#0A0A0A]">
+              <div className="text-[1.4rem] font-semibold tracking-[-0.04em] text-foreground">
                 {ROOM_ROLE_LABELS[role]}
               </div>
-              <div className="mt-0.5 text-sm text-[#667085]">
+              <div className="mt-0.5 text-sm text-muted-foreground">
                 {isTakenBySomeoneElse
                   ? `This role is already taken by ${occupant}`
                   : isTakenByCurrentUser
@@ -101,7 +101,7 @@ export default function RoomRolePicker({
                     : meta.description}
               </div>
             </div>
-            <ArrowRight className="h-5 w-5 shrink-0 text-[#0A0A0A]" />
+            <ArrowRight className="h-5 w-5 shrink-0 text-foreground" />
           </>
         );
 

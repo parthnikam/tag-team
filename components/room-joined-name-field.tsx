@@ -83,7 +83,7 @@ export default function RoomJoinedNameField({
 
   return (
     <div className="mt-3 flex flex-wrap items-center gap-2">
-      <label className="text-xs font-normal text-[1rem] text-[#667085]">
+      <label className="text-xs font-normal text-[1rem] text-muted-foreground">
         Joining as
       </label>
       <input
@@ -95,10 +95,10 @@ export default function RoomJoinedNameField({
             event.currentTarget.blur();
           }
         }}
-        className="w-40 rounded-full border border-black/6 bg-white/10 pl-2 py-1 text-sm font-semibold text-[#0A0A0A] outline-none transition-colors shadow-[inset_0_1px_0_rgba(255,255,255,0.76)] backdrop-blur-xl focus:border-[#0A0A0A] sm:w-48"
+        className="w-40 rounded-full border border-border bg-card/10 pl-2 py-1 text-sm font-semibold text-foreground outline-none transition-colors  backdrop-blur-xl focus:border-primary sm:w-48"
         aria-label="Joined as"
       />
-      {error ? <p className="basis-full text-xs text-[#B42318]">{error}</p> : null}
+      {error ? <p className="basis-full text-xs text-destructive">{error}</p> : null}
     </div>
   );
 }

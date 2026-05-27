@@ -155,7 +155,7 @@ export default function RoomReportsView({
         scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: "#FFFFFF",
+        backgroundColor: null,
       });
 
       const imgData = canvas.toDataURL("image/png");
@@ -188,11 +188,11 @@ export default function RoomReportsView({
   };
 
   if (isLoading) {
-    return <p className="text-sm text-[#6B6B6B]">Loading reports...</p>;
+    return <p className="text-sm text-muted-foreground">Loading reports...</p>;
   }
 
   if (error) {
-    return <p className="text-sm text-[#B42318]">{error}</p>;
+    return <p className="text-sm text-destructive">{error}</p>;
   }
 
   return (
@@ -201,13 +201,13 @@ export default function RoomReportsView({
       <div className="page-heading-inset flex flex-col gap-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+            <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
               meeting overview
             </p>
-            <h1 className="mt-2 text-[2.5rem] font-semibold leading-tight tracking-[-0.05em] text-[#0A0A0A]">
+            <h1 className="mt-2 text-[2.5rem] font-semibold leading-tight tracking-[-0.05em] text-foreground">
               {meetingName}
             </h1>
-            <p className="mt-2 text-sm text-[#667085]">
+            <p className="mt-2 text-sm text-muted-foreground">
               {submittedCount} of {totalCount} reports submitted
             </p>
           </div>
@@ -216,7 +216,7 @@ export default function RoomReportsView({
             type="button"
             onClick={handleExportPdf}
             disabled={isExporting}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E5E5E5] px-5 py-3 text-sm font-medium text-[#0A0A0A] transition-colors disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors disabled:opacity-50"
           >
             <Download className="h-4 w-4" />
             {isExporting ? "Exporting..." : "Export PDF"}
@@ -236,17 +236,17 @@ export default function RoomReportsView({
               onClick={() => setSelectedRole(report.role)}
               className={`flex flex-col gap-2 rounded-[1rem] border-2 p-3 text-left transition-all sm:gap-3 sm:rounded-[1.7rem] sm:px-5 sm:py-6 ${
                 isSelected
-                  ? "border-[#0A0A0A] bg-white"
-                  : "border-[#EAEAEA] bg-white"
+                  ? "border-primary bg-card"
+                  : "border-border bg-card"
               }`}
             >
               <div className="flex w-full flex-col items-start justify-between gap-2 sm:flex-row sm:items-center sm:gap-0">
-                <Icon className="h-5 w-5 text-[#0A0A0A] sm:h-6 sm:w-6" />
+                <Icon className="h-5 w-5 text-foreground sm:h-6 sm:w-6" />
                 <span
                   className={`rounded-full px-1.5 py-0.5 text-[0.55rem] font-semibold sm:px-2.5 sm:py-1 sm:text-xs ${
                     report.submitted
-                      ? "bg-[#0A0A0A] text-white"
-                      : "bg-[#FFE5D9] text-[#B42318]"
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-destructive/10 text-destructive"
                   }`}
                 >
                   {report.submitted ? "READY" : "PENDING"}
@@ -254,13 +254,13 @@ export default function RoomReportsView({
               </div>
 
               <div className="mt-1 sm:mt-0">
-                <h3 className="text-[0.8rem] font-semibold leading-tight text-[#0A0A0A] sm:text-lg">
+                <h3 className="text-[0.8rem] font-semibold leading-tight text-foreground sm:text-lg">
                   {report.label}
                 </h3>
               </div>
 
               {report.submission && (
-                <div className="w-full text-[0.6rem] text-[#667085] sm:text-xs">
+                <div className="w-full text-[0.6rem] text-muted-foreground sm:text-xs">
                   <p className="truncate font-medium">From {report.submission.name}</p>
                   <p className="mt-0.5 truncate sm:mt-1">
                     {new Date(report.submission.submittedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -274,15 +274,15 @@ export default function RoomReportsView({
 
       {/* Report Detail Section */}
       {selectedReport && (
-        <section className="rounded-[1.7rem] border border-[#EAEAEA] bg-white p-4 sm:p-6">
+        <section className="rounded-[1.7rem] border border-border bg-card p-4 sm:p-6">
           <div className="flex items-center justify-between gap-4">
-            <h2 className="text-2xl font-semibold text-[#0A0A0A]">
+            <h2 className="text-2xl font-semibold text-foreground">
               {selectedReport.label} Report
             </h2>
             <button
               type="button"
               onClick={() => setSelectedRole(null)}
-              className="text-[#667085]"
+              className="text-muted-foreground"
             >
               <X className="h-6 w-6" />
             </button>
@@ -307,7 +307,7 @@ export default function RoomReportsView({
               )}
             </div>
           ) : (
-            <p className="mt-8 text-sm text-[#6B6B6B]">
+            <p className="mt-8 text-sm text-muted-foreground">
               No report submitted yet.
             </p>
           )}
@@ -316,30 +316,30 @@ export default function RoomReportsView({
 
       {/* Hidden Export Container */}
       <div className="absolute left-[-9999px] top-[-9999px]">
-        <div ref={pdfRef} className="w-[800px] bg-white p-8 flex flex-col gap-8">
+        <div ref={pdfRef} className="w-[800px] bg-card p-8 flex flex-col gap-8">
           <div className="mb-4">
-            <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+            <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
               TAG Team Report
             </p>
-            <h1 className="mt-2 text-[2.5rem] font-semibold leading-tight tracking-[-0.05em] text-[#0A0A0A]">
+            <h1 className="mt-2 text-[2.5rem] font-semibold leading-tight tracking-[-0.05em] text-foreground">
               {meetingName}
             </h1>
-            <p className="mt-1 text-lg font-medium text-[#475467]">
+            <p className="mt-1 text-lg font-medium text-muted-foreground">
               Hosted by: {hostName}
             </p>
-            <p className="mt-2 text-sm text-[#667085]">
+            <p className="mt-2 text-sm text-muted-foreground">
               Generated on {new Date().toLocaleDateString()}
             </p>
           </div>
 
           {reports.map((report) => (
-            <section key={report.role} className="rounded-[1.7rem] border border-[#EAEAEA] bg-white p-6">
+            <section key={report.role} className="rounded-[1.7rem] border border-border bg-card p-6">
               <div className="flex items-center justify-between gap-4 mb-6">
-                <h2 className="text-2xl font-semibold text-[#0A0A0A]">
+                <h2 className="text-2xl font-semibold text-foreground">
                   {report.label} Report
                 </h2>
                 {report.submission && (
-                  <p className="text-sm text-[#667085]">
+                  <p className="text-sm text-muted-foreground">
                     By {report.submission.name}
                   </p>
                 )}
@@ -358,7 +358,7 @@ export default function RoomReportsView({
                   )}
                 </div>
               ) : (
-                <p className="mt-4 text-sm text-[#6B6B6B]">
+                <p className="mt-4 text-sm text-muted-foreground">
                   No report submitted for this role.
                 </p>
               )}

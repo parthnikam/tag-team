@@ -27,20 +27,20 @@ export default function AhCounterReportDisplay({
 }: AhCounterReportDisplayProps) {
   return (
     <div>
-      <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+      <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
         FILLER WORDS
       </p>
-      <div className="mt-3 overflow-x-auto rounded-xl border border-[#EAEAEA] bg-white">
+      <div className="mt-3 overflow-x-auto rounded-xl border border-border bg-card">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-[#EAEAEA] bg-[#F5F5F5]">
-              <th className="px-5 py-3 text-left font-medium uppercase tracking-[0.15em] text-[#475467]">
+            <tr className="border-b border-border bg-muted">
+              <th className="px-5 py-3 text-left font-medium uppercase tracking-[0.15em] text-muted-foreground">
                 NAME
               </th>
               {COUNT_FIELDS.map((field) => (
                 <th
                   key={field.key}
-                  className="px-5 py-3 text-center font-medium uppercase tracking-[0.15em] text-[#475467]"
+                  className="px-5 py-3 text-center font-medium uppercase tracking-[0.15em] text-muted-foreground"
                 >
                   {field.label}
                 </th>
@@ -51,13 +51,13 @@ export default function AhCounterReportDisplay({
             {data.people.map((person, index) => (
               <tr
                 key={index}
-                className={`${index !== data.people.length - 1 ? "border-b border-[#EAEAEA]" : ""}`}
+                className={`${index !== data.people.length - 1 ? "border-b border-border" : ""}`}
               >
-                <td className="px-5 py-4 text-[#0A0A0A]">{person.name}</td>
+                <td className="px-5 py-4 text-foreground">{person.name}</td>
                 {COUNT_FIELDS.map((field) => (
                   <td
                     key={field.key}
-                    className="px-5 py-4 text-center text-[#0A0A0A]"
+                    className="px-5 py-4 text-center text-foreground"
                   >
                     {person[field.key]}
                   </td>

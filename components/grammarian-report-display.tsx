@@ -24,14 +24,14 @@ export default function GrammarianReportDisplay({
     <div className="space-y-8">
       {/* Word of the Day */}
       <div>
-        <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+        <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
           WORD OF THE DAY
         </p>
-        <div className="mt-3 rounded-xl bg-[#F5F5F5] p-6">
-          <div className="text-2xl font-semibold text-[#0A0A0A]">
+        <div className="mt-3 rounded-xl bg-muted p-6">
+          <div className="text-2xl font-semibold text-foreground">
             {data.wod || "—"}
           </div>
-          <div className="mt-2 text-sm text-[#667085]">
+          <div className="mt-2 text-sm text-muted-foreground">
             {data.meaning || "No meaning provided"}
           </div>
         </div>
@@ -40,20 +40,20 @@ export default function GrammarianReportDisplay({
       {/* Improper Use */}
       {data.improperUseEntries && data.improperUseEntries.length > 0 && (
         <div>
-          <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+          <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
             IMPROPER USE
           </p>
-          <div className="mt-3 overflow-x-auto rounded-xl border border-[#EAEAEA] bg-white">
+          <div className="mt-3 overflow-x-auto rounded-xl border border-border bg-card">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[#EAEAEA] bg-[#F5F5F5]">
-                  <th className="px-5 py-3 text-left font-medium uppercase tracking-[0.15em] text-[#475467]">
+                <tr className="border-b border-border bg-muted">
+                  <th className="px-5 py-3 text-left font-medium uppercase tracking-[0.15em] text-muted-foreground">
                     NAME
                   </th>
-                  <th className="px-5 py-3 text-left font-medium uppercase tracking-[0.15em] text-[#475467]">
+                  <th className="px-5 py-3 text-left font-medium uppercase tracking-[0.15em] text-muted-foreground">
                     IMPROPER
                   </th>
-                  <th className="px-5 py-3 text-left font-medium uppercase tracking-[0.15em] text-[#475467]">
+                  <th className="px-5 py-3 text-left font-medium uppercase tracking-[0.15em] text-muted-foreground">
                     SUGGESTION
                   </th>
                 </tr>
@@ -64,15 +64,15 @@ export default function GrammarianReportDisplay({
                     key={entry.id || index}
                     className={`${
                       index !== data.improperUseEntries!.length - 1
-                        ? "border-b border-[#EAEAEA]"
+                        ? "border-b border-border"
                         : ""
                     }`}
                   >
-                    <td className="px-5 py-4 text-[#0A0A0A]">{entry.name}</td>
-                    <td className="px-5 py-4 text-[#0A0A0A]">
+                    <td className="px-5 py-4 text-foreground">{entry.name}</td>
+                    <td className="px-5 py-4 text-foreground">
                       {entry.whatWasSaid}
                     </td>
-                    <td className="px-5 py-4 text-[#0A0A0A]">
+                    <td className="px-5 py-4 text-foreground">
                       {entry.suggestion}
                     </td>
                   </tr>
@@ -86,17 +86,17 @@ export default function GrammarianReportDisplay({
       {/* Notable Phrasing */}
       {data.notablePhraseEntries && data.notablePhraseEntries.length > 0 && (
         <div>
-          <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+          <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
             NOTABLE PHRASING
           </p>
-          <div className="mt-3 overflow-x-auto rounded-xl border border-[#EAEAEA] bg-white">
+          <div className="mt-3 overflow-x-auto rounded-xl border border-border bg-card">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-[#EAEAEA] bg-[#F5F5F5]">
-                  <th className="px-5 py-3 text-left font-medium uppercase tracking-[0.15em] text-[#475467]">
+                <tr className="border-b border-border bg-muted">
+                  <th className="px-5 py-3 text-left font-medium uppercase tracking-[0.15em] text-muted-foreground">
                     NAME
                   </th>
-                  <th className="px-5 py-3 text-left font-medium uppercase tracking-[0.15em] text-[#475467]">
+                  <th className="px-5 py-3 text-left font-medium uppercase tracking-[0.15em] text-muted-foreground">
                     WHAT DID THEY SAY?
                   </th>
                 </tr>
@@ -107,15 +107,15 @@ export default function GrammarianReportDisplay({
                     key={entry.id || index}
                     className={`${
                       index !== data.notablePhraseEntries!.length - 1
-                        ? "border-b border-[#EAEAEA]"
+                        ? "border-b border-border"
                         : ""
                     }`}
                   >
-                    <td className="px-5 py-4 text-[#0A0A0A]">{entry.name}</td>
-                    <td className="px-5 py-4 text-[#0A0A0A]">
+                    <td className="px-5 py-4 text-foreground">{entry.name}</td>
+                    <td className="px-5 py-4 text-foreground">
                       <div className="italic">&ldquo;{entry.phrase}&rdquo;</div>
                       {entry.meaning ? (
-                        <div className="mt-1 text-sm not-italic text-[#667085]">
+                        <div className="mt-1 text-sm not-italic text-muted-foreground">
                           {entry.meaning}
                         </div>
                       ) : null}

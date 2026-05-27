@@ -20,6 +20,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -47,10 +48,33 @@
   --accent: #f7f7f7;
   --accent-foreground: #0a0a0a;
   --destructive: #b42318;
+  --destructive-foreground: #ffffff;
   --border: #e7e7e7;
   --input: #e7e7e7;
   --ring: #0a0a0a;
   --radius: 0.75rem;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #111111;
+  --card-foreground: #fafafa;
+  --popover: #111111;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #0a0a0a;
+  --secondary: #1f1f1f;
+  --secondary-foreground: #fafafa;
+  --muted: #1f1f1f;
+  --muted-foreground: #a1a1aa;
+  --accent: #1f1f1f;
+  --accent-foreground: #fafafa;
+  --destructive: #f87171;
+  --destructive-foreground: #0a0a0a;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #d4d4d8;
 }
 
 @layer base {
@@ -77,22 +101,22 @@
   }
 
   .page-panel {
-    @apply mx-auto flex w-full max-w-3xl flex-col gap-4 rounded-[2rem] border border-[#E7E7E7] bg-white p-4 sm:p-5;
+    @apply mx-auto flex w-full max-w-3xl flex-col gap-4 rounded-[2rem] border border-border bg-card p-4 sm:p-5;
   }
 
   .surface-card {
-    @apply rounded-[2rem] border border-[#E7E7E7] bg-white p-4 sm:p-5;
+    @apply rounded-[2rem] border border-border bg-card p-4 sm:p-5;
   }
 
   .surface-input {
-    @apply w-full rounded-full border border-[#E7E7E7] bg-white px-5 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A];
+    @apply w-full rounded-full border border-border bg-card px-5 py-3 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary;
   }
 
   .surface-button {
-    @apply inline-flex items-center justify-center rounded-full bg-[#0A0A0A] px-6 py-3 text-sm font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .surface-button-secondary {
-    @apply inline-flex items-center justify-center rounded-full border border-[#E7E7E7] bg-white px-6 py-3 text-sm font-semibold text-[#0A0A0A] transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-colors disabled:cursor-not-allowed disabled:opacity-50;
   }
 }

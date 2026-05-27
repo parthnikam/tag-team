@@ -107,20 +107,20 @@ export default async function MeetingsPage() {
         <BackLink href="/room" label="Home" />
 
         <div className="page-heading-inset mt-9">
-          <p className="text-xs font-medium uppercase tracking-[0.32em] text-[#667085]">
+          <p className="text-xs font-medium uppercase tracking-[0.32em] text-muted-foreground">
             History
           </p>
-          <h1 className="mt-2 text-[3.15rem] font-semibold leading-none tracking-[-0.07em] text-[#0A0A0A] sm:text-[4.1rem]">
+          <h1 className="mt-2 text-[3.15rem] font-semibold leading-none tracking-[-0.07em] text-foreground sm:text-[4.1rem]">
             Your meetings
           </h1>
-          <p className="mt-4 text-[1rem] leading-7 text-[#667085]">
+          <p className="mt-4 text-[1rem] leading-7 text-muted-foreground">
             Every meeting you&apos;ve hosted or joined.
           </p>
         </div>
 
         <section className="mt-10 flex flex-col gap-3.5 sm:gap-4">
           {meetings.length === 0 ? (
-            <div className="rounded-[2rem] border border-black/65 px-8 py-10 text-center text-[#667085]">
+            <div className="rounded-[2rem] border border-border px-8 py-10 text-center text-muted-foreground">
               You haven&apos;t participated in any meetings yet.
             </div>
           ) : (
@@ -128,30 +128,30 @@ export default async function MeetingsPage() {
                 <Link
                   key={meeting.roomCode}
                   href={`/room/${meeting.roomCode}/reports`}
-                  className="group flex items-center gap-4 rounded-[2rem] border border-black/30 px-5 py-5 text-[#0A0A0A] sm:gap-6 sm:px-8 sm:py-7"
+                  className="group flex items-center gap-4 rounded-[2rem] border border-border px-5 py-5 text-foreground sm:gap-6 sm:px-8 sm:py-7"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="truncate text-[1.25rem] font-semibold leading-tight tracking-[-0.03em] text-[#0A0A0A] sm:text-[1.45rem]">
+                      <h2 className="truncate text-[1.25rem] font-semibold leading-tight tracking-[-0.03em] text-foreground sm:text-[1.45rem]">
                         {meeting.clubName}
                       </h2>
                       {meeting.roles.map((role) => (
                         <span
                           key={role}
-                          className="rounded-full bg-[#0A0A0A] px-2.5 py-1 text-[0.65rem] font-semibold uppercase leading-none tracking-[0.12em] text-white"
+                          className="rounded-full bg-primary px-2.5 py-1 text-[0.65rem] font-semibold uppercase leading-none tracking-[0.12em] text-primary-foreground"
                         >
                           {roleLabel(role)}
                         </span>
                       ))}
                     </div>
 
-                    <p className="mt-1.5 truncate text-sm font-medium tracking-[0.24em] text-[#667085] sm:text-base">
+                    <p className="mt-1.5 truncate text-sm font-medium tracking-[0.24em] text-muted-foreground sm:text-base">
                       CODE {meeting.roomCode} <span className="tracking-normal">·</span>{" "}
                       {formatMeetingDate(meeting.joinedAt)}
                     </p>
                   </div>
 
-                  <ArrowRight className="h-4 w-4 shrink-0 text-[#667085]" />
+                  <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
                 </Link>
               ))
           )}

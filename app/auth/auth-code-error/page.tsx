@@ -2,16 +2,16 @@
 
 export default function AuthCodeErrorPage() {
   return (
-    <div className="bg-black flex flex-col justify-center h-screen items-center px-4">
+    <div className="bg-background flex flex-col justify-center h-screen items-center px-4">
       <div className="max-w-md text-center">
-        <p className="text-3xl font-bold text-white mb-4">Invalid or Expired Link</p>
+        <p className="text-3xl font-bold text-primary-foreground mb-4">Invalid or Expired Link</p>
         <p className="text-gray-300 mb-6">
           The confirmation link you clicked is invalid or has expired. Please try signing up again.
         </p>
         <div className="space-y-4">
           <a
             href="/auth/signup"
-            className="inline-block bg-white text-black font-semibold py-2 px-6 rounded-full"
+            className="inline-block bg-card text-foreground font-semibold py-2 px-6 rounded-full"
           >
             Sign Up Again
           </a>

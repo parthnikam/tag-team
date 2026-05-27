@@ -36,7 +36,7 @@ export default function RoomShareActions({
           type="button"
           onClick={handleCopyCode}
           disabled={isPending}
-          className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#E5E5E5] px-3.5 py-2 text-xs font-medium text-[#0A0A0A] transition-colors disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-1.5 rounded-full border border-border px-3.5 py-2 text-xs font-medium text-foreground transition-colors disabled:opacity-50"
         >
           {copiedCode ? (
             <>
@@ -52,7 +52,7 @@ export default function RoomShareActions({
         </button>
       </div>
 
-      {message ? <p className="text-xs text-[#6B6B6B]">{message}</p> : null}
+      {message ? <p className="text-xs text-muted-foreground">{message}</p> : null}
     </div>
   );
 }

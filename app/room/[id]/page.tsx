@@ -73,13 +73,13 @@ export default async function Page(props: PageProps<"/room/[id]">) {
         <div className="border rounded-[1.85rem] p-6 mt-3">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="min-w-0">
-              <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+              <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
                 Meeting lobby
               </p>
-              <h1 className="mt-2 text-[3rem] font-semibold leading-[0.98] tracking-[-0.04em] text-[#0A0A0A] sm:text-[3.5rem]">
+              <h1 className="mt-2 text-[3rem] font-semibold leading-[0.98] tracking-[-0.04em] text-foreground sm:text-[3.5rem]">
                 {roomResult.data.club_name}
               </h1>
-              <p className="mt-2 text-[1rem] text-[#667085]">
+              <p className="mt-2 text-[1rem] text-muted-foreground">
                 Hosted by {roomResult.data.host_name}
               </p>
             </div>
@@ -88,10 +88,10 @@ export default async function Page(props: PageProps<"/room/[id]">) {
           <div className="mt-2 pt-3">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+                <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
                   Code
                 </p>
-                <p className="mt-1 text-[1.85rem] font-semibold leading-none tracking-[0.18em] text-[#0A0A0A] sm:text-[2.2rem]">
+                <p className="mt-1 text-[1.85rem] font-semibold leading-none tracking-[0.18em] text-foreground sm:text-[2.2rem]">
                   {roomResult.data.code}
                 </p>
               </div>
@@ -124,17 +124,17 @@ export default async function Page(props: PageProps<"/room/[id]">) {
         <section className="mt-3 border rounded-[1.85rem] p-4 sm:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-[1.45rem] font-semibold tracking-[-0.04em] text-[#0A0A0A]">
+              <h2 className="text-[1.45rem] font-semibold tracking-[-0.04em] text-foreground">
                 Meeting Overview
               </h2>
-              <p className="mt-1 text-sm text-[#667085]">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Watch reports come in live.
               </p>
             </div>
 
             <Link
               href={`/room/${id}/reports`}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#E5E5E5] px-5 py-3 text-sm font-medium text-[#0A0A0A] transition-colors"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors"
             >
               <FileText className="h-4 w-4" />
               Open host view

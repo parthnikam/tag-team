@@ -76,36 +76,36 @@ const parseTimeInput = (value: string) => {
 const getTimerTone = (elapsedSeconds: number, targets: [number, number, number]) => {
   if (elapsedSeconds >= targets[2]) {
     return {
-      section: "border-[#F97066] bg-[#FEF3F2]",
-      time: "text-[#B42318]",
-      meta: "text-[#B42318]",
-      button: "bg-[#B42318] text-white",
+      section: "border-destructive bg-destructive/10",
+      time: "text-destructive",
+      meta: "text-destructive",
+      button: "bg-destructive text-destructive-foreground",
     };
   }
 
   if (elapsedSeconds >= targets[1]) {
     return {
-      section: "border-[#FEC84B] bg-[#FFFAEB]",
-      time: "text-[#B54708]",
-      meta: "text-[#B54708]",
-      button: "bg-[#B54708] text-white",
+      section: "border-yellow-500 bg-yellow-500/10",
+      time: "text-yellow-700 dark:text-yellow-300",
+      meta: "text-yellow-700 dark:text-yellow-300",
+      button: "bg-yellow-600 text-background dark:bg-yellow-400",
     };
   }
 
   if (elapsedSeconds >= targets[0]) {
     return {
-      section: "border-[#6CE9A6] bg-[#ECFDF3]",
-      time: "text-[#027A48]",
-      meta: "text-[#027A48]",
-      button: "bg-[#027A48] text-white",
+      section: "border-emerald-500 bg-emerald-500/10",
+      time: "text-emerald-700 dark:text-emerald-300",
+      meta: "text-emerald-700 dark:text-emerald-300",
+      button: "bg-emerald-700 text-background dark:bg-emerald-400",
     };
   }
 
   return {
-    section: "border-[#E7E7E7] bg-white",
-    time: "text-[#0A0A0A]",
-    meta: "text-[#667085]",
-    button: "bg-[#0A0A0A] text-white",
+    section: "border-border bg-card",
+    time: "text-foreground",
+    meta: "text-muted-foreground",
+    button: "bg-primary text-primary-foreground",
   };
 };
 
@@ -139,7 +139,7 @@ function TimeInput({
       }}
       onBlur={() => setLocalValue(null)}
       onFocus={onFocus}
-      className="w-40 rounded-full border border-[#E7E7E7] px-5 py-3 text-center text-[1rem] text-[#475467] outline-none transition-colors focus:border-[#0A0A0A]"
+      className="w-40 rounded-full border border-border px-5 py-3 text-center text-[1rem] text-muted-foreground outline-none transition-colors focus:border-primary"
     />
   );
 }
@@ -164,11 +164,11 @@ function TimerSectionCard({
   onFocus: (index: number) => void;
 }) {
   return (
-    <section className="rounded-[2rem] border border-[#E7E7E7] p-4 sm:p-5">
-      <h2 className="text-[1.15rem] font-semibold text-[#0A0A0A] sm:text-[1.35rem]">
+    <section className="rounded-[2rem] border border-border p-4 sm:p-5">
+      <h2 className="text-[1.15rem] font-semibold text-foreground sm:text-[1.35rem]">
         {title}
       </h2>
-      <p className="mt-1 text-sm text-[#667085]">
+      <p className="mt-1 text-sm text-muted-foreground">
         Targets · {targets.map((value) => formatSeconds(value)).join(" / ")}
       </p>
 
@@ -180,7 +180,7 @@ function TimerSectionCard({
               onChange={(event) => onNameChange(index, event.target.value)}
               onFocus={() => onFocus(index)}
               placeholder="Name"
-              className="min-w-0 flex-1 rounded-full border border-[#E7E7E7] px-5 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
+              className="min-w-0 flex-1 rounded-full border border-border px-5 py-3 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
             />
 
             <div className="flex items-center gap-3 sm:w-auto">
@@ -193,7 +193,7 @@ function TimerSectionCard({
               <button
                 type="button"
                 onClick={() => onRemove(index)}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-[#E7E7E7] text-[#667085] transition-colors"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors"
                 aria-label={`Remove ${title} speaker ${index + 1}`}
               >
                 <Trash2 className="h-4 w-4" />
@@ -206,7 +206,7 @@ function TimerSectionCard({
       <button
         type="button"
         onClick={onAdd}
-        className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#E7E7E7] px-4 py-2 text-[1rem] font-medium text-[#0A0A0A] transition-colors"
+        className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-[1rem] font-medium text-foreground transition-colors"
       >
         <Plus className="h-4 w-4" />
         Add speaker
@@ -393,22 +393,22 @@ export default function TimerReportForm({
 
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 pb-32">
-      <div className="flex items-center justify-between gap-4 border-b border-[#ECECEC] pb-4">
+      <div className="flex items-center justify-between gap-4 border-b border-border pb-4">
         <BackLink href={`/room/${code}`} label="Lobby" />
-        <p className="hidden text-xs font-medium uppercase tracking-[0.28em] text-[#667085] sm:block">
+        <p className="hidden text-xs font-medium uppercase tracking-[0.28em] text-muted-foreground sm:block">
           {displayMeetingName}
         </p>
-        <p className="hidden text-sm text-[#667085] sm:block">{displayHostName}</p>
+        <p className="hidden text-sm text-muted-foreground sm:block">{displayHostName}</p>
       </div>
 
       <div className="page-heading-inset">
-        <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
+        <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
           Timer
         </p>
-        <h1 className="mt-2 text-[2.85rem] font-semibold tracking-[-0.06em] text-[#0A0A0A] sm:text-[3.4rem]">
+        <h1 className="mt-2 text-[2.85rem] font-semibold tracking-[-0.06em] text-foreground sm:text-[3.4rem]">
           Timer Dashboard
         </h1>
-        <p className="mt-2 text-[1rem] text-[#667085]">
+        <p className="mt-2 text-[1rem] text-muted-foreground">
           Run the live timer, then record the duration to the speaker&apos;s row.
         </p>
       </div>
@@ -424,7 +424,7 @@ export default function TimerReportForm({
             className={`rounded-full border px-5 py-2.5 text-sm font-medium transition-colors ${
               activeSection === section.key
                 ? "bg-primary text-primary-foreground border-primary"
-                : "bg-white text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                : "bg-card text-muted-foreground hover:bg-accent hover:text-accent-foreground"
             }`}
           >
             {section.shortTitle}
@@ -451,7 +451,7 @@ export default function TimerReportForm({
             onChange={(event) => setCurrentSpeaker(event.target.value)}
             list="timer-speakers"
             placeholder="Current speaker"
-            className="w-full rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] text-[#0A0A0A] outline-none transition-colors placeholder:text-[#667085] focus:border-[#0A0A0A]"
+            className="w-full rounded-full border border-border px-6 py-3 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
           />
           <datalist id="timer-speakers">
             {activeSpeakerNames.map((speakerName) => (
@@ -475,7 +475,7 @@ export default function TimerReportForm({
                 setIsRunning(false);
                 setElapsedSeconds(0);
               }}
-              className="inline-flex items-center gap-2 rounded-full border border-[#E7E7E7] px-6 py-3 text-[1rem] font-medium text-[#0A0A0A] transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-[1rem] font-medium text-foreground transition-colors"
             >
               <RotateCcw className="h-4 w-4" />
               Reset
@@ -484,7 +484,7 @@ export default function TimerReportForm({
             <button
               type="button"
               onClick={recordCurrentTime}
-              className="inline-flex items-center gap-2 rounded-full bg-[#F3F3F3] px-6 py-3 text-[1rem] font-medium text-[#0A0A0A] transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-muted px-6 py-3 text-[1rem] font-medium text-foreground transition-colors"
             >
               <Save className="h-4 w-4" />
               Record
@@ -520,17 +520,17 @@ export default function TimerReportForm({
         ))}
       </div>
 
-      {error ? <p className="text-sm text-[#B42318]">{error}</p> : null}
+      {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
       <div className="fixed inset-x-0 bottom-0 z-20 px-4 pb-4 sm:px-6 sm:pb-6">
-        <section className="mx-auto w-full max-w-3xl rounded-[1.75rem] border border-[#E7E7E7] bg-white/95 p-4 shadow-[0_-10px_30px_rgba(10,10,10,0.05)] backdrop-blur">
+        <section className="mx-auto w-full max-w-3xl rounded-[1.75rem] border border-border bg-card/95 p-4 shadow-lg backdrop-blur">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-[1rem] text-[#667085]">When ready, send to the host.</p>
+            <p className="text-[1rem] text-muted-foreground">When ready, send to the host.</p>
             <button
               type="button"
               onClick={handleSubmit}
               disabled={submitted || isPending}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0A0A0A] px-6 py-3 text-[1rem] font-semibold text-white transition-colors disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-[1rem] font-semibold text-primary-foreground transition-colors disabled:opacity-50"
             >
               <Send className="h-4 w-4" />
               {submitted ? "Report submitted" : isPending ? "Submitting..." : "Submit report"}

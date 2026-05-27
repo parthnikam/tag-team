@@ -31,18 +31,18 @@ export default function NavAvatar({ user }: { user: User | null }) {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0A0A0A] text-sm font-semibold text-white shadow-sm ring-2 ring-white transition-colors"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground shadow-sm ring-2 ring-background transition-colors"
         >
           {initials}
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-[#EAEAEA] bg-white p-2 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-border bg-card p-2 shadow-lg ring-1 ring-foreground ring-opacity-5 focus:outline-none">
             <div className="px-3 py-2">
-              <p className="truncate text-sm font-medium text-[#0A0A0A]">
+              <p className="truncate text-sm font-medium text-foreground">
                 {user.user_metadata?.full_name || "User"}
               </p>
-              <p className="truncate text-xs text-[#6B6B6B]">
+              <p className="truncate text-xs text-muted-foreground">
                 {user.email}
               </p>
             </div>
@@ -50,7 +50,7 @@ export default function NavAvatar({ user }: { user: User | null }) {
               <Link
                 href="/meetings"
                 onClick={() => setIsOpen(false)}
-                className="block px-3 py-2 text-sm font-medium text-[#0A0A0A] transition-colors"
+                className="block px-3 py-2 text-sm font-medium text-foreground transition-colors"
               >
                 Past meetings
               </Link>
@@ -58,7 +58,7 @@ export default function NavAvatar({ user }: { user: User | null }) {
               <Link
                 href="/"
                 onClick={signOut}
-                className="block px-3 py-2 text-sm font-medium text-[#0A0A0A] transition-colors"
+                className="block px-3 py-2 text-sm font-medium text-foreground transition-colors"
               >
                 Logout
               </Link>

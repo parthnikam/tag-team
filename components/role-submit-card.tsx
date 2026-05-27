@@ -44,10 +44,10 @@ export default function RoleSubmitCard({
   };
 
   return (
-    <div className="w-full max-w-sm rounded border border-white/10 p-4">
-      <p className="text-xs text-white/60">Room {code}</p>
+    <div className="w-full max-w-sm rounded border border-border p-4">
+      <p className="text-xs text-primary-foreground/60">Room {code}</p>
       <h1 className="text-lg">{ROOM_ROLE_LABELS[role]}</h1>
-      <p className="mt-1 text-sm text-white/60">Submit dummy JSON for this role.</p>
+      <p className="mt-1 text-sm text-primary-foreground/60">Submit dummy JSON for this role.</p>
 
       <button
         type="button"
