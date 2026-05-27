@@ -36,7 +36,7 @@ export async function claimRoomRole({
     return { allowed: false, room, error };
   }
 
-  const typedRoom = room as Record<string, string | null>;
+  const typedRoom = room as unknown as Record<string, string | null>;
   const occupant = typedRoom[role];
 
   if (occupant && occupant !== user.id) {
