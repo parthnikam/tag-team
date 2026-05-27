@@ -213,8 +213,8 @@ export default function GrammarianReportForm({
   return (
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 pb-32">
       {showWodModal ? (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/30 px-4 py-8">
-          <div className="w-full max-w-2xl rounded-[2rem] bg-white p-6 shadow-[0_20px_80px_rgba(10,10,10,0.16)]">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/35 px-4 py-8">
+          <div className="w-full max-w-2xl rounded-[2rem] border border-[#E7E7E7] bg-white p-6 shadow-[0_24px_90px_rgba(10,10,10,0.2)]">
             <div className="flex flex-col gap-4">
               <div>
                 <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">

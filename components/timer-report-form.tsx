@@ -413,24 +413,24 @@ export default function TimerReportForm({
         </p>
       </div>
 
-      <section className={`rounded-[2rem] border p-4 transition-colors sm:p-5 ${timerTone.section}`}>
-        <div className="flex flex-wrap gap-2">
-          {TIMER_SECTIONS.map((section) => (
-            <button
-              key={section.key}
-              type="button"
-              aria-pressed={activeSection === section.key}
-              onClick={() => setActiveSection(section.key)}
-              className={`rounded-full border px-5 py-2.5 text-[1rem] font-medium transition-colors ${
-                activeSection === section.key
-                  ? "timer-section-button-active"
-                  : "bg-[#F3F3F3] text-[#0A0A0A]"
-              }`}
-            >
-              {section.shortTitle}
-            </button>
-          ))}
-        </div>
+     <section className="rounded-3xl border bg-card p-4 text-card-foreground sm:p-5">
+      <div className="flex flex-wrap gap-2">
+        {TIMER_SECTIONS.map((section) => (
+          <button
+            key={section.key}
+            type="button"
+            aria-pressed={activeSection === section.key}
+            onClick={() => setActiveSection(section.key)}
+            className={`rounded-full border px-5 py-2.5 text-sm font-medium transition-colors ${
+              activeSection === section.key
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-white text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+            }`}
+          >
+            {section.shortTitle}
+          </button>
+        ))}
+      </div>
 
         <div className="mt-8 text-center">
           <div className={`select-none text-[5.6rem] font-semibold leading-none tracking-[-0.08em] transition-colors sm:text-[7rem] ${timerTone.time}`}>

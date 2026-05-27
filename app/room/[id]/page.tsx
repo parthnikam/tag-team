@@ -57,7 +57,7 @@ export default async function Page(props: PageProps<"/room/[id]">) {
     "";
 
   return (
-    <main className="page-shell">
+    <main className="page-shell" data-bg-word="MEETING">
       <RoomSessionSeed
         room={{
           code: roomResult.data.code,
@@ -70,23 +70,18 @@ export default async function Page(props: PageProps<"/room/[id]">) {
       <div className="mx-auto max-w-3xl">
         <BackLink href="/room" label="Back" />
 
-        <div className="page-heading-inset mt-3">
+        <div className="border rounded-[1.85rem] p-6 mt-3">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="min-w-0">
               <p className="text-xs font-medium uppercase tracking-[0.26em] text-[#475467]">
                 Meeting lobby
               </p>
-              <h1 className="mt-2 text-[3rem] font-semibold leading-[0.98] tracking-[-0.07em] text-[#0A0A0A] sm:text-[3.5rem]">
+              <h1 className="mt-2 text-[3rem] font-semibold leading-[0.98] tracking-[-0.04em] text-[#0A0A0A] sm:text-[3.5rem]">
                 {roomResult.data.club_name}
               </h1>
               <p className="mt-2 text-[1rem] text-[#667085]">
                 Hosted by {roomResult.data.host_name}
               </p>
-              <RoomJoinedNameField
-                code={id}
-                initialName={joinedAsName}
-                currentRole={currentUserRole}
-              />
             </div>
           </div>
 
@@ -108,6 +103,12 @@ export default async function Page(props: PageProps<"/room/[id]">) {
               </div>
             </div>
           </div>
+
+          <RoomJoinedNameField
+            code={id}
+            initialName={joinedAsName}
+            currentRole={currentUserRole}
+          />
         </div>
 
         <div className="mt-4">
@@ -120,7 +121,7 @@ export default async function Page(props: PageProps<"/room/[id]">) {
           />
         </div>
 
-        <section className="mt-3 rounded-[1.85rem] p-4 sm:p-5">
+        <section className="mt-3 border rounded-[1.85rem] p-4 sm:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-[1.45rem] font-semibold tracking-[-0.04em] text-[#0A0A0A]">

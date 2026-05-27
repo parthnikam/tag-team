@@ -19,16 +19,16 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (user) {
-      router.replace('/room')
+      router.replace('/')
     }
   }, [router, user])
 
   return (
     <main className="flex min-h-[100dvh] items-center justify-center p-4">
-      <div className="w-full max-w-[440px] rounded-[2rem] border border-[#E7E7E7] bg-white p-6 sm:p-8 shadow-[0_20px_80px_rgba(10,10,10,0.06)]">
+      <div className="w-full max-w-[440px] rounded-[2rem]  bg-white p-6 sm:p-8 shadow-[0_20px_80px_rgba(10,10,10,0.06)]">
         
         {/* Tabs Toggle */}
-        <div className="mb-8 flex rounded-full border border-[#E7E7E7] p-1.5 bg-[#F9F9F9]">
+        <div className="mb-8 flex rounded-full gap-1 p-1.5 bg-[#F9F9F9]">
           <button
             type="button"
             onClick={() => setActiveTab('login')}

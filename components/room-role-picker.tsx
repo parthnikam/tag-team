@@ -126,7 +126,7 @@ export default function RoomRolePicker({
               }
             }}
             onClick={() => handleJoin(role)}
-            className={`flex items-center gap-4 rounded-[1.7rem] px-5 py-4 text-left transition-colors ${
+            className={`flex items-center gap-4 border rounded-[1.7rem] px-5 py-4 text-left  ${
               isTakenBySomeoneElse
                 ? "cursor-not-allowed  bg-white opacity-40"
                 : "bg-white"

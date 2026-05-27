@@ -95,7 +95,7 @@ export default function RoomJoinedNameField({
             event.currentTarget.blur();
           }
         }}
-        className="w-40 rounded-full border border-white/65 bg-white/38 px-3 py-1.5 text-sm font-semibold text-[#0A0A0A] outline-none transition-colors shadow-[inset_0_1px_0_rgba(255,255,255,0.76)] backdrop-blur-xl focus:border-[#0A0A0A] sm:w-48"
+        className="w-40 rounded-full border border-black/6 bg-white/10 pl-2 py-1 text-sm font-semibold text-[#0A0A0A] outline-none transition-colors shadow-[inset_0_1px_0_rgba(255,255,255,0.76)] backdrop-blur-xl focus:border-[#0A0A0A] sm:w-48"
         aria-label="Joined as"
       />
       {error ? <p className="basis-full text-xs text-[#B42318]">{error}</p> : null}
