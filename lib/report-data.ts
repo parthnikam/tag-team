@@ -47,6 +47,7 @@ export interface AhCounterPerson {
   but: number;
   youknow: number;
   and: number;
+  customWords?: Record<string, number>;
 }
 
 export interface AhCounterReportData {
@@ -80,4 +81,5 @@ export const createEmptyAhCounterPerson = (): AhCounterPerson => ({
   but: 0,
   youknow: 0,
   and: 0,
+  customWords: {},
 });

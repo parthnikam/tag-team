@@ -31,13 +31,13 @@ export default function NavAvatar({ user }: { user: User | null }) {
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground shadow-sm ring-2 ring-background transition-colors"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground shadow-sm "
         >
           {initials}
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-border bg-card p-2 shadow-lg ring-1 ring-foreground ring-opacity-5 focus:outline-none">
+          <div className="absolute right-0 mt-2 w-48 rounded-2xl glass-flat-card p-2 shadow-lg">
             <div className="px-3 py-2">
               <p className="truncate text-sm font-medium text-foreground">
                 {user.user_metadata?.full_name || "User"}

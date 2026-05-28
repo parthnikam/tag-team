@@ -71,7 +71,7 @@ export default function Page() {
               type="button"
               onClick={handleJoinMeeting}
               disabled={isPending || !code.trim()}
-              className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-primary px-7 py-3.5 text-[1rem] font-semibold text-primary-foreground transition-colors disabled:opacity-50"
+              className="button-outset-primary inline-flex w-full items-center justify-center gap-3 rounded-full px-7 py-3.5 text-[1rem] font-semibold"
             >
               {isPending ? "Joining..." : "Continue"}
               <ArrowRight className="h-5 w-5" />

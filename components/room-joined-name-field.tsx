@@ -95,7 +95,7 @@ export default function RoomJoinedNameField({
             event.currentTarget.blur();
           }
         }}
-        className="w-40 rounded-full border border-border bg-card/10 pl-2 py-1 text-sm font-semibold text-foreground outline-none transition-colors  backdrop-blur-xl focus:border-primary sm:w-48"
+        className="w-40 rounded-full border border-input bg-muted pl-2 py-1 text-sm font-semibold text-foreground outline-none transition-colors focus:border-ring sm:w-48"
         aria-label="Joined as"
       />
       {error ? <p className="basis-full text-xs text-destructive">{error}</p> : null}

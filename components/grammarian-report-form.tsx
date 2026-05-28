@@ -232,7 +232,7 @@ export default function GrammarianReportForm({
                     type="text"
                     value={wod}
                     onChange={(event) => setWod(event.target.value)}
-                    className="mt-2 w-full rounded-full border border-border bg-card px-5 py-3 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
+                    className="mt-2 w-full rounded-full border border-input bg-muted px-5 py-3 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
                     placeholder="Enter the word of the day"
                   />
                 </label>
@@ -243,7 +243,7 @@ export default function GrammarianReportForm({
                     value={meaning}
                     onChange={(event) => setMeaning(event.target.value)}
                     rows={3}
-                    className="mt-2 w-full rounded-[1rem] border border-border bg-card px-5 py-3 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
+                    className="mt-2 w-full rounded-[1rem] border border-input bg-muted px-5 py-3 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
                     placeholder="Enter the meaning of the word"
                   />
                 </label>
@@ -288,7 +288,7 @@ export default function GrammarianReportForm({
       </div>
 
       {/* Word of the Day Section */}
-      <section className="rounded-[2rem] border border-border bg-muted p-4 sm:p-5">
+      <section className="rounded-[2rem] border border-border bg-card p-4 sm:p-5">
         <div className="mb-4 text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
           Word of the day
         </div>
@@ -303,7 +303,7 @@ export default function GrammarianReportForm({
       </section>
 
       {/* Notable Phrasing Section */}
-      <section className="rounded-[2rem] border border-border p-4 sm:p-5">
+      <section className="rounded-[2rem] glass-flat-card border border-border p-4 sm:p-5">
         <h2 className="text-[1.15rem] font-semibold text-foreground">Notable Phrasing</h2>
         <p className="mt-1 text-sm text-muted-foreground">Capture eloquent words, quotes, or phrases.</p>
 
@@ -367,7 +367,7 @@ export default function GrammarianReportForm({
       </section>
 
       {/* Improper Use Section */}
-      <section className="rounded-[2rem] border border-border p-4 sm:p-5">
+      <section className="rounded-[2rem] glass-flat-card border border-border p-4 sm:p-5">
         <h2 className="text-[1.15rem] font-semibold text-foreground">Improper Use</h2>
         <p className="mt-1 text-sm text-muted-foreground">Note misuse and suggest a correction.</p>
 
@@ -432,14 +432,14 @@ export default function GrammarianReportForm({
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
       <div className="fixed inset-x-0 bottom-0 z-20 px-4 pb-4 sm:px-6 sm:pb-6">
-        <section className="mx-auto w-full max-w-3xl rounded-[1.75rem] border border-border bg-card/95 p-4 shadow-lg backdrop-blur">
+        <section className="glass-submit-card mx-auto w-full max-w-3xl">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-[1rem] text-muted-foreground">When ready, send to the host.</p>
             <button
               type="button"
               onClick={handleSubmit}
               disabled={submitted || isPending}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-[1rem] font-semibold text-primary-foreground transition-colors disabled:opacity-50"
+              className="button-outset-primary inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[1rem] font-semibold"
             >
               <Send className="h-4 w-4" />
               {submitted ? "Report submitted" : isPending ? "Submitting..." : "Submit report"}

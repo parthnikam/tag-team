@@ -18,7 +18,7 @@ import {
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
-type ReportPayload = {
+export type ReportPayload = {
   roomCode: string;
   role: RoomRole;
   submittedBy: string;
@@ -27,7 +27,7 @@ type ReportPayload = {
   data: unknown;
 };
 
-type ReportItem = {
+export type ReportItem = {
   role: RoomRole;
   label: string;
   submitted: boolean;
@@ -42,104 +42,48 @@ const ROLE_ICONS: Record<RoomRole, typeof Clock3> = {
 
 export default function RoomReportsView({
   roomCode,
+  initialReports,
+  initialRoomInfo,
 }: {
   roomCode: string;
+  initialReports: ReportItem[];
+  initialRoomInfo: {
+    clubName?: string | null;
+    hostName?: string | null;
+  };
 }) {
   const cachedRoom = useCachedRoomSession(roomCode);
-  const [reports, setReports] = useState<ReportItem[]>([]);
-  const [selectedRole, setSelectedRole] = useState<RoomRole | null>(null);
+  const [reports] = useState<ReportItem[]>(initialReports);
+  const [selectedRole, setSelectedRole] = useState<RoomRole | null>(
+    () => initialReports[0]?.role ?? null,
+  );
   const [fetchedRoomInfo, setFetchedRoomInfo] = useState<{
     clubName?: string | null;
     hostName?: string | null;
-  } | null>(null);
+  } | null>(initialRoomInfo);
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
   const meetingName = cachedRoom?.clubName || fetchedRoomInfo?.clubName || roomCode;
   const hostName = cachedRoom?.hostName || fetchedRoomInfo?.hostName || "";
 
   useEffect(() => {
-    if (cachedRoom?.clubName || cachedRoom?.hostName) {
+    if (
+      cachedRoom?.clubName ||
+      cachedRoom?.hostName ||
+      !initialRoomInfo ||
+      (!initialRoomInfo.clubName && !initialRoomInfo.hostName)
+    ) {
       return;
     }
 
-    let isMounted = true;
-
-    const loadRoomInfo = async () => {
-      try {
-        const response = await fetch(`/api/roominfo/${roomCode}`);
-        const data = (await response.json()) as {
-          error?: string;
-          room?: {
-            code: string;
-            clubName?: string | null;
-            hostName?: string | null;
-          };
-        };
-
-        if (!response.ok || !data.room) {
-          return;
-        }
-
-        setCachedRoomSession(data.room);
-
-        if (isMounted) {
-          setFetchedRoomInfo({
-            clubName: data.room.clubName,
-            hostName: data.room.hostName,
-          });
-        }
-      } catch {
-        // Cached data is an optimization; reports can still render without it.
-      }
-    };
-
-    loadRoomInfo();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [cachedRoom?.clubName, cachedRoom?.hostName, roomCode]);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadReports = async () => {
-      try {
-        const response = await fetch(`/api/getreports/${roomCode}`);
-        const data = (await response.json()) as {
-          error?: string;
-          reports?: ReportItem[];
-        };
-
-        if (!response.ok) {
-          throw new Error(data.error ?? "Could not load reports.");
-        }
-
-        if (isMounted) {
-          setReports(data.reports ?? []);
-          if (data.reports && data.reports.length > 0) {
-            setSelectedRole(data.reports[0].role);
-          }
-        }
-      } catch (err) {
-        if (isMounted) {
-          setError(err instanceof Error ? err.message : "Could not load reports.");
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    loadReports();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [roomCode]);
+    setCachedRoomSession({
+      code: roomCode,
+      clubName: initialRoomInfo.clubName,
+      hostName: initialRoomInfo.hostName,
+    });
+    setFetchedRoomInfo(initialRoomInfo);
+  }, [cachedRoom?.clubName, cachedRoom?.hostName, initialRoomInfo, roomCode]);
 
   const selectedReport = reports.find((r) => r.role === selectedRole);
   const submittedCount = reports.filter((r) => r.submitted).length;
@@ -186,10 +130,6 @@ export default function RoomReportsView({
       setIsExporting(false);
     }
   };
-
-  if (isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading reports...</p>;
-  }
 
   if (error) {
     return <p className="text-sm text-destructive">{error}</p>;

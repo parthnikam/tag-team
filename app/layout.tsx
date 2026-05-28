@@ -58,7 +58,7 @@ export default async function RootLayout({children,}: Readonly<{children: React.
       lang="en"
       className={`${geist.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col dark bg-background text-foreground">
+      <body className="min-h-full flex flex-col light bg-background text-foreground">
         <Analytics />
         <AuthProvider initialUser={user}>
           <NavAvatar user={user} />

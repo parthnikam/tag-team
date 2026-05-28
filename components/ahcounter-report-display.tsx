@@ -1,10 +1,12 @@
 import { type AhCounterReportData } from "@/lib/report-data";
 
+type DefaultCountKey = keyof Omit<
+  AhCounterReportData["people"][0],
+  "name" | "customWords"
+>;
+
 const COUNT_FIELDS: Array<{
-  key: keyof Omit<
-    AhCounterReportData["people"][0],
-    "name"
-  >;
+  key: DefaultCountKey;
   label: string;
 }> = [
   { key: "ah", label: "AH" },
@@ -25,6 +27,12 @@ interface AhCounterReportDisplayProps {
 export default function AhCounterReportDisplay({
   data,
 }: AhCounterReportDisplayProps) {
+  const customWords = Array.from(
+    new Set(
+      data.people.flatMap((person) => Object.keys(person.customWords ?? {})),
+    ),
+  );
+
   return (
     <div>
       <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
@@ -45,6 +53,14 @@ export default function AhCounterReportDisplay({
                   {field.label}
                 </th>
               ))}
+              {customWords.map((word) => (
+                <th
+                  key={word}
+                  className="px-5 py-3 text-center font-medium uppercase tracking-[0.15em] text-muted-foreground"
+                >
+                  {word}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -60,6 +76,14 @@ export default function AhCounterReportDisplay({
                     className="px-5 py-4 text-center text-foreground"
                   >
                     {person[field.key]}
+                  </td>
+                ))}
+                {customWords.map((word) => (
+                  <td
+                    key={word}
+                    className="px-5 py-4 text-center text-foreground"
+                  >
+                    {person.customWords?.[word] ?? 0}
                   </td>
                 ))}
               </tr>

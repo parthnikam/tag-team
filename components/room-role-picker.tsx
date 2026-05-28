@@ -79,10 +79,12 @@ export default function RoomRolePicker({
         const meta = ROLE_META[role];
         const Icon = meta.icon;
         const rolePath = `/room/${code}/${role}`;
-        const className = `flex w-full items-center gap-4 border rounded-[1.7rem] px-5 py-4 text-left ${
+        const className = `flex w-full items-center gap-4 rounded-[1.7rem] px-5 py-4 text-left ${
           isTakenBySomeoneElse
-            ? "cursor-not-allowed bg-card opacity-40"
-            : "bg-card"
+            ? "glass-role-card cursor-not-allowed opacity-40"
+            : isTakenByCurrentUser
+              ? "glass-role-card glass-role-card-selected"
+              : "glass-role-card"
         }`;
         const content = (
           <>

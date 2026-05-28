@@ -123,10 +123,10 @@ export default function Page() {
                   key={option}
                   type="button"
                   onClick={() => setJoinAs(option)}
-                  className={`rounded-[1.7rem] border px-5 py-4 text-left transition-colors ${
+                  className={`glass-role-card rounded-[1.7rem] px-5 py-4 text-left ${
                     isSelected
-                      ? "border-primary text-foreground bg-muted"
-                      : "border-border bg-card text-foreground"
+                      ? "glass-role-card-selected"
+                      : ""
                   }`}
                 >
                   <div className="text-[1rem] font-medium">{label}</div>
@@ -142,7 +142,7 @@ export default function Page() {
             type="button"
             onClick={handleCreateMeeting}
             disabled={isPending || !hostName.trim()}
-            className="mt-5 inline-flex w-full items-center justify-center gap-3 rounded-full bg-primary px-7 py-3.5 text-[1rem] font-semibold text-primary-foreground transition-colors disabled:opacity-50"
+            className="button-outset-primary mt-5 inline-flex w-full items-center justify-center gap-3 rounded-full px-7 py-3.5 text-[1rem] font-semibold"
           >
             {isPending ? "Creating meeting..." : "Create Meeting"}
             <ArrowRight className="h-5 w-5" />

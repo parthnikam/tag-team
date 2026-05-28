@@ -76,27 +76,27 @@ const parseTimeInput = (value: string) => {
 const getTimerTone = (elapsedSeconds: number, targets: [number, number, number]) => {
   if (elapsedSeconds >= targets[2]) {
     return {
-      section: "border-destructive bg-destructive/10",
-      time: "text-destructive",
-      meta: "text-destructive",
+      section: "border-red-300 bg-red-300",
+      time: "text-foreground",
+      meta: "text-foreground",
       button: "bg-destructive text-destructive-foreground",
     };
   }
 
   if (elapsedSeconds >= targets[1]) {
     return {
-      section: "border-yellow-500 bg-yellow-500/10",
-      time: "text-yellow-700 dark:text-yellow-300",
-      meta: "text-yellow-700 dark:text-yellow-300",
+      section: "border-yellow-300 bg-yellow-300",
+      time: "text-foreground",
+      meta: "text-foreground",
       button: "bg-yellow-600 text-background dark:bg-yellow-400",
     };
   }
 
   if (elapsedSeconds >= targets[0]) {
     return {
-      section: "border-emerald-500 bg-emerald-500/10",
-      time: "text-emerald-700 dark:text-emerald-300",
-      meta: "text-emerald-700 dark:text-emerald-300",
+      section: "border-green-300 bg-green-300",
+      time: "text-foreground",
+      meta: "text-foreground",
       button: "bg-emerald-700 text-background dark:bg-emerald-400",
     };
   }
@@ -164,7 +164,7 @@ function TimerSectionCard({
   onFocus: (index: number) => void;
 }) {
   return (
-    <section className="rounded-[2rem] border border-border p-4 sm:p-5">
+    <section className="rounded-[2rem] glass-flat-card border border-border p-4 sm:p-5">
       <h2 className="text-[1.15rem] font-semibold text-foreground sm:text-[1.35rem]">
         {title}
       </h2>
@@ -206,7 +206,7 @@ function TimerSectionCard({
       <button
         type="button"
         onClick={onAdd}
-        className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-[1rem] font-medium text-foreground transition-colors"
+        className="mt-4 inline-flex items-center gap-2 rounded-full border bg-secondary px-4 py-2 text-[1rem] font-medium text-foreground transition-colors"
       >
         <Plus className="h-4 w-4" />
         Add speaker
@@ -413,7 +413,7 @@ export default function TimerReportForm({
         </p>
       </div>
 
-     <section className="rounded-3xl border bg-card p-4 text-card-foreground sm:p-5">
+     <section className={`rounded-3xl border p-4 text-card-foreground transition-colors sm:p-5 ${timerTone.section}`}>
       <div className="flex flex-wrap gap-2">
         {TIMER_SECTIONS.map((section) => (
           <button
@@ -475,7 +475,7 @@ export default function TimerReportForm({
                 setIsRunning(false);
                 setElapsedSeconds(0);
               }}
-              className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 text-[1rem] font-medium text-foreground transition-colors"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-[1rem] font-medium text-foreground transition-colors"
             >
               <RotateCcw className="h-4 w-4" />
               Reset
@@ -523,14 +523,14 @@ export default function TimerReportForm({
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
       <div className="fixed inset-x-0 bottom-0 z-20 px-4 pb-4 sm:px-6 sm:pb-6">
-        <section className="mx-auto w-full max-w-3xl rounded-[1.75rem] border border-border bg-card/95 p-4 shadow-lg backdrop-blur">
+        <section className="glass-submit-card mx-auto w-full max-w-3xl">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-[1rem] text-muted-foreground">When ready, send to the host.</p>
             <button
               type="button"
               onClick={handleSubmit}
               disabled={submitted || isPending}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-[1rem] font-semibold text-primary-foreground transition-colors disabled:opacity-50"
+              className="button-outset-primary inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[1rem] font-semibold"
             >
               <Send className="h-4 w-4" />
               {submitted ? "Report submitted" : isPending ? "Submitting..." : "Submit report"}

@@ -120,15 +120,15 @@ export default async function MeetingsPage() {
 
         <section className="mt-10 flex flex-col gap-3.5 sm:gap-4">
           {meetings.length === 0 ? (
-            <div className="rounded-[2rem] border border-border px-8 py-10 text-center text-muted-foreground">
+            <div className="glass-flat-card rounded-[2rem] px-8 py-10 text-center text-muted-foreground">
               You haven&apos;t participated in any meetings yet.
             </div>
           ) : (
             meetings.map((meeting) => (
                 <Link
                   key={meeting.roomCode}
-                  href={`/room/${meeting.roomCode}/reports`}
-                  className="group flex items-center gap-4 rounded-[2rem] border border-border px-5 py-5 text-foreground sm:gap-6 sm:px-8 sm:py-7"
+                  href={`/room/${meeting.roomCode}/reports?from=meetings`}
+                  className="glass-flat-card flex items-center gap-4 rounded-[2rem] px-5 py-5 text-foreground sm:gap-6 sm:px-8 sm:py-7"
                 >
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
@@ -138,14 +138,14 @@ export default async function MeetingsPage() {
                       {meeting.roles.map((role) => (
                         <span
                           key={role}
-                          className="rounded-full bg-primary px-2.5 py-1 text-[0.65rem] font-semibold uppercase leading-none tracking-[0.12em] text-primary-foreground"
+                          className="rounded-full px-2.5 py-1 text-[0.65rem] font-semibold uppercase leading-none tracking-[0.12em] text-primary-foreground bg-foreground"
                         >
                           {roleLabel(role)}
                         </span>
                       ))}
                     </div>
 
-                    <p className="mt-1.5 truncate text-sm font-medium tracking-[0.24em] text-muted-foreground sm:text-base">
+                    <p className="mt-1.5 truncate text-sm font-medium tracking-[0.04em] text-muted-foreground sm:text-base">
                       CODE {meeting.roomCode} <span className="tracking-normal">·</span>{" "}
                       {formatMeetingDate(meeting.joinedAt)}
                     </p>

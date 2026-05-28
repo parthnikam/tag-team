@@ -79,7 +79,7 @@ export default function AuthPage() {
               type="email"
               placeholder="name@example.com"
               required
-              className="w-full rounded-[1.2rem] border border-border bg-muted px-5 py-3.5 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:bg-card"
+              className="w-full rounded-[1.2rem] border border-input bg-muted px-5 py-3.5 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
             />
           </label>
 
@@ -90,7 +90,7 @@ export default function AuthPage() {
               type="password"
               placeholder="••••••••"
               required
-              className="w-full rounded-[1.2rem] border border-border bg-muted px-5 py-3.5 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:bg-card"
+              className="w-full rounded-[1.2rem] border border-input bg-muted px-5 py-3.5 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
             />
           </label>
 
@@ -102,7 +102,7 @@ export default function AuthPage() {
                 type="password"
                 placeholder="••••••••"
                 required
-                className="w-full rounded-[1.2rem] border border-border bg-muted px-5 py-3.5 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:bg-card"
+                className="w-full rounded-[1.2rem] border border-input bg-muted px-5 py-3.5 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
               />
             </label>
           )}

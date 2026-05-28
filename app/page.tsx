@@ -15,23 +15,16 @@ export default function Page() {
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link
             href="/room/create"
-            className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3 text-base font-semibold text-primary-foreground transition-colors"
+            className="main-action-button main-action-primary inline-flex items-center justify-center rounded-full px-8 py-3 text-base font-semibold"
           >
             Create meeting
           </Link>
 
           <Link
             href="/room/join"
-            className="inline-flex items-center justify-center rounded-full border border-border px-8 py-3 text-base font-medium text-foreground transition-colors"
+            className="button-outset main-action-button inline-flex items-center justify-center rounded-full px-8 py-3 text-base font-medium"
           >
             Join as TAG
-          </Link>
-
-          <Link
-            href="/meetings"
-            className="inline-flex items-center justify-center rounded-full border border-border px-8 py-3 text-base font-medium text-foreground transition-colors"
-          >
-            My meetings
           </Link>
         </div>
       </div>

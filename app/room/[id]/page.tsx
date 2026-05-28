@@ -70,7 +70,7 @@ export default async function Page(props: PageProps<"/room/[id]">) {
       <div className="mx-auto max-w-3xl">
         <BackLink href="/room" label="Back" />
 
-        <div className="border rounded-[1.85rem] p-6 mt-3">
+        <div className="glass-flat-card mt-3 rounded-[1.85rem] p-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="min-w-0">
               <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
@@ -85,7 +85,7 @@ export default async function Page(props: PageProps<"/room/[id]">) {
             </div>
           </div>
 
-          <div className="mt-2 pt-3">
+          <div className="mt-2 pt-2">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
@@ -121,7 +121,7 @@ export default async function Page(props: PageProps<"/room/[id]">) {
           />
         </div>
 
-        <section className="mt-3 border rounded-[1.85rem] p-4 sm:p-5">
+        <section className="mt-3 glass-flat-card border rounded-[1.85rem] p-4 sm:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-[1.45rem] font-semibold tracking-[-0.04em] text-foreground">
@@ -134,7 +134,7 @@ export default async function Page(props: PageProps<"/room/[id]">) {
 
             <Link
               href={`/room/${id}/reports`}
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors"
+              className="button-outset inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium"
             >
               <FileText className="h-4 w-4" />
               Open host view

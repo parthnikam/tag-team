@@ -36,7 +36,7 @@ export default function RoomShareActions({
           type="button"
           onClick={handleCopyCode}
           disabled={isPending}
-          className="inline-flex items-center justify-center gap-1.5 rounded-full border border-border px-3.5 py-2 text-xs font-medium text-foreground transition-colors disabled:opacity-50"
+          className="button-outset inline-flex items-center justify-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-medium"
         >
           {copiedCode ? (
             <>
