@@ -46,9 +46,14 @@ export async function POST(req: Request) {
   }
 
   const typedRole = role as RoomRole;
+  const typedRoleNameColumn = `${typedRole}_name`;
 
   const [roomResult, existingResult] = await Promise.all([
-    supabase.from("room").select(typedRole).eq("code", code).maybeSingle(),
+    supabase
+      .from("room")
+      .select("timer, grammarian, ahcounter, timer_name, grammarian_name, ahcounter_name")
+      .eq("code", code)
+      .maybeSingle(),
     supabase
       .from("reports")
       .select(`roomCode, ${typedRole}`)
@@ -64,7 +69,9 @@ export async function POST(req: Request) {
     return Response.json({ error: "Room not found" }, { status: 404 });
   }
 
-  if ((roomResult.data as Record<RoomRole, string | null>)[typedRole] !== user.id) {
+  const room = roomResult.data as unknown as Record<string, string | null>;
+
+  if (room[typedRole] !== user.id) {
     return Response.json(
       { error: "You are not assigned to this role" },
       { status: 403 },
@@ -82,7 +89,11 @@ export async function POST(req: Request) {
     );
   }
 
-  const payload = buildSubmissionPayload(code, typedRole, user.id, reportData, user.user_metadata.full_name);
+  const roletakerName =
+    room[typedRoleNameColumn]?.trim() ||
+    user.user_metadata?.full_name ||
+    "Participant";
+  const payload = buildSubmissionPayload(code, typedRole, user.id, reportData, roletakerName);
 
   const { error: upsertError } = await supabase
     .from("reports")
