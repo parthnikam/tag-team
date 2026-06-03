@@ -18,8 +18,9 @@ interface Section {
 
 export default function TimerReportDisplay({ data }: TimerReportDisplayProps) {
   const sections: Section[] = [
-    { title: "TABLE TOPICS", people: data.tabletopics || [] },
-    { title: "PREPARED SPEECHES", people: data.speeches || [] },
+    { title: "Table Topics", people: data.tabletopics || [] },
+    { title: "Prepared Speeches", people: data.speeches || [] },
+    { title: "Evaluations", people: data.evaluators || [] },
   ];
 
   return (
