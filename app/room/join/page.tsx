@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import BackLink from "@/components/back-link";
 import { setCachedParticipantName } from "@/components/room-session-cache";
+import { useAuth } from "@/app/providers";
 
 export default function Page() {
   const router = useRouter();
+  const { user } = useAuth();
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -17,6 +19,11 @@ export default function Page() {
     const trimmedName = name.trim();
 
     if (!trimmedCode) {
+      return;
+    }
+
+    if (!user) {
+      router.push("/auth/login");
       return;
     }
 
