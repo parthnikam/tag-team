@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/utils/supabase/server'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 
@@ -23,9 +24,23 @@ export async function login(formData: FormData) {
 }
 
 
+const getURL = async () => {
+  const headersList = await headers()
+  const forwardedHost = headersList.get('x-forwarded-host')
+  const host = forwardedHost ?? headersList.get('host')
+
+  if (host) {
+    const protocol =
+      headersList.get('x-forwarded-proto') ?? (host.startsWith('localhost') ? 'http' : 'https')
+    return `${protocol}://${host}`
+  }
+
+  return process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+};
+
 export async function signup(formData: FormData) {
   const supabase = await createClient()
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  const siteUrl = await getURL();
   
   const email = formData.get('email') as string
   const password = formData.get('password') as string
@@ -58,8 +73,7 @@ export async function signup(formData: FormData) {
 
 export async function signInWithGoogle() {
   const supabase = await createClient()
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
-
+  const siteUrl = await getURL();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {

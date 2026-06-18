@@ -65,7 +65,7 @@ export default async function Page(props: PageProps<"/room/[id]/reports">) {
   });
 
   return (
-    <main className="page-shell">
+    <main className="page-shell pb-16 sm:pb-24">
       <div className="mx-auto max-w-4xl">
         <BackLink href={backHref} label="Back" />
 
