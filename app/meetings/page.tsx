@@ -103,7 +103,7 @@ export default async function MeetingsPage() {
 
   return (
     <main className="page-shell">
-      <div className="mx-auto max-w-4xl pb-8 sm:pb-10">
+      <div className="mx-auto max-w-4xl">
         <BackLink href="/room" label="Home" />
 
         <div className="page-heading-inset mt-9">
@@ -118,7 +118,7 @@ export default async function MeetingsPage() {
           </p>
         </div>
 
-        <section className="mt-10 flex flex-col gap-3.5 sm:gap-4">
+        <section className="mt-10 mb-8 sm:mb-10 flex flex-col gap-3.5 sm:gap-4">
           {meetings.length === 0 ? (
             <div className="glass-flat-card rounded-[2rem] px-8 py-10 text-center text-muted-foreground">
               You haven&apos;t participated in any meetings yet.
