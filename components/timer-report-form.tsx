@@ -351,6 +351,9 @@ export default function TimerReportForm({
     });
 
     setError("");
+    setCurrentSpeaker("");
+    setElapsedSeconds(0);
+    setIsRunning(false);
   };
 
   const handleSubmit = () => {

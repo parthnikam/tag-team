@@ -2,7 +2,7 @@
 
 export default function AuthCodeErrorPage() {
   return (
-    <div className="bg-background flex flex-col justify-center h-screen items-center px-4">
+    <div className="bg-background flex h-screen flex-col items-center justify-center px-4 pb-8 pt-4 sm:pb-10">
       <div className="max-w-md text-center">
         <p className="text-3xl font-bold text-primary-foreground mb-4">Invalid or Expired Link</p>
         <p className="text-gray-300 mb-6">

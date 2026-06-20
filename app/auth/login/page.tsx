@@ -24,7 +24,7 @@ export default function AuthPage() {
   }, [router, user])
 
   return (
-    <main className="flex min-h-[100dvh] items-center justify-center p-4">
+    <main className="flex min-h-[100dvh] items-center justify-center px-4 pb-8 pt-4 sm:pb-10">
       <div className="w-full max-w-[440px] rounded-[2rem]  bg-card p-6 sm:p-8 shadow-2xl">
         
         {/* Tabs Toggle */}
