@@ -136,7 +136,7 @@ export default function RoomReportsView({
   }
 
   return (
-    <div className="mt-6 flex flex-col gap-6">
+    <div className="mt-6 flex flex-col gap-6 pb-8 sm:pb-10">
       {/* Header Section */}
       <div className="page-heading-inset flex flex-col gap-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
