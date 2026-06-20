@@ -57,7 +57,7 @@ export default async function Page(props: PageProps<"/room/[id]">) {
     "";
 
   return (
-    <main className="page-shell pb-8 sm:pb-10" data-bg-word="MEETING">
+    <main className="page-shell" data-bg-word="MEETING">
       <RoomSessionSeed
         room={{
           code: roomResult.data.code,
@@ -67,7 +67,7 @@ export default async function Page(props: PageProps<"/room/[id]">) {
           roleAssignments,
         }}
       />
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-3xl pb-8 sm:pb-10">
         <BackLink href="/room" label="Back" />
 
         <div className="glass-flat-card mt-3 rounded-[1.85rem] p-6">
