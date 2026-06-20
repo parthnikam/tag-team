@@ -103,7 +103,7 @@ export default async function MeetingsPage() {
 
   return (
     <main className="page-shell">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-4xl pb-8 sm:pb-10">
         <BackLink href="/room" label="Home" />
 
         <div className="page-heading-inset mt-9">
