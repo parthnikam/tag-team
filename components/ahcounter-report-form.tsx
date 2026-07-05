@@ -256,22 +256,22 @@ export default function AhCounterReportForm({
         <p className="hidden text-sm text-muted-foreground sm:block">{displayHostName}</p>
       </div>
 
-      <div className="page-heading-inset">
-        <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
-          Ah Counter
-        </p>
-        <h1 className="mt-2 text-[2.85rem] font-semibold tracking-[-0.06em] text-foreground sm:text-[3.4rem]">
-          Ah Counter Dashboard
-        </h1>
-        <p className="mt-2 text-[1rem] text-muted-foreground">
-          Pick a speaker, then tap to count.
-        </p>
-      </div>
+          <div className="page-heading-inset">
+            <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
+              Ah Counter
+            </p>
+            <h1 className="mt-1 text-[1.8rem] font-semibold tracking-[-0.04em] text-foreground sm:mt-2 sm:text-[2.85rem]">
+              Ah Counter Dashboard
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground sm:mt-2 sm:text-[1rem]">
+              Pick a speaker, then tap to count.
+            </p>
+          </div>
 
       <section className="rounded-[2rem] bg-card border border-border p-4 sm:p-5">
         <h2 className="text-[1.15rem] font-semibold text-foreground">Participants</h2>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-2">
           {form.people.map((person, index) => {
             const label = person.name.trim() || `person ${index + 1}`;
             const isSelected = index === selectedIndex;
@@ -281,7 +281,7 @@ export default function AhCounterReportForm({
                 key={`${label}-${index}`}
                 type="button"
                 onClick={() => setSelectedIndex(index)}
-                className={`rounded-full px-5 py-2.5 text-[1rem] font-medium transition-colors ${
+                className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
                   isSelected
                     ? "bg-primary text-primary-foreground"
                     : "border border-border bg-card text-foreground"
@@ -293,18 +293,18 @@ export default function AhCounterReportForm({
           })}
         </div>
 
-        <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row">
           <input
             value={newSpeakerName}
             onChange={(event) => setNewSpeakerName(event.target.value)}
             placeholder="Add speaker name"
-            className="min-w-0 flex-1 rounded-full border border-border px-6 py-3 text-[1rem] text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary"
+            className="min-w-0 flex-1 rounded-full border border-border px-4 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary sm:px-6 sm:py-3 sm:text-[1rem]"
           />
 
           <button
             type="button"
             onClick={addSpeaker}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3 text-[1rem] font-medium text-foreground transition-colors"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors sm:px-6 sm:py-3 sm:text-[1rem]"
           >
             <UserPlus className="h-4 w-4" />
             Add
@@ -316,11 +316,11 @@ export default function AhCounterReportForm({
         <p className="text-xs font-medium uppercase tracking-[0.26em] text-muted-foreground">
           Counting
         </p>
-        <h2 className="mt-2 text-[2rem] font-semibold tracking-[-0.05em] text-foreground">
+        <h2 className="mt-2 text-[1.25rem] font-semibold tracking-[-0.04em] text-foreground sm:text-[2rem]">
           {selectedPerson?.name.trim() || "Select a participant"}
         </h2>
 
-        <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-4">
+        <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-4">
           {COUNT_FIELDS.map((field) => (
             <div
               key={field.key}
@@ -329,7 +329,7 @@ export default function AhCounterReportForm({
                   adjustCount(selectedIndex, field.key, 1);
                 }
               }}
-              className={`select-none flex flex-col items-center justify-center rounded-[1rem] border border-border px-1 py-3 text-center transition-colors sm:rounded-[1.8rem] sm:px-5 sm:py-4 ${
+              className={`select-none flex flex-col items-center justify-center rounded-[1rem] border border-border px-2 py-2 text-center transition-colors sm:rounded-[1.8rem] sm:px-5 sm:py-4 ${
                 selectedIndex === null ? "opacity-50" : ""
               }`}
               role="button"
@@ -344,7 +344,7 @@ export default function AhCounterReportForm({
               <div className="mb-1 text-[0.6rem] font-medium uppercase leading-none tracking-[0.05em] text-muted-foreground sm:mb-0 sm:text-sm sm:tracking-[0.26em]">
                 {field.label}
               </div>
-              <div className="my-1 select-none text-[1.8rem] font-semibold leading-tight tracking-[-0.06em] text-foreground sm:my-0 sm:text-[2.9rem] sm:leading-none">
+              <div className="my-1 select-none text-[1.2rem] font-semibold leading-tight tracking-[-0.04em] text-foreground sm:my-0 sm:text-[1.8rem] sm:leading-none">
                 {selectedPerson?.[field.key] ?? 0}
               </div>
               <button
@@ -355,7 +355,7 @@ export default function AhCounterReportForm({
                     adjustCount(selectedIndex, field.key, -1);
                   }
                 }}
-                className="px-4 py-1 text-[0.8rem] text-muted-foreground transition-colors sm:px-10 sm:text-[1rem]"
+                className="px-3 py-1 text-sm text-muted-foreground transition-colors sm:px-10 sm:text-[1rem]"
               >
                 -1
               </button>
@@ -403,7 +403,7 @@ export default function AhCounterReportForm({
           ))}
         </div>
 
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+        <div className="mt-3 flex flex-col gap-2 sm:flex-row">
           <input
             value={customWordInput}
             onChange={(event) => setCustomWordInput(event.target.value)}
@@ -417,14 +417,14 @@ export default function AhCounterReportForm({
               selectedPerson ? `Add word for ${selectedPerson.name || "speaker"}` : "Select a speaker first"
             }
             disabled={selectedIndex === null}
-            className="min-w-0 flex-1 rounded-full border border-border px-5 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary disabled:opacity-50"
+            className="min-w-0 flex-1 rounded-full border border-border px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary disabled:opacity-50 sm:px-5 sm:py-2.5"
           />
 
           <button
             type="button"
             onClick={addCustomWord}
             disabled={selectedIndex === null || !customWordInput.trim()}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors disabled:opacity-50 sm:px-5 sm:py-2.5"
           >
             <Plus className="h-4 w-4" />
             Add word
@@ -467,22 +467,22 @@ export default function AhCounterReportForm({
               {form.people.map((person, index) => (
                 <tr key={`${person.name}-${index}`} className="border-t border-border">
                   <td className="px-2 py-1.5">
-                    <input
-                      value={person.name}
-                      onChange={(event) => updatePerson(index, "name", event.target.value)}
-                      onFocus={() => setSelectedIndex(index)}
-                      className="w-full min-w-30 rounded-full border border-border px-4 py-1.5 text-[1rem] text-foreground outline-none transition-colors focus:border-primary"
-                    />
+                        <input
+                          value={person.name}
+                          onChange={(event) => updatePerson(index, "name", event.target.value)}
+                          onFocus={() => setSelectedIndex(index)}
+                          className="w-full min-w-30 rounded-full border border-border px-3 py-1 text-sm text-foreground outline-none transition-colors focus:border-primary sm:px-4 sm:py-1.5 sm:text-[1rem]"
+                        />
                   </td>
 
                   {COUNT_FIELDS.map((field) => (
-                    <td key={field.key} className="px-4 py-1.5 text-center text-[1rem] text-foreground">
+                    <td key={field.key} className="px-3 py-1 text-center text-sm text-foreground sm:px-4 sm:py-1.5 sm:text-[1rem]">
                       {person[field.key]}
                     </td>
                   ))}
 
                   {reportCustomWords.map((word) => (
-                    <td key={word} className="px-4 py-1.5 text-center text-[1rem] text-foreground">
+                    <td key={word} className="px-3 py-1 text-center text-sm text-foreground sm:px-4 sm:py-1.5 sm:text-[1rem]">
                       {person.customWords?.[word] ?? 0}
                     </td>
                   ))}
@@ -510,7 +510,7 @@ export default function AhCounterReportForm({
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-      <div className="fixed inset-x-0 bottom-0 z-20 px-4 pb-4 sm:px-6 sm:pb-6">
+      <div className="fixed inset-x-0 bottom-0 z-20 px-3 pb-3 sm:px-6 sm:pb-6">
         <section className="glass-submit-card mx-auto w-full max-w-3xl">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-[1rem] text-muted-foreground">When ready, send to the host.</p>
@@ -518,7 +518,7 @@ export default function AhCounterReportForm({
               type="button"
               onClick={handleSubmit}
               disabled={submitted || isPending}
-              className="button-outset-primary inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[1rem] font-semibold"
+              className="button-outset-primary inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold sm:px-6 sm:py-3 sm:text-[1rem]"
             >
               <Send className="h-4 w-4" />
               {submitted ? "Report submitted" : isPending ? "Submitting..." : "Submit report"}

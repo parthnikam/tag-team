@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { Download, X, Clock3, Mic, BookOpenText } from "lucide-react";
+import { Download, X, Clock3, Mic, BookOpenText, Link, Check } from "lucide-react";
 import { type RoomRole } from "@/lib/roles";
 import TimerReportDisplay from "@/components/timer-report-display";
 import AhCounterReportDisplay from "@/components/ahcounter-report-display";
@@ -190,7 +190,14 @@ export default function RoomReportsView({
               onClick={handleShareLink}
               className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
             >
-              {shareLabel}
+              {shareLabel === "Link copied!" ? (
+                <Check className="h-4 w-4" />
+              ) : shareLabel === "Copy failed" ? (
+                <X className="h-4 w-4" />
+              ) : (
+                <Link className="h-4 w-4" />
+              )}
+              <span>{shareLabel}</span>
             </button>
             <button
               type="button"
