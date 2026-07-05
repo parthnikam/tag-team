@@ -63,6 +63,8 @@ export default function RoomReportsView({
   } | null>(initialRoomInfo);
   const [error, setError] = useState("");
   const [isExporting, setIsExporting] = useState(false);
+  const [shareLabel, setShareLabel] = useState("Share Link");
+  const shareTimeoutRef = useRef<number | null>(null);
   const pdfRef = useRef<HTMLDivElement>(null);
   const meetingName = cachedRoom?.clubName || fetchedRoomInfo?.clubName || roomCode;
   const hostName = cachedRoom?.hostName || fetchedRoomInfo?.hostName || "";
@@ -85,9 +87,39 @@ export default function RoomReportsView({
     setFetchedRoomInfo(initialRoomInfo);
   }, [cachedRoom?.clubName, cachedRoom?.hostName, initialRoomInfo, roomCode]);
 
+  useEffect(() => {
+    return () => {
+      if (shareTimeoutRef.current) {
+        window.clearTimeout(shareTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const selectedReport = reports.find((r) => r.role === selectedRole);
   const submittedCount = reports.filter((r) => r.submitted).length;
   const totalCount = reports.length;
+
+  const handleShareLink = async () => {
+    if (shareTimeoutRef.current) {
+      window.clearTimeout(shareTimeoutRef.current);
+    }
+
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShareLabel("Link copied!");
+      shareTimeoutRef.current = window.setTimeout(() => {
+        setShareLabel("Share Link");
+        shareTimeoutRef.current = null;
+      }, 2000);
+    } catch (err) {
+      console.error("Share link failed:", err);
+      setShareLabel("Copy failed");
+      shareTimeoutRef.current = window.setTimeout(() => {
+        setShareLabel("Share Link");
+        shareTimeoutRef.current = null;
+      }, 2000);
+    }
+  };
 
   const handleExportPdf = async () => {
     if (!pdfRef.current) return;
@@ -152,15 +184,24 @@ export default function RoomReportsView({
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={handleExportPdf}
-            disabled={isExporting}
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors disabled:opacity-50"
-          >
-            <Download className="h-4 w-4" />
-            {isExporting ? "Exporting..." : "Export PDF"}
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handleShareLink}
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+            >
+              {shareLabel}
+            </button>
+            <button
+              type="button"
+              onClick={handleExportPdf}
+              disabled={isExporting}
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-5 py-3 text-sm font-medium text-foreground transition-colors disabled:opacity-50"
+            >
+              <Download className="h-4 w-4" />
+              {isExporting ? "Exporting..." : "Export PDF"}
+            </button>
+          </div>
         </div>
       </div>
 
