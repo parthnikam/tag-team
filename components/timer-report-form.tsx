@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import BackLink from "@/components/back-link";
 import { useCachedRoomSession } from "@/components/room-session-cache";
 import {
@@ -239,6 +239,7 @@ export default function TimerReportForm({
     () => getRoleReportDraft<TimerDraft>(code, "timer")?.elapsedSeconds ?? 0,
   );
   const [isRunning, setIsRunning] = useState(false);
+  const timerStartRef = useRef<number | null>(null);
   const cachedRoom = useCachedRoomSession(code);
   const displayMeetingName = cachedRoom?.clubName || meetingName;
   const displayHostName = cachedRoom?.hostName || hostName;
@@ -264,9 +265,21 @@ export default function TimerReportForm({
       return;
     }
 
+    timerStartRef.current = performance.now() - elapsedSeconds * 1000;
+
     const intervalId = window.setInterval(() => {
-      setElapsedSeconds((current) => current + 1);
-    }, 1000);
+      const start = timerStartRef.current;
+      if (start === null) {
+        return;
+      }
+
+      const newElapsedSeconds = Math.max(
+        0,
+        Math.floor((performance.now() - start) / 1000),
+      );
+
+      setElapsedSeconds((current) => (current === newElapsedSeconds ? current : newElapsedSeconds));
+    }, 100);
 
     return () => {
       window.clearInterval(intervalId);
