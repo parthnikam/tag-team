@@ -286,6 +286,29 @@ export default function TimerReportForm({
     };
   }, [isRunning]);
 
+  const getCurrentElapsedSeconds = () => {
+    const start = timerStartRef.current;
+
+    if (isRunning && start !== null) {
+      return Math.max(0, Math.floor((performance.now() - start) / 1000));
+    }
+
+    return elapsedSeconds;
+  };
+
+  const toggleRunning = () => {
+    if (isRunning) {
+      const currentSeconds = getCurrentElapsedSeconds();
+      setElapsedSeconds(currentSeconds);
+      timerStartRef.current = null;
+      setIsRunning(false);
+      return;
+    }
+
+    timerStartRef.current = performance.now() - elapsedSeconds * 1000;
+    setIsRunning(true);
+  };
+
   const updateSectionPerson = (
     section: TimerSectionKey,
     index: number,
@@ -318,6 +341,7 @@ export default function TimerReportForm({
 
   const recordCurrentTime = () => {
     const trimmedSpeaker = currentSpeaker.trim();
+    const actualElapsedSeconds = getCurrentElapsedSeconds();
 
     if (!trimmedSpeaker) {
       setError("Enter or select the current speaker before recording.");
@@ -339,7 +363,7 @@ export default function TimerReportForm({
           didMatch = true;
           return {
             ...person,
-            time: elapsedSeconds,
+            time: actualElapsedSeconds,
           };
         }
 
@@ -348,7 +372,7 @@ export default function TimerReportForm({
           return {
             ...person,
             name: trimmedSpeaker,
-            time: elapsedSeconds,
+            time: actualElapsedSeconds,
           };
         }
 
@@ -359,7 +383,7 @@ export default function TimerReportForm({
         ...current,
         [activeSection]: didMatch
           ? updatedSection
-          : [...updatedSection, { name: trimmedSpeaker, time: elapsedSeconds }],
+          : [...updatedSection, { name: trimmedSpeaker, time: actualElapsedSeconds }],
       };
     });
 
@@ -402,7 +426,8 @@ export default function TimerReportForm({
   };
 
   const activeConfig = TIMER_SECTIONS.find((section) => section.key === activeSection)!;
-  const timerTone = getTimerTone(elapsedSeconds, activeConfig.targets);
+  const displayElapsedSeconds = getCurrentElapsedSeconds();
+  const timerTone = getTimerTone(displayElapsedSeconds, activeConfig.targets);
   const activeSpeakerNames = form[activeSection]
     .map((person) => person.name.trim())
     .filter(Boolean);
@@ -450,7 +475,7 @@ export default function TimerReportForm({
 
         <div className="mt-8 text-center">
           <div className={`select-none text-[5.6rem] font-semibold leading-none tracking-[-0.08em] transition-colors sm:text-[7rem] ${timerTone.time}`}>
-            {formatSeconds(elapsedSeconds)}
+            {formatSeconds(displayElapsedSeconds)}
           </div>
           <p className={`mt-3 text-sm uppercase tracking-[0.26em] transition-colors ${timerTone.meta}`}>
             GREEN {formatSeconds(activeConfig.targets[0])}
@@ -478,7 +503,7 @@ export default function TimerReportForm({
           <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
             <button
               type="button"
-              onClick={() => setIsRunning((current) => !current)}
+              onClick={toggleRunning}
               className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-[1rem] font-semibold transition-colors ${timerTone.button}`}
             >
               {isRunning ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
@@ -490,6 +515,7 @@ export default function TimerReportForm({
               onClick={() => {
                 setIsRunning(false);
                 setElapsedSeconds(0);
+                timerStartRef.current = null;
               }}
               className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-[1rem] font-medium text-foreground transition-colors"
             >
